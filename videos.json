@@ -1,0 +1,6 @@
+[
+  { "id": 1, "titulo": "Rutina de espalda completa", "categoria": "Entrenamiento", "videoId": "VIDEO_ID_AQUI", "thumbnail": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800" },
+  { "id": 2, "titulo": "Técnica correcta en sentadilla", "categoria": "Técnica", "videoId": "VIDEO_ID_AQUI", "thumbnail": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800" },
+  { "id": 3, "titulo": "HIIT de 15 minutos", "categoria": "Cardio", "videoId": "VIDEO_ID_AQUI", "thumbnail": "https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=800" },
+  { "id": 4, "titulo": "Cómo hacer dominadas si sos principiante", "categoria": "Progresión", "videoId": "VIDEO_ID_AQUI", "thumbnail": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800" }
+]

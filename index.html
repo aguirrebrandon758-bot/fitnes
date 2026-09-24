@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Entrenamiento personal, clases grupales y planes online. Reserva tu primera sesión gratis." />
+  <title>FitPro — Entrenamiento Personal</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header>
+    <nav>
+      <div class="logo">FIT<span>PRO</span></div>
+      <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">Sobre mí</a></li>
+        <li><a href="#services">Servicios</a></li>
+        <li><a href="#ejercicios">Ejercicios</a></li>
+        <li><a href="#rutinas">Rutinas</a></li>
+        <li><a href="#alimentos">Alimentos</a></li>
+        <li><a href="#videos">Videos</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li><a href="#booking" class="btn btn-sm">Reservar</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="container hero-content">
+      <h1>Transforma tu cuerpo en <span>90 días</span></h1>
+      <p>Entrenamiento personalizado, plan nutricional y seguimiento real. Sin excusas, solo resultados. necesito opiniones ja</p>
+      <div class="hero-actions">
+        <a href="#booking" class="btn">Reserva tu clase gratis</a>
+        <a href="#services" class="btn btn-outline">Ver programas</a>
+      </div>
+      <div class="badges">
+        <div class="badge"><strong>+200</strong>Clientes transformados</div>
+        <div class="badge"><strong>8 años</strong>De experiencia</div>
+        <div class="badge"><strong>4.9★</strong>Valoración media</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container about-grid">
+      <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800" alt="Entrenador personal" />
+      <div>
+        <h2 class="section-title">Hola, soy <span class="accent">Brandon</span></h2>
+        <p class="section-sub">Entrenador personal certificado especializado en recomposición corporal y fuerza funcional. obvio es mentira esto jajjajaja</p>
+        <ul>
+          <li>tipo de Certificación:</li>
+          <li>Especialista en:</li>
+          <li>Más de 5.000 sesiones impartidas</li>
+          <li>Entrenamiento presencial y online</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="container">
+      <h2 class="section-title">Programas y servicios</h2>
+      <p class="section-sub">Elige el plan que mejor se adapte a tus objetivos.</p>
+      <div class="services-grid">
+        <div class="service-card">
+          <h3>Entrenamiento 1:1</h3>
+          <div class="price">$35.000 / sesión</div>
+          <p>Sesión individual presencial con plan personalizado y seguimiento continuo.</p>
+        </div>
+        <div class="service-card">
+          <h3>Clases grupales</h3>
+          <div class="price">$18.000 / sesión</div>
+          <p>Entrena en grupo con máxima intensidad. Máximo 6 personas por clase.</p>
+        </div>
+        <div class="service-card">
+          <h3>Plan online</h3>
+          <div class="price">$75.000 / mes</div>
+          <p>Rutina y nutrición mensual con videollamadas de seguimiento semanales.</p>
+        </div>
+        <div class="service-card">
+          <h3>Transformación 90 días</h3>
+          <div class="price">$280.000</div>
+          <p>Programa completo con entrenamiento, dieta, hábitos y acompañamiento total.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EJERCICIOS -->
+  <section id="ejercicios">
+    <div class="container">
+      <h2 class="section-title">Biblioteca de ejercicios</h2>
+      <p class="section-sub">Filtrá por grupo muscular o dificultad y mirá la técnica en video.</p>
+
+      <div class="filters">
+        <select id="filterGrupo">
+          <option value="">Todos los grupos</option>
+        </select>
+        <select id="filterDificultad">
+          <option value="">Todas las dificultades</option>
+          <option>Principiante</option>
+          <option>Intermedio</option>
+          <option>Avanzado</option>
+        </select>
+      </div>
+
+      <div class="ejercicios-grid" id="ejerciciosGrid"></div>
+    </div>
+  </section>
+
+  <!-- RUTINAS -->
+  <section class="services" id="rutinas">
+    <div class="container">
+      <h2 class="section-title">Rutinas listas para usar</h2>
+      <p class="section-sub">Programas armados por objetivo. Cada uno incluye sus ejercicios.</p>
+      <div class="rutinas-grid" id="rutinasGrid"></div>
+    </div>
+  </section>
+
+  <!-- ALIMENTOS -->
+  <section id="alimentos">
+    <div class="container">
+      <h2 class="section-title">Guía de alimentos</h2>
+      <p class="section-sub">Macros por porción. Base para armar tu plan nutricional.</p>
+
+      <div class="filters">
+        <input type="text" id="searchAlimento" placeholder="Buscar alimento..." />
+        <select id="filterCategoria">
+          <option value="">Todas las categorías</option>
+        </select>
+      </div>
+
+      <div class="tabla-wrapper">
+        <table class="tabla-alimentos">
+          <thead>
+            <tr>
+              <th>Alimento</th>
+              <th>Categoría</th>
+              <th>Porción</th>
+              <th>Kcal</th>
+              <th>Prot.</th>
+              <th>Carb.</th>
+              <th>Grasas</th>
+            </tr>
+          </thead>
+          <tbody id="alimentosBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section class="services" id="videos">
+    <div class="container">
+      <h2 class="section-title">Mi trabajo en acción</h2>
+      <p class="section-sub">Mira cómo entreno, cómo corrijo técnica y cómo transformo a mis clientes.</p>
+      <div class="videos-grid" id="videosGrid"></div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section class="blog" id="blog">
+    <div class="container">
+      <h2 class="section-title">Consejos profesionales</h2>
+      <p class="section-sub">Artículos con información real para llevar tu entrenamiento al siguiente nivel.</p>
+      <div class="blog-grid">
+        <article class="post">
+          <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800" alt="Nutrición">
+          <div class="post-body">
+            <span class="post-tag">NUTRICIÓN</span>
+            <h3>Qué comer antes y después de entrenar</h3>
+            <p>Guía práctica para optimizar tu energía y recuperación sin complicaciones.</p>
+          </div>
+        </article>
+        <article class="post">
+          <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800" alt="Rutina">
+          <div class="post-body">
+            <span class="post-tag">RUTINAS</span>
+            <h3>5 ejercicios para glúteos en casa</h3>
+            <p>Sin gimnasio ni equipamiento. Resultados visibles en 4 semanas.</p>
+          </div>
+        </article>
+        <article class="post">
+          <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800" alt="Cardio">
+          <div class="post-body">
+            <span class="post-tag">MITOS</span>
+            <h3>¿El cardio mata el músculo?</h3>
+            <p>Lo que dice la ciencia y cómo combinarlo bien con tu entrenamiento de fuerza.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section id="booking">
+    <div class="container">
+      <h2 class="section-title">Reserva tu sesión</h2>
+      <p class="section-sub">Selecciona el día, el servicio y el horario disponible. Recibirás confirmación por email.</p>
+
+      <div class="booking-grid">
+        <form id="bookingForm" novalidate>
+          <div>
+            <label for="name">Nombre completo</label>
+            <input type="text" id="name" required placeholder="Tu nombre" />
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" required placeholder="tu@email.com" />
+          </div>
+          <div>
+            <label for="service">Servicio</label>
+            <select id="service" required>
+              <option value="">Selecciona un servicio</option>
+              <option>Entrenamiento 1:1 — $35.000</option>
+              <option>Clase grupal — $18.000</option>
+              <option>Plan online — $75.000/mes</option>
+              <option>Transformación 90 días — $280.000</option>
+            </select>
+          </div>
+          <div>
+            <label for="date">Fecha</label>
+            <input type="date" id="date" required />
+          </div>
+          <div>
+            <label>Horarios disponibles</label>
+            <div class="slots" id="slots"></div>
+          </div>
+          <button type="submit" class="btn">Confirmar reserva</button>
+          <div class="form-msg" id="formMsg">✅ Reserva registrada correctamente. Te contactaremos pronto.</div>
+        </form>
+
+        <div>
+          <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800"
+               alt="Entrenamiento" class="booking-img" />
+          <h3>¿Cómo funciona?</h3>
+          <p class="muted">
+            1. Elige servicio, fecha y hora.<br />
+            2. Recibes confirmación por email.<br />
+            3. Nos vemos en el entrenamiento.<br /><br />
+            <strong class="accent">Primera sesión gratis</strong> para nuevos clientes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL VIDEO -->
+  <div class="modal" id="videoModal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-video" id="modalVideo"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="logo">FIT<span>PRO</span></div>
+        <p>Entrenamiento personal y transformación real.</p>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <a href="mailto:hola@fitpro.com">hola@fitpro.com</a>
+        <a href="tel:+5490000000000">+54 9 000 000 0000</a>
+        <a href="#">Buenos Aires, Argentina</a>
+      </div>
+      <div>
+        <h4>Sígueme</h4>
+        <a href="#">Instagram</a>
+        <a href="#">YouTube</a>
+        <a href="#">TikTok</a>
+      </div>
+    </div>
+    <p class="copy">© 2026 FitPro. Todos los derechos reservados.</p>
+  </footer>
+
+  <a href="#" class="whatsapp" title="WhatsApp">💬</a>
+
+  <script src="app.js"></script>
+</body>
+</html>

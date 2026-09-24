@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "nombre": "Full Body Principiante",
+    "duracion": "45 min",
+    "nivel": "Principiante",
+    "objetivo": "Acondicionamiento general",
+    "frecuencia": "3 veces por semana",
+    "ejercicios": [3, 5, 7, 9, 10, 12]
+  },
+  {
+    "id": 2,
+    "nombre": "Hipertrofia Tren Superior",
+    "duracion": "60 min",
+    "nivel": "Intermedio",
+    "objetivo": "Ganancia muscular",
+    "frecuencia": "2 veces por semana",
+    "ejercicios": [4, 6, 7, 8, 10, 11]
+  },
+  {
+    "id": 3,
+    "nombre": "Piernas y Glúteos",
+    "duracion": "55 min",
+    "nivel": "Intermedio",
+    "objetivo": "Fuerza y tonificación",
+    "frecuencia": "2 veces por semana",
+    "ejercicios": [1, 2, 3, 12]
+  },
+  {
+    "id": 4,
+    "nombre": "HIIT Quema Grasa",
+    "duracion": "25 min",
+    "nivel": "Avanzado",
+    "objetivo": "Pérdida de grasa",
+    "frecuencia": "3 veces por semana",
+    "ejercicios": [14, 15, 5, 12]
+  }
+]

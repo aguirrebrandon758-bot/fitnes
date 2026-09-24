@@ -30,7 +30,7 @@
   <section class="hero" id="home">
     <div class="container hero-content">
       <h1>Transforma tu cuerpo en <span>90 días</span></h1>
-      <p>Entrenamiento personalizado, plan nutricional y seguimiento real. Sin excusas, solo resultados. necesito opiniones ja</p>
+      <p>Entrenamiento personalizado, plan nutricional y seguimiento real. Sin excusas, solo resultados.</p>
       <div class="hero-actions">
         <a href="#booking" class="btn">Reserva tu clase gratis</a>
         <a href="#services" class="btn btn-outline">Ver programas</a>
@@ -48,11 +48,11 @@
     <div class="container about-grid">
       <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800" alt="Entrenador personal" />
       <div>
-        <h2 class="section-title">Hola, soy <span class="accent">Brandon</span></h2>
-        <p class="section-sub">Entrenador personal certificado especializado en recomposición corporal y fuerza funcional. obvio es mentira esto jajjajaja</p>
+        <h2 class="section-title">Hola, soy <span class="accent">Carlos</span></h2>
+        <p class="section-sub">Entrenador personal certificado especializado en recomposición corporal y fuerza funcional.</p>
         <ul>
-          <li>tipo de Certificación:</li>
-          <li>Especialista en:</li>
+          <li>Certificación NSCA-CPT</li>
+          <li>Especialista en nutrición deportiva</li>
           <li>Más de 5.000 sesiones impartidas</li>
           <li>Entrenamiento presencial y online</li>
         </ul>
@@ -203,18 +203,18 @@
       <p class="section-sub">Selecciona el día, el servicio y el horario disponible. Recibirás confirmación por email.</p>
 
       <div class="booking-grid">
-        <form id="bookingForm" novalidate>
+        <form id="bookingForm" action="https://formspree.io/f/xppwrner" method="POST" novalidate></form>
           <div>
             <label for="name">Nombre completo</label>
-            <input type="text" id="name" required placeholder="Tu nombre" />
+            <input type="text" id="name" name="name" required placeholder="Tu nombre" />
           </div>
           <div>
             <label for="email">Email</label>
-            <input type="email" id="email" required placeholder="tu@email.com" />
+            <input type="email" id="email" name="email" required placeholder="tu@email.com" />
           </div>
           <div>
             <label for="service">Servicio</label>
-            <select id="service" required>
+            <select id="service" name="service" required>
               <option value="">Selecciona un servicio</option>
               <option>Entrenamiento 1:1 — $35.000</option>
               <option>Clase grupal — $18.000</option>
@@ -224,11 +224,12 @@
           </div>
           <div>
             <label for="date">Fecha</label>
-            <input type="date" id="date" required />
+            <input type="date" id="date" name="date" required />
           </div>
           <div>
             <label>Horarios disponibles</label>
             <div class="slots" id="slots"></div>
+            <input type="hidden" id="time" name="time" />
           </div>
           <button type="submit" class="btn">Confirmar reserva</button>
           <div class="form-msg" id="formMsg">✅ Reserva registrada correctamente. Te contactaremos pronto.</div>

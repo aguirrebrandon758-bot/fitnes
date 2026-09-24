@@ -6,7 +6,7 @@ navLinks?.querySelectorAll('a').forEach(a =>
   a.addEventListener('click', () => navLinks.classList.remove('open'))
 );
 
-// ============ CARGA DE JSON (archivos en la misma carpeta) ============
+// ============ CARGA DE JSON ============
 async function cargarDatos() {
   try {
     const [ejercicios, rutinas, alimentos, videos] = await Promise.all([
@@ -17,7 +17,7 @@ async function cargarDatos() {
     ]);
     return { ejercicios, rutinas, alimentos, videos };
   } catch (e) {
-    console.error('Error cargando datos. ¿Estás usando Live Server o Netlify?', e);
+    console.error('Error cargando datos.', e);
     return { ejercicios: [], rutinas: [], alimentos: [], videos: [] };
   }
 }
@@ -31,7 +31,8 @@ function renderEjercicios(lista) {
   grid.innerHTML = lista.length === 0
     ? '<p class="muted">No hay ejercicios con esos filtros.</p>'
     : lista.map(e => `
-      <div class="ejercicio-card" onclick="abrirVideo('${e.videoId}')">
+      <div class="ejercicio-card"
+           onclick="abrirVideo('${e.videoId}', '${e.searchQuery || e.nombre}')">
         <span class="tag">${e.grupo}</span>
         <h3>${e.nombre}</h3>
         <p>${e.descripcion}</p>
@@ -146,24 +147,37 @@ function renderVideos(videos) {
   const grid = document.getElementById('videosGrid');
   if (!grid) return;
   grid.innerHTML = videos.map(v => `
-    <div class="video-item" onclick="abrirVideo('${v.videoId}')">
+    <div class="video-item" onclick="abrirVideo('${v.videoId}', '${v.titulo}')">
       <img src="${v.thumbnail}" alt="${v.titulo}">
       <div class="play">▶</div>
     </div>
   `).join('');
 }
 
-function abrirVideo(videoId) {
+function abrirVideo(videoId, searchQuery) {
   const modal = document.getElementById('videoModal');
   const cont = document.getElementById('modalVideo');
   if (!modal || !cont) return;
-  if (videoId && videoId !== 'VIDEO_ID_AQUI') {
+
+  const query = encodeURIComponent(searchQuery || '');
+
+  if (videoId && videoId.trim() !== '') {
     cont.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1"
       allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   } else {
-    cont.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#a1a1aa;padding:20px;text-align:center">
-      Reemplazá <code>VIDEO_ID_AQUI</code> en el JSON por un ID real de YouTube.
-    </div>`;
+    cont.innerHTML = `
+      <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:30px;text-align:center">
+        <p style="color:#a1a1aa;font-size:1rem;max-width:500px">
+          Este ejercicio todavía no tiene video propio cargado.<br>
+          Podés buscarlo en YouTube mientras tanto:
+        </p>
+        <a href="https://www.youtube.com/results?search_query=${query}"
+           target="_blank"
+           class="btn">
+          🔍 Buscar "${searchQuery}" en YouTube
+        </a>
+      </div>
+    `;
   }
   modal.classList.add('open');
 }
@@ -224,12 +238,15 @@ if (dateInput) {
   renderSlots(getDisabled(today));
   dateInput.addEventListener('change', () => renderSlots(getDisabled(dateInput.value)));
 
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
+
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const service = document.getElementById('service').value;
-    if (!name || !email || !service || !dateInput.value) {
+    const date = dateInput.value;
+
+    if (!name || !email || !service || !date) {
       alert('Completá todos los campos.');
       return;
     }
@@ -237,11 +254,35 @@ if (dateInput) {
       alert('Seleccioná un horario disponible.');
       return;
     }
-    console.log('Reserva:', { name, email, service, date: dateInput.value, time: selectedSlot });
-    msg.classList.add('show');
-    form.reset();
-    renderSlots(getDisabled(today));
-    setTimeout(() => msg.classList.remove('show'), 6000);
+
+    document.getElementById('time').value = selectedSlot;
+
+    const boton = form.querySelector('button[type="submit"]');
+    const textoOriginal = boton.textContent;
+    boton.textContent = 'Enviando...';
+    boton.disabled = true;
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        msg.classList.add('show');
+        form.reset();
+        renderSlots(getDisabled(today));
+        setTimeout(() => msg.classList.remove('show'), 6000);
+      } else {
+        alert('Hubo un error al enviar. Probá de nuevo.');
+      }
+    } catch (error) {
+      alert('Error de conexión. Revisá tu internet.');
+    } finally {
+      boton.textContent = textoOriginal;
+      boton.disabled = false;
+    }
   });
 }
 

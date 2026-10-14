@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Entrenamiento personal, clases grupales y planes online. Reserva tu primera sesión gratis." />
   <title>FitPro — Entrenamiento Personal</title>
+
+  <!-- Favicon (opcional, cámbialo si tienes uno) -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+  <!-- Open Graph (para compartir en redes) -->
+  <meta property="og:title" content="FitPro — Entrenamiento Personal" />
+  <meta property="og:description" content="Transforma tu cuerpo en 90 días. Entrenamiento personalizado y plan nutricional." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -94,7 +105,7 @@
   <section id="ejercicios">
     <div class="container">
       <h2 class="section-title">Biblioteca de ejercicios</h2>
-      <p class="section-sub">Filtrá por grupo muscular o dificultad y mirá la técnica en video.</p>
+      <p class="section-sub">Filtra por grupo muscular o dificultad y mira la técnica en video.</p>
 
       <div class="filters">
         <select id="filterGrupo">
@@ -203,7 +214,7 @@
       <p class="section-sub">Selecciona el día, el servicio y el horario disponible. Recibirás confirmación por email.</p>
 
       <div class="booking-grid">
-        <form id="bookingForm" action="https://formspree.io/f/xppwrner" method="POST" novalidate></form>
+        <form id="bookingForm" action="https://formspree.io/f/xppwrner" method="POST" novalidate>
           <div>
             <label for="name">Nombre completo</label>
             <input type="text" id="name" name="name" required placeholder="Tu nombre" />
@@ -280,8 +291,9 @@
     <p class="copy">© 2026 FitPro. Todos los derechos reservados.</p>
   </footer>
 
-  <a href="#" class="whatsapp" title="WhatsApp">💬</a>
+  <!-- ⚠️ CAMBIA 5490000000000 POR TU NÚMERO REAL DE WHATSAPP -->
+  <a href="https://wa.me/5490000000000" class="whatsapp" target="_blank" rel="noopener" title="Escribime por WhatsApp">💬</a>
 
-  <script src="aplicacion.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

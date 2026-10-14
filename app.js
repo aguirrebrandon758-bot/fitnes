@@ -1,25 +1,53 @@
+// ============ UTILIDADES ============
+
+// Escapa texto para insertarlo seguro en HTML (evita XSS)
+function escapeHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Escapa texto para insertarlo seguro en un atributo HTML
+function escapeAttr(str) {
+  return escapeHtml(str);
+}
+
+// Muestra un mensaje de estado (cargando / vacío)
+function mostrarEstado(id, texto) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = `<p class="muted" style="text-align:center;padding:20px">${escapeHtml(texto)}</p>`;
+}
+
 // ============ MENÚ MÓVIL ============
 const menuBtn = document.getElementById('menuBtn');
 const navLinks = document.getElementById('navLinks');
-menuBtn?.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+menuBtn?.addEventListener('click', () => navLinks?.classList.toggle('open'));
 navLinks?.querySelectorAll('a').forEach(a =>
   a.addEventListener('click', () => navLinks.classList.remove('open'))
 );
 
 // ============ CARGA DE JSON ============
 async function cargarDatos() {
-  try {
-    const [ejercicios, rutinas, alimentos, videos] = await Promise.all([
-      fetch('ejercicios.json').then(r => r.json()),
-      fetch('rutinas.json').then(r => r.json()),
-      fetch('alimentos.json').then(r => r.json()),
-      fetch('videos.json').then(r => r.json())
-    ]);
-    return { ejercicios, rutinas, alimentos, videos };
-  } catch (e) {
-    console.error('Error cargando datos.', e);
-    return { ejercicios: [], rutinas: [], alimentos: [], videos: [] };
-  }
+  const archivos = ['ejercicios', 'rutinas', 'alimentos', 'videos'];
+  const resultados = await Promise.allSettled(
+    archivos.map(a => fetch(`${a}.json`).then(r => r.json()))
+  );
+
+  const datos = {};
+  archivos.forEach((nombre, i) => {
+    const r = resultados[i];
+    if (r.status === 'fulfilled') {
+      datos[nombre] = Array.isArray(r.value) ? r.value : [];
+    } else {
+      console.error(`Error cargando ${nombre}.json`, r.reason);
+      datos[nombre] = [];
+    }
+  });
+  return datos;
 }
 
 // ============ EJERCICIOS ============
@@ -28,21 +56,33 @@ let ejerciciosData = [];
 function renderEjercicios(lista) {
   const grid = document.getElementById('ejerciciosGrid');
   if (!grid) return;
-  grid.innerHTML = lista.length === 0
-    ? '<p class="muted">No hay ejercicios con esos filtros.</p>'
-    : lista.map(e => `
-      <div class="ejercicio-card"
-           onclick="abrirVideo('${e.videoId}', '${e.searchQuery || e.nombre}')">
-        <span class="tag">${e.grupo}</span>
-        <h3>${e.nombre}</h3>
-        <p>${e.descripcion}</p>
-        <div class="ejercicio-meta">
-          <span><strong>${e.series}</strong> series</span>
-          <span><strong>${e.reps}</strong> reps</span>
-          <span>${e.equipo}</span>
-        </div>
+
+  if (lista.length === 0) {
+    grid.innerHTML = '<p class="muted" style="text-align:center;padding:20px">No hay ejercicios con esos filtros.</p>';
+    return;
+  }
+
+  grid.innerHTML = lista.map(e => `
+    <div class="ejercicio-card"
+         data-video-id="${escapeAttr(e.videoId || '')}"
+         data-query="${escapeAttr(e.searchQuery || e.nombre || '')}">
+      <span class="tag">${escapeHtml(e.grupo)}</span>
+      <h3>${escapeHtml(e.nombre)}</h3>
+      <p>${escapeHtml(e.descripcion)}</p>
+      <div class="ejercicio-meta">
+        <span><strong>${escapeHtml(e.series)}</strong> series</span>
+        <span><strong>${escapeHtml(e.reps)}</strong> reps</span>
+        <span>${escapeHtml(e.equipo)}</span>
       </div>
-    `).join('');
+    </div>
+  `).join('');
+
+  // Event delegation (mucho más seguro que onclick inline)
+  grid.querySelectorAll('.ejercicio-card').forEach(card => {
+    card.addEventListener('click', () => {
+      abrirVideo(card.dataset.videoId, card.dataset.query);
+    });
+  });
 }
 
 function inicializarFiltrosEjercicios() {
@@ -50,10 +90,12 @@ function inicializarFiltrosEjercicios() {
   const difSel = document.getElementById('filterDificultad');
   if (!grupoSel || !difSel) return;
 
-  const grupos = [...new Set(ejerciciosData.map(e => e.grupo))].sort();
+  // Solo agregar opciones que no existan ya
+  const grupos = [...new Set(ejerciciosData.map(e => e.grupo).filter(Boolean))].sort();
   grupos.forEach(g => {
     const o = document.createElement('option');
-    o.value = g; o.textContent = g;
+    o.value = g;
+    o.textContent = g;
     grupoSel.appendChild(o);
   });
 
@@ -74,19 +116,26 @@ function inicializarFiltrosEjercicios() {
 function renderRutinas(rutinas, ejercicios) {
   const grid = document.getElementById('rutinasGrid');
   if (!grid) return;
+
+  if (!Array.isArray(rutinas) || rutinas.length === 0) {
+    grid.innerHTML = '<p class="muted" style="text-align:center;padding:20px">No hay rutinas disponibles por ahora.</p>';
+    return;
+  }
+
   grid.innerHTML = rutinas.map(r => {
-    const lista = r.ejercicios
+    const lista = (r.ejercicios || [])
       .map(id => ejercicios.find(e => e.id === id))
       .filter(Boolean)
-      .map(e => `<li>${e.nombre} — ${e.series}×${e.reps}</li>`)
-      .join('');
+      .map(e => `<li>${escapeHtml(e.nombre)} — ${escapeHtml(e.series)}×${escapeHtml(e.reps)}</li>`)
+      .join('') || '<li class="muted">Sin ejercicios asignados</li>';
+
     return `
       <div class="rutina-card">
-        <span class="badge-nivel">${r.nivel}</span>
-        <h3>${r.nombre}</h3>
+        <span class="badge-nivel">${escapeHtml(r.nivel)}</span>
+        <h3>${escapeHtml(r.nombre)}</h3>
         <div class="rutina-info">
-          ⏱ ${r.duracion} · ${r.frecuencia}<br>
-          🎯 ${r.objetivo}
+          ⏱ ${escapeHtml(r.duracion)} · ${escapeHtml(r.frecuencia)}<br>
+          🎯 ${escapeHtml(r.objetivo)}
         </div>
         <div class="rutina-ejercicios">
           <h4>EJERCICIOS</h4>
@@ -103,19 +152,23 @@ let alimentosData = [];
 function renderAlimentos(lista) {
   const tbody = document.getElementById('alimentosBody');
   if (!tbody) return;
-  tbody.innerHTML = lista.length === 0
-    ? '<tr><td colspan="7" class="muted" style="text-align:center;padding:30px">Sin resultados</td></tr>'
-    : lista.map(a => `
-      <tr>
-        <td>${a.nombre}</td>
-        <td>${a.categoria}</td>
-        <td>${a.porcion}</td>
-        <td>${a.calorias}</td>
-        <td>${a.proteinas} g</td>
-        <td>${a.carbos} g</td>
-        <td>${a.grasas} g</td>
-      </tr>
-    `).join('');
+
+  if (lista.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:30px">Sin resultados</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = lista.map(a => `
+    <tr>
+      <td>${escapeHtml(a.nombre)}</td>
+      <td>${escapeHtml(a.categoria)}</td>
+      <td>${escapeHtml(a.porcion)}</td>
+      <td>${escapeHtml(a.calorias)}</td>
+      <td>${escapeHtml(a.proteinas)} g</td>
+      <td>${escapeHtml(a.carbos)} g</td>
+      <td>${escapeHtml(a.grasas)} g</td>
+    </tr>
+  `).join('');
 }
 
 function inicializarFiltrosAlimentos() {
@@ -123,10 +176,11 @@ function inicializarFiltrosAlimentos() {
   const search = document.getElementById('searchAlimento');
   if (!catSel || !search) return;
 
-  const categorias = [...new Set(alimentosData.map(a => a.categoria))].sort();
+  const categorias = [...new Set(alimentosData.map(a => a.categoria).filter(Boolean))].sort();
   categorias.forEach(c => {
     const o = document.createElement('option');
-    o.value = c; o.textContent = c;
+    o.value = c;
+    o.textContent = c;
     catSel.appendChild(o);
   });
 
@@ -135,7 +189,7 @@ function inicializarFiltrosAlimentos() {
     const q = search.value.toLowerCase().trim();
     renderAlimentos(alimentosData.filter(a =>
       (!c || a.categoria === c) &&
-      (!q || a.nombre.toLowerCase().includes(q))
+      (!q || String(a.nombre || '').toLowerCase().includes(q))
     ));
   };
   catSel.addEventListener('change', filtrar);
@@ -146,12 +200,26 @@ function inicializarFiltrosAlimentos() {
 function renderVideos(videos) {
   const grid = document.getElementById('videosGrid');
   if (!grid) return;
+
+  if (!Array.isArray(videos) || videos.length === 0) {
+    grid.innerHTML = '<p class="muted" style="text-align:center;padding:20px">No hay videos por ahora.</p>';
+    return;
+  }
+
   grid.innerHTML = videos.map(v => `
-    <div class="video-item" onclick="abrirVideo('${v.videoId}', '${v.titulo}')">
-      <img src="${v.thumbnail}" alt="${v.titulo}">
+    <div class="video-item"
+         data-video-id="${escapeAttr(v.videoId || '')}"
+         data-query="${escapeAttr(v.titulo || '')}">
+      <img src="${escapeAttr(v.thumbnail)}" alt="${escapeAttr(v.titulo)}" loading="lazy">
       <div class="play">▶</div>
     </div>
   `).join('');
+
+  grid.querySelectorAll('.video-item').forEach(item => {
+    item.addEventListener('click', () => {
+      abrirVideo(item.dataset.videoId, item.dataset.query);
+    });
+  });
 }
 
 function abrirVideo(videoId, searchQuery) {
@@ -162,8 +230,10 @@ function abrirVideo(videoId, searchQuery) {
   const query = encodeURIComponent(searchQuery || '');
 
   if (videoId && videoId.trim() !== '') {
-    cont.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-      allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    cont.innerHTML = `<iframe
+      src="https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1"
+      allow="autoplay; encrypted-media"
+      allowfullscreen></iframe>`;
   } else {
     cont.innerHTML = `
       <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:30px;text-align:center">
@@ -172,9 +242,8 @@ function abrirVideo(videoId, searchQuery) {
           Podés buscarlo en YouTube mientras tanto:
         </p>
         <a href="https://www.youtube.com/results?search_query=${query}"
-           target="_blank"
-           class="btn">
-          🔍 Buscar "${searchQuery}" en YouTube
+           target="_blank" rel="noopener" class="btn">
+          🔍 Buscar "${escapeHtml(searchQuery)}" en YouTube
         </a>
       </div>
     `;
@@ -184,14 +253,29 @@ function abrirVideo(videoId, searchQuery) {
 window.abrirVideo = abrirVideo;
 
 document.getElementById('modalClose')?.addEventListener('click', () => {
-  document.getElementById('videoModal').classList.remove('open');
-  document.getElementById('modalVideo').innerHTML = '';
+  const modal = document.getElementById('videoModal');
+  modal?.classList.remove('open');
+  const cont = document.getElementById('modalVideo');
+  if (cont) cont.innerHTML = '';
 });
 
 document.getElementById('videoModal')?.addEventListener('click', (e) => {
   if (e.target.id === 'videoModal') {
     e.target.classList.remove('open');
-    document.getElementById('modalVideo').innerHTML = '';
+    const cont = document.getElementById('modalVideo');
+    if (cont) cont.innerHTML = '';
+  }
+});
+
+// Cerrar modal con tecla Escape (bonus de UX)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('videoModal');
+    if (modal?.classList.contains('open')) {
+      modal.classList.remove('open');
+      const cont = document.getElementById('modalVideo');
+      if (cont) cont.innerHTML = '';
+    }
   }
 });
 
@@ -200,19 +284,19 @@ const dateInput = document.getElementById('date');
 const slotsContainer = document.getElementById('slots');
 const form = document.getElementById('bookingForm');
 const msg = document.getElementById('formMsg');
-const ALL_SLOTS = ['07:00','08:00','09:00','10:00','17:00','18:00','19:00','20:00'];
+const ALL_SLOTS = ['07:00', '08:00', '09:00', '10:00', '17:00', '18:00', '19:00', '20:00'];
 let selectedSlot = null;
 
-if (dateInput) {
+if (dateInput && slotsContainer && form) {
   const today = new Date().toISOString().split('T')[0];
   dateInput.min = today;
 
   const getDisabled = (dateStr) => {
     if (!dateStr) return [];
-    const day = new Date(dateStr).getDay();
-    if (day === 0) return [...ALL_SLOTS];
-    if (day === 6) return ['07:00','08:00'];
-    return ALL_SLOTS.filter((_, i) => i % 3 === 0);
+    const day = new Date(dateStr + 'T00:00:00').getDay();
+    if (day === 0) return [...ALL_SLOTS]; // Domingo: cerrado
+    if (day === 6) return ['07:00', '08:00']; // Sábado: mañana cerrada
+    return ALL_SLOTS.filter((_, i) => i % 3 === 0); // Lunes a viernes
   };
 
   const renderSlots = (disabled = []) => {
@@ -226,7 +310,7 @@ if (dateInput) {
         div.classList.add('disabled');
       } else {
         div.addEventListener('click', () => {
-          document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+          slotsContainer.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
           div.classList.add('selected');
           selectedSlot = time;
         });
@@ -246,8 +330,14 @@ if (dateInput) {
     const service = document.getElementById('service').value;
     const date = dateInput.value;
 
+    // Validaciones
     if (!name || !email || !service || !date) {
       alert('Completá todos los campos.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Poné un email válido.');
       return;
     }
     if (!selectedSlot) {
@@ -262,24 +352,35 @@ if (dateInput) {
     boton.textContent = 'Enviando...';
     boton.disabled = true;
 
+    // Timeout para que no se quede colgado si Formspree tarda
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
     try {
       const response = await fetch(form.action, {
         method: 'POST',
         body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
+        headers: { 'Accept': 'application/json' },
+        signal: controller.signal
       });
 
       if (response.ok) {
         msg.classList.add('show');
         form.reset();
-        renderSlots(getDisabled(today));
+        selectedSlot = null;
+        renderSlots([]); // Slots limpios tras enviar
         setTimeout(() => msg.classList.remove('show'), 6000);
       } else {
         alert('Hubo un error al enviar. Probá de nuevo.');
       }
     } catch (error) {
-      alert('Error de conexión. Revisá tu internet.');
+      if (error.name === 'AbortError') {
+        alert('La conexión tardó demasiado. Probá de nuevo.');
+      } else {
+        alert('Error de conexión. Revisá tu internet.');
+      }
     } finally {
+      clearTimeout(timeout);
       boton.textContent = textoOriginal;
       boton.disabled = false;
     }
@@ -288,6 +389,11 @@ if (dateInput) {
 
 // ============ INICIALIZACIÓN ============
 (async () => {
+  // Mostrar "Cargando..." mientras llegan los datos
+  mostrarEstado('ejerciciosGrid', 'Cargando ejercicios...');
+  mostrarEstado('rutinasGrid', 'Cargando rutinas...');
+  mostrarEstado('videosGrid', 'Cargando videos...');
+
   const { ejercicios, rutinas, alimentos, videos } = await cargarDatos();
   ejerciciosData = ejercicios;
   alimentosData = alimentos;

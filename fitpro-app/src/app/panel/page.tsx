@@ -184,6 +184,12 @@ async function PanelContent() {
         </div>
         <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>Acciones rápidas</h2>
         <div className="services-grid">
+          {/* AQUÍ ESTÁ EL BOTÓN NUEVO DE CLIENTES */}
+          <Link href="/panel/clientes" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}>
+            <h3>👥 Clientes</h3>
+            <p style={{ marginTop: '10px' }}>Ver alumnos y asignar rutinas</p>
+          </Link>
+          
           <Link href="/panel/mi-gym" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}>
             <h3>🏢 Mi Gym</h3>
             <p style={{ marginTop: '10px' }}>Editar nombre, logo, colores y datos</p>

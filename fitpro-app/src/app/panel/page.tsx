@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import ClientPanel from './ClientPanel'
 
 async function PanelContent() {
   const supabase = await createClient()
@@ -27,15 +28,17 @@ async function PanelContent() {
   // PANEL DE CLIENTE
   // ============================================
   if (rol === 'cliente') {
-    // Buscar el gym al que pertenece
     const { data: relacion } = await supabase
       .from('gym_clientes')
-      .select('gym_id, gyms(id, nombre, sufijo, slug, color_primario)')
+      .select(`
+        gym_id, 
+        rutina_asignada_id,
+        gyms(id, nombre, sufijo, slug, color_primario)
+      `)
       .eq('user_id', user.id)
       .eq('activo', true)
       .maybeSingle()
 
-    // Si NO está unido a ningún gym → mostrar mensaje
     if (!relacion) {
       return (
         <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px 20px' }}>
@@ -67,71 +70,33 @@ async function PanelContent() {
 
     const gym = Array.isArray(relacion.gyms) ? relacion.gyms[0] : relacion.gyms
 
+    // Cargar el contenido del gym y la rutina asignada
     const [
       { data: ejercicios },
       { data: rutinas },
       { data: videos },
+      { data: rutinaEjercicios }
     ] = await Promise.all([
-      supabase.from('ejercicios').select('id, nombre, grupo_muscular, dificultad').eq('gym_id', gym?.id).eq('activo', true).limit(6),
-      supabase.from('rutinas').select('id, nombre, objetivo, nivel').eq('gym_id', gym?.id).eq('activo', true).limit(6),
-      supabase.from('videos').select('id, titulo, youtube_id').eq('gym_id', gym?.id).eq('activo', true).limit(6),
+      supabase.from('ejercicios').select('id, nombre, grupo_muscular, dificultad, video_url').eq('gym_id', gym?.id).eq('activo', true),
+      supabase.from('rutinas').select('id, nombre, objetivo, nivel').eq('gym_id', gym?.id).eq('activo', true),
+      supabase.from('videos').select('id, titulo, youtube_id').eq('gym_id', gym?.id).eq('activo', true),
+      relacion.rutina_asignada_id 
+        ? supabase.from('rutina_ejercicios').select(`dia, series, repeticiones, notas, ejercicios (nombre, grupo_muscular)`).eq('rutina_id', relacion.rutina_asignada_id)
+        : Promise.resolve({ data: [] })
     ])
 
+    const rutinaAsignada = rutinas?.find(r => r.id === relacion.rutina_asignada_id)
+
     return (
-      <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px 20px' }}>
-        <div className="container">
-          <header style={{ position: 'static', background: 'transparent', border: 'none', marginBottom: '40px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
-              <div className="logo" style={{ fontSize: '1.8rem' }}>FIT<span>PRO</span></div>
-              <form action="/auth/signout" method="post">
-                <button type="submit" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>Cerrar sesión</button>
-              </form>
-            </div>
-          </header>
-          <div style={{ marginBottom: '50px' }}>
-            <h1 className="section-title">Hola de nuevo 👋</h1>
-            <p className="section-sub" style={{ marginBottom: '10px' }}>Bienvenido a <strong style={{ color: 'var(--accent)' }}>{gym?.nombre} {gym?.sufijo}</strong></p>
-            <p style={{ color: 'var(--muted)' }}><strong>{user.email}</strong></p>
-          </div>
-          <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>📋 Ejercicios de tu gym</h2>
-          {ejercicios && ejercicios.length > 0 ? (
-            <div className="ejercicios-grid" style={{ marginBottom: '50px' }}>
-              {ejercicios.map((e) => (
-                <div key={e.id} className="ejercicio-card">
-                  <span className="tag">{e.grupo_muscular}</span>
-                  <h3>{e.nombre}</h3>
-                  <div className="ejercicio-meta" style={{ marginTop: '10px' }}><span><strong>{e.dificultad}</strong></span></div>
-                </div>
-              ))}
-            </div>
-          ) : <p style={{ color: 'var(--muted)', marginBottom: '50px' }}>Tu gym todavía no cargó ejercicios.</p>}
-          
-          <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>🏋️ Rutinas de tu gym</h2>
-          {rutinas && rutinas.length > 0 ? (
-            <div className="rutinas-grid" style={{ marginBottom: '50px' }}>
-              {rutinas.map((r) => (
-                <div key={r.id} className="rutina-card">
-                  <span className="badge-nivel">{r.nivel}</span>
-                  <h3>{r.nombre}</h3>
-                  <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginTop: '8px' }}>🎯 {r.objetivo}</p>
-                </div>
-              ))}
-            </div>
-          ) : <p style={{ color: 'var(--muted)', marginBottom: '50px' }}>Tu gym todavía no cargó rutinas.</p>}
-          
-          <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>🎥 Videos de tu gym</h2>
-          {videos && videos.length > 0 ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
-              {videos.map((v) => (
-                <div key={v.id} className="service-card" style={{ padding: '20px' }}>
-                  <h3 style={{ fontSize: '1rem', marginBottom: '8px' }}>{v.titulo}</h3>
-                  <p style={{ color: 'var(--accent)', fontSize: '0.85rem' }}>▶ Ver video</p>
-                </div>
-              ))}
-            </div>
-          ) : <p style={{ color: 'var(--muted)' }}>Tu gym todavía no cargó videos.</p>}
-        </div>
-      </div>
+      <ClientPanel
+        user={user}
+        gym={gym}
+        ejercicios={ejercicios || []}
+        rutinas={rutinas || []}
+        videos={videos || []}
+        rutinaAsignada={rutinaAsignada}
+        detalleRutina={rutinaEjercicios || []}
+      />
     )
   }
 
@@ -184,12 +149,10 @@ async function PanelContent() {
         </div>
         <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>Acciones rápidas</h2>
         <div className="services-grid">
-          {/* AQUÍ ESTÁ EL BOTÓN NUEVO DE CLIENTES */}
           <Link href="/panel/clientes" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}>
             <h3>👥 Clientes</h3>
             <p style={{ marginTop: '10px' }}>Ver alumnos y asignar rutinas</p>
           </Link>
-          
           <Link href="/panel/mi-gym" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}>
             <h3>🏢 Mi Gym</h3>
             <p style={{ marginTop: '10px' }}>Editar nombre, logo, colores y datos</p>
@@ -222,11 +185,7 @@ async function PanelContent() {
 
 export default function PanelPage() {
   return (
-    <Suspense fallback={
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--accent)', fontSize: '1.2rem', fontWeight: 'bold' }}>
-        Cargando panel...
-      </div>
-    }>
+    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--accent)' }}>Cargando panel...</div>}>
       <PanelContent />
     </Suspense>
   )

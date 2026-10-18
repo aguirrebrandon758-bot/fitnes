@@ -5,7 +5,6 @@ import GymClient from './GymClient'
 
 type Params = { params: Promise<{ slug: string }> }
 
-// 1. Componente que hace la consulta a la base de datos
 async function GymContent({ params }: Params) {
   const { slug } = await params
   const supabase = await createClient()
@@ -27,6 +26,7 @@ async function GymContent({ params }: Params) {
     { data: posts },
     { data: videos },
     { data: alimentos },
+    { data: testimonios },
   ] = await Promise.all([
     supabase.from('servicios').select('*').eq('gym_id', gym.id).eq('activo', true).order('orden'),
     supabase.from('ejercicios').select('*').eq('gym_id', gym.id).eq('activo', true),
@@ -35,6 +35,7 @@ async function GymContent({ params }: Params) {
     supabase.from('posts').select('*').eq('gym_id', gym.id).eq('publicado', true),
     supabase.from('videos').select('*').eq('gym_id', gym.id).eq('activo', true).order('orden'),
     supabase.from('alimentos').select('*').eq('gym_id', gym.id),
+    supabase.from('testimonios').select('*').eq('gym_id', gym.id).order('creado_en', { ascending: false }),
   ])
 
   return (
@@ -47,24 +48,15 @@ async function GymContent({ params }: Params) {
       posts={posts || []}
       videos={videos || []}
       alimentos={alimentos || []}
+      testimonios={testimonios || []}
     />
   )
 }
 
-// 2. Componente principal que envuelve todo en Suspense
 export default function GymPage({ params }: Params) {
   return (
     <Suspense fallback={
-      <div style={{ 
-        minHeight: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        background: 'var(--bg)',
-        color: 'var(--accent)',
-        fontSize: '1.2rem',
-        fontWeight: 'bold'
-      }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--accent)' }}>
         Cargando tu gimnasio...
       </div>
     }>

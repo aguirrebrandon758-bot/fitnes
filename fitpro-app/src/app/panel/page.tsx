@@ -50,7 +50,6 @@ async function PanelContent() {
       relacion.dieta_asignada_id ? supabase.from('dietas').select('*').eq('id', relacion.dieta_asignada_id).maybeSingle() : Promise.resolve({ data: null })
     ])
 
-    // Traer datos de la rutina
     let rutinaAsignada = null
     if (relacion.rutina_asignada_id) {
       const { data } = await supabase.from('rutinas').select('id, nombre, objetivo, nivel').eq('id', relacion.rutina_asignada_id).maybeSingle()
@@ -99,7 +98,13 @@ async function PanelContent() {
         <div className="services-grid">
           <Link href="/panel/clientes" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>👥 Clientes</h3><p style={{ marginTop: '10px' }}>Asignar rutinas y dietas</p></Link>
           <Link href="/panel/mi-gym" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>🏢 Mi Gym</h3><p style={{ marginTop: '10px' }}>Editar datos del gym</p></Link>
-          <Link href="/panel/dietas" className="service-card" style={{ display: 'block' }}><h3>🍏 Dietas</h3><p style={{ marginTop: '10px' }}>Crear planes de alimentación</p></Link>
+          
+          {/* 👇 ACÁ ESTÁ LA TARJETA DE DIETAS 👇 */}
+          <Link href="/panel/dietas" className="service-card" style={{ display: 'block' }}>
+            <h3>🍏 Dietas</h3>
+            <p style={{ marginTop: '10px' }}>Crear planes de alimentación</p>
+          </Link>
+
           <Link href="/panel/ejercicios" className="service-card" style={{ display: 'block' }}><h3>📋 Ejercicios</h3><p style={{ marginTop: '10px' }}>Biblioteca de ejercicios</p></Link>
           <Link href="/panel/rutinas" className="service-card" style={{ display: 'block' }}><h3>🏋️ Rutinas</h3><p style={{ marginTop: '10px' }}>Ver rutinas y ejercicios</p></Link>
           <Link href="/panel/videos" className="service-card" style={{ display: 'block' }}><h3>🎥 Videos</h3><p style={{ marginTop: '10px' }}>Videos de técnicas</p></Link>

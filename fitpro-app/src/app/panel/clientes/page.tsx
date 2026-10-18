@@ -45,14 +45,24 @@ export default function ClientesPage() {
   async function asignarRutina(clienteId: string, rutinaId: string) {
     setGuardando(clienteId)
     const { error } = await supabase.from('gym_clientes').update({ rutina_asignada_id: rutinaId || null }).eq('id', clienteId)
-    if (!error) setClientes(prev => prev.map(c => c.id === clienteId ? { ...c, rutina_asignada_id: rutinaId || null } : c))
+    
+    if (error) {
+      alert('Error al asignar rutina: ' + error.message)
+    } else {
+      setClientes(prev => prev.map(c => c.id === clienteId ? { ...c, rutina_asignada_id: rutinaId || null } : c))
+    }
     setGuardando(null)
   }
 
   async function asignarDieta(clienteId: string, dietaId: string) {
     setGuardando(clienteId)
     const { error } = await supabase.from('gym_clientes').update({ dieta_asignada_id: dietaId || null }).eq('id', clienteId)
-    if (!error) setClientes(prev => prev.map(c => c.id === clienteId ? { ...c, dieta_asignada_id: dietaId || null } : c))
+    
+    if (error) {
+      alert('Error al asignar dieta: ' + error.message)
+    } else {
+      setClientes(prev => prev.map(c => c.id === clienteId ? { ...c, dieta_asignada_id: dietaId || null } : c))
+    }
     setGuardando(null)
   }
 

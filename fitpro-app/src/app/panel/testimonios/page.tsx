@@ -78,7 +78,6 @@ export default function TestimoniosPage() {
         <p className="section-sub" style={{ marginBottom: '30px' }}>Agregá opiniones de tus alumnos para mostrar en tu página pública.</p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-          {/* Formulario */}
           <div className="service-card" style={{ padding: '25px', alignSelf: 'start' }}>
             <h3 style={{ marginBottom: '20px', color: 'var(--accent)' }}>➕ Nuevo Testimonio</h3>
             <form onSubmit={guardar} style={{ display: 'grid', gap: '15px' }}>
@@ -104,7 +103,6 @@ export default function TestimoniosPage() {
             </form>
           </div>
 
-          {/* Lista */}
           <div>
             <h3 style={{ marginBottom: '20px' }}>Tus Testimonios ({testimonios.length})</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>

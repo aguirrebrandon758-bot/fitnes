@@ -6,7 +6,7 @@ type Gym = any
 type Item = any
 
 export default function GymClient({
-  gym, servicios, ejercicios, rutinas, rutinaEjercicios, posts, videos, alimentos,
+  gym, servicios, ejercicios, rutinas, rutinaEjercicios, posts, videos, alimentos, testimonios = [],
 }: {
   gym: Gym
   servicios: Item[]
@@ -16,24 +16,16 @@ export default function GymClient({
   posts: Item[]
   videos: Item[]
   alimentos: Item[]
+  testimonios: Item[]
 }) {
   const [videoId, setVideoId] = useState<string | null>(null)
   const [grupo, setGrupo] = useState('')
   const [dificultad, setDificultad] = useState('')
-  const [categoria, setCategoria] = useState('')
-  const [busqueda, setBusqueda] = useState('')
 
   const grupos = [...new Set(ejercicios.map((e) => e.grupo_muscular))].sort()
-  const categorias = [...new Set(alimentos.map((a) => a.categoria))].sort()
 
   const ejerciciosFiltrados = ejercicios.filter(
     (e) => (!grupo || e.grupo_muscular === grupo) && (!dificultad || e.dificultad === dificultad)
-  )
-
-  const alimentosFiltrados = alimentos.filter(
-    (a) =>
-      (!categoria || a.categoria === categoria) &&
-      (!busqueda || a.nombre.toLowerCase().includes(busqueda.toLowerCase()))
   )
 
   const dynamicStyles = {
@@ -56,8 +48,8 @@ export default function GymClient({
             <li><a href="#servicios" style={{ color: '#a1a1aa', fontWeight: 500 }}>Servicios</a></li>
             <li><a href="#ejercicios" style={{ color: '#a1a1aa', fontWeight: 500 }}>Ejercicios</a></li>
             <li><a href="#rutinas" style={{ color: '#a1a1aa', fontWeight: 500 }}>Rutinas</a></li>
-            <li><a href="#alimentos" style={{ color: '#a1a1aa', fontWeight: 500 }}>Alimentos</a></li>
             <li><a href="#videos" style={{ color: '#a1a1aa', fontWeight: 500 }}>Videos</a></li>
+            {testimonios.length > 0 && <li><a href="#testimonios" style={{ color: 'var(--accent)', fontWeight: 600 }}>Opiniones</a></li>}
           </ul>
         </nav>
       </header>
@@ -72,30 +64,12 @@ export default function GymClient({
             <p style={{ fontSize: '1.15rem', color: '#d4d4d8', marginBottom: '34px' }}>
               {gym.descripcion || 'Entrenamiento personalizado, plan nutricional y seguimiento real.'}
             </p>
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-              <a href={`https://wa.me/${gym.whatsapp?.replace(/\D/g, '') || ''}`} target="_blank" rel="noopener" className="btn" style={{ background: 'var(--accent)', color: '#fff', padding: '14px 28px', borderRadius: '999px', fontWeight: 600, textDecoration: 'none' }}>Reserva tu clase gratis</a>
-            </div>
+            <a href={`https://wa.me/${gym.whatsapp?.replace(/\D/g, '') || ''}`} target="_blank" rel="noopener" className="btn" style={{ background: 'var(--accent)', color: '#fff', padding: '14px 28px', borderRadius: '999px', fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>Reserva tu clase gratis</a>
           </div>
         </div>
       </section>
 
-      {servicios.length > 0 && (
-        <section id="servicios" style={{ padding: '90px 0', background: '#17171b' }}>
-          <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '14px' }}>Programas y servicios</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px' }}>
-              {servicios.map((s: any) => (
-                <div key={s.id} style={{ background: '#1e1e24', padding: '32px', borderRadius: '14px', border: '1px solid #2a2a32' }}>
-                  <h3>{s.nombre}</h3>
-                  <div style={{ color: 'var(--accent-2)', fontWeight: 700, margin: '14px 0' }}>{s.precio}</div>
-                  <p style={{ color: '#a1a1aa', fontSize: '.95rem' }}>{s.descripcion}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
+      {/* EJERCICIOS */}
       {ejercicios.length > 0 && (
         <section id="ejercicios" style={{ padding: '90px 0' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
@@ -116,6 +90,7 @@ export default function GymClient({
         </section>
       )}
 
+      {/* RUTINAS */}
       {rutinas.length > 0 && (
         <section id="rutinas" style={{ padding: '90px 0', background: '#17171b' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
@@ -133,30 +108,30 @@ export default function GymClient({
         </section>
       )}
 
-      {alimentos.length > 0 && (
-        <section id="alimentos" style={{ padding: '90px 0' }}>
+      {/* TESTIMONIOS */}
+      {testimonios.length > 0 && (
+        <section id="testimonios" style={{ padding: '90px 0' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '14px' }}>Guía de alimentos</h2>
-            <div style={{ overflowX: 'auto', borderRadius: '14px', border: '1px solid #2a2a32' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '640px' }}>
-                <thead>
-                  <tr style={{ background: '#141418', color: '#a1a1aa', fontSize: '.78rem', textAlign: 'left' }}>
-                    <th style={{ padding: '14px' }}>Alimento</th><th style={{ padding: '14px' }}>Porción</th><th style={{ padding: '14px' }}>Kcal</th><th style={{ padding: '14px' }}>Prot.</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {alimentosFiltrados.map((a: any) => (
-                    <tr key={a.id} style={{ borderBottom: '1px solid #232329' }}>
-                      <td style={{ padding: '14px', fontWeight: 600 }}>{a.nombre}</td><td style={{ padding: '14px' }}>{a.porcion}</td><td style={{ padding: '14px', color: 'var(--accent-2)' }}>{a.kcal}</td><td style={{ padding: '14px' }}>{a.proteinas}g</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '14px', textAlign: 'center' }}>Lo que dicen nuestros alumnos</h2>
+            <p style={{ color: '#a1a1aa', marginBottom: '50px', maxWidth: '600px', textAlign: 'center', margin: '0 auto 50px' }}>Resultados reales de personas reales.</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+              {testimonios.map((t: any) => (
+                <div key={t.id} style={{ background: '#1e1e24', padding: '30px', borderRadius: '14px', border: '1px solid #2a2a32', position: 'relative' }}>
+                  <div style={{ color: 'var(--accent-2)', fontSize: '1.2rem', marginBottom: '15px' }}>
+                    {'⭐'.repeat(t.estrellas || 5)}
+                  </div>
+                  <p style={{ color: '#d4d4d8', fontSize: '1rem', fontStyle: 'italic', lineHeight: 1.6, marginBottom: '20px' }}>
+                    "{t.texto}"
+                  </p>
+                  <div style={{ fontWeight: 'bold', color: 'var(--accent)' }}>— {t.nombre}</div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
       )}
 
+      {/* VIDEOS */}
       {videos.length > 0 && (
         <section id="videos" style={{ padding: '90px 0', background: '#17171b' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>

@@ -42,7 +42,6 @@ export default function LoginPage() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#0e0e10', overflow: 'hidden' }}>
       
-      {/* Lado Izquierdo: VIDEO */}
       <div style={{ 
         flex: 1, 
         position: 'relative',
@@ -58,17 +57,12 @@ export default function LoginPage() {
           playsInline 
           style={{
             position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            // 🔥 EFECTO: Si el usuario escribe en el formulario, el video hace un zoom lento
+            top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
             transform: focusInput ? 'scale(1.1)' : 'scale(1)',
             transition: 'transform 2s ease'
           }}
         >
-          <source src="https://videos.pexels.com/video-files/4761426/4761426-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-man-lifting-a-heavy-barbell-in-the-gym-2321-large.mp4" type="video/mp4" />
         </video>
 
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.6), rgba(14,14,16,0.9))' }} />
@@ -84,7 +78,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Lado Derecho: Formulario */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative', zIndex: 2 }}>
         <div style={{ width: '100%', maxWidth: '420px' }}>
           
@@ -97,26 +90,16 @@ export default function LoginPage() {
             <div>
               <label style={{ fontSize: '0.9rem', color: 'var(--muted)', marginBottom: '8px', display: 'block' }}>Correo</label>
               <input 
-                type="email" 
-                placeholder="tu@email.com" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                onFocus={() => setFocusInput(true)}
-                onBlur={() => setFocusInput(false)}
-                required 
+                type="email" placeholder="tu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} 
+                onFocus={() => setFocusInput(true)} onBlur={() => setFocusInput(false)} required 
                 style={{ width: '100%', padding: '14px', borderRadius: '10px', background: '#17171b', border: '1px solid #2a2a32', color: '#fff' }} 
               />
             </div>
             <div>
               <label style={{ fontSize: '0.9rem', color: 'var(--muted)', marginBottom: '8px', display: 'block' }}>Contraseña</label>
               <input 
-                type="password" 
-                placeholder="••••••••" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                onFocus={() => setFocusInput(true)}
-                onBlur={() => setFocusInput(false)}
-                required 
+                type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} 
+                onFocus={() => setFocusInput(true)} onBlur={() => setFocusInput(false)} required 
                 style={{ width: '100%', padding: '14px', borderRadius: '10px', background: '#17171b', border: '1px solid #2a2a32', color: '#fff' }} 
               />
             </div>

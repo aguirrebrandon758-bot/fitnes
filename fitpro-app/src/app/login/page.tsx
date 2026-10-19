@@ -41,17 +41,12 @@ export default function LoginPage() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden', background: '#0e0e10' }}>
       
-      <div style={{ display: 'none' }}>
-        <video preload="auto" src="/video-default.mp4" />
-      </div>
-
-      {/* Lado Izquierdo: VIDEO CON DEGRADADO HACIA LA DERECHA */}
       <div style={{ flex: 1, position: 'relative', display: 'none', overflow: 'hidden' }} className="login-video-panel">
-        <video autoPlay loop muted playsInline style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}>
+        {/* Los 3 videos superpuestos, pero acá solo se ve el default */}
+        <video autoPlay loop muted playsInline style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }}>
           <source src="/video-default.mp4" type="video/mp4" />
         </video>
         
-        {/* GRADIENTE MÁGICO */}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(14,14,16,0.4) 0%, rgba(14,14,16,0.6) 60%, #0e0e10 100%)' }} />
         
         <div style={{ position: 'relative', zIndex: 1, padding: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
@@ -65,7 +60,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Lado Derecho: Formulario */}
       <div style={{ 
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative', zIndex: 2,
         background: 'radial-gradient(circle at 50% 50%, rgba(255, 90, 31, 0.08) 0%, #0e0e10 70%)'

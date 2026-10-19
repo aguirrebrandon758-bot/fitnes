@@ -45,6 +45,9 @@ export default function RegistroPage() {
     setTimeout(() => router.push('/login'), 4000)
   }
 
+  // Colores dinámicos según la elección
+  const bgColor = rol === 'entrenador' ? '#ff5a1f' : rol === 'cliente' ? '#3b82f6' : '#0e0e10'
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#0e0e10', overflow: 'hidden' }}>
       
@@ -53,11 +56,12 @@ export default function RegistroPage() {
         flex: 1, 
         position: 'relative',
         display: 'none',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        backgroundColor: bgColor,
+        transition: 'background-color 0.8s ease'
       }}
       className="register-video-panel"
       >
-        {/* El Video de Fondo */}
         <video 
           autoPlay 
           loop 
@@ -70,20 +74,21 @@ export default function RegistroPage() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            transition: 'transform 1.5s ease, filter 1s ease',
-            // 🔥 EFECTO INTERACTIVO: Si elige entrenador, hace zoom y se pone rojizo. Si elige cliente, zoom y azul.
+            transition: 'transform 1.5s ease, filter 1s ease, opacity 0.8s',
+            // 🔥 EFECTO INTERACTIVO
             transform: rol === 'entrenador' ? 'scale(1.15) translateX(-5%)' : rol === 'cliente' ? 'scale(1.15) translateX(5%)' : 'scale(1)',
+            opacity: rol ? 0.4 : 0.7, // Se oscurece un poco al elegir para que resalte el color
             filter: rol === 'entrenador' ? 'sepia(1) hue-rotate(-30deg) saturate(3)' : rol === 'cliente' ? 'hue-rotate(180deg) saturate(1.5)' : 'none'
           }}
         >
-          {/* Video de stock de un gimnasio */}
-          <source src="https://videos.pexels.com/video-files/4761426/4761426-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+          {/* Nuevo video libre que funciona en la web */}
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-man-lifting-a-heavy-barbell-in-the-gym-2321-large.mp4" type="video/mp4" />
         </video>
 
-        {/* Capa oscura para que se lea el texto */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.5), rgba(14,14,16,0.9))' }} />
+        {/* Capa oscura */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.3), rgba(14,14,16,0.9))' }} />
 
-        {/* Textos sobre el video */}
+        {/* Textos */}
         <div style={{ position: 'relative', zIndex: 1, padding: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
           <div className="logo" style={{ fontSize: '2.5rem', marginBottom: '20px' }}>FIT<span>PRO</span></div>
           <h1 style={{ fontSize: '3rem', fontWeight: 800, color: '#fff', lineHeight: 1.1, marginBottom: '20px', transition: 'all 0.5s' }}>
@@ -108,17 +113,14 @@ export default function RegistroPage() {
             <h2 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '10px' }}>Creá tu cuenta</h2>
           </div>
 
-          {/* Selector de Rol Interactivo */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '30px' }}>
             <div
               onClick={() => setRol('entrenador')}
               style={{
-                padding: '20px 15px',
-                borderRadius: '12px',
+                padding: '20px 15px', borderRadius: '12px',
                 border: rol === 'entrenador' ? '2px solid #ff5a1f' : '1px solid #2a2a32',
                 background: rol === 'entrenador' ? 'rgba(255, 90, 31, 0.1)' : '#17171b',
-                cursor: 'pointer',
-                transition: 'all 0.3s'
+                cursor: 'pointer', transition: 'all 0.3s', transform: rol === 'entrenador' ? 'scale(1.02)' : 'scale(1)'
               }}
             >
               <div style={{ fontSize: '2rem', marginBottom: '10px' }}>🏋️</div>
@@ -129,12 +131,10 @@ export default function RegistroPage() {
             <div
               onClick={() => setRol('cliente')}
               style={{
-                padding: '20px 15px',
-                borderRadius: '12px',
+                padding: '20px 15px', borderRadius: '12px',
                 border: rol === 'cliente' ? '2px solid #3b82f6' : '1px solid #2a2a32',
                 background: rol === 'cliente' ? 'rgba(59, 130, 246, 0.1)' : '#17171b',
-                cursor: 'pointer',
-                transition: 'all 0.3s'
+                cursor: 'pointer', transition: 'all 0.3s', transform: rol === 'cliente' ? 'scale(1.02)' : 'scale(1)'
               }}
             >
               <div style={{ fontSize: '2rem', marginBottom: '10px' }}>🧍</div>
@@ -167,7 +167,6 @@ export default function RegistroPage() {
         </div>
       </div>
 
-      {/* CSS para mostrar el video solo en pantallas grandes */}
       <style>{`
         @media (min-width: 900px) {
           .register-video-panel { display: flex !important; }

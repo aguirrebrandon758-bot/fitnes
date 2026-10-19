@@ -39,13 +39,12 @@ export default function RegistroPage() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden', background: '#0e0e10' }}>
       
-      {/* PRECARGA DE VIDEOS (Para que cambien al instante) */}
       <div style={{ display: 'none' }}>
         <video preload="auto" src="/video-entrenador.mp4" />
         <video preload="auto" src="/video-cliente.mp4" />
       </div>
 
-      {/* Lado Izquierdo: VIDEO */}
+      {/* Lado Izquierdo: VIDEO CON DEGRADADO HACIA LA DERECHA */}
       <div style={{ 
         flex: 1, 
         position: 'relative',
@@ -67,14 +66,15 @@ export default function RegistroPage() {
             top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
             transition: 'transform 1.5s ease, filter 1s ease, opacity 0.8s',
             transform: rol === 'entrenador' ? 'scale(1.15) translateX(-5%)' : rol === 'cliente' ? 'scale(1.15) translateX(5%)' : 'scale(1)',
-            opacity: rol ? 0.6 : 0.9,
+            opacity: rol ? 0.7 : 0.9,
             filter: rol === 'entrenador' ? 'sepia(1) hue-rotate(-30deg) saturate(3)' : rol === 'cliente' ? 'hue-rotate(180deg) saturate(1.5)' : 'none'
           }}
         >
           <source src={videoActual} type="video/mp4" />
         </video>
 
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.2), rgba(14,14,16,0.7))' }} />
+        {/* GRADIENTE MÁGICO: De transparente a negro para fundirse con el otro lado */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(14,14,16,0.4) 0%, rgba(14,14,16,0.6) 60%, #0e0e10 100%)' }} />
 
         <div style={{ position: 'relative', zIndex: 1, padding: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
           <div className="logo" style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#fff' }}>FIT<span style={{ color: '#ff5a1f' }}>PRO</span></div>
@@ -91,7 +91,7 @@ export default function RegistroPage() {
         </div>
       </div>
 
-      {/* Lado Derecho: Formulario con Fondo Gradiente */}
+      {/* Lado Derecho: Formulario */}
       <div style={{ 
         flex: 1, 
         display: 'flex', 
@@ -100,15 +100,15 @@ export default function RegistroPage() {
         padding: '20px', 
         position: 'relative', 
         zIndex: 2,
-        background: `radial-gradient(circle at 50% 50%, ${bgColor}22 0%, #0e0e10 70%)`, // Fondo dinámico
+        background: `radial-gradient(circle at 50% 50%, ${bgColor}22 0%, #0e0e10 70%)`,
         transition: 'background 0.8s ease'
       }}>
         <div style={{ 
           width: '100%', 
           maxWidth: '480px',
-          background: 'rgba(23, 23, 27, 0.6)', // Efecto vidrio
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255,255,255,0.05)',
+          background: 'rgba(23, 23, 27, 0.4)', // Vidrio más transparente
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.08)',
           padding: '40px',
           borderRadius: '24px',
           boxShadow: '0 20px 40px rgba(0,0,0,0.5)'

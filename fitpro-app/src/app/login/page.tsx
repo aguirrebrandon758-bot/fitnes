@@ -41,17 +41,19 @@ export default function LoginPage() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden', background: '#0e0e10' }}>
       
-      {/* PRECARGA DE VIDEO */}
       <div style={{ display: 'none' }}>
         <video preload="auto" src="/video-default.mp4" />
       </div>
 
-      {/* Lado Izquierdo: VIDEO */}
+      {/* Lado Izquierdo: VIDEO CON DEGRADADO HACIA LA DERECHA */}
       <div style={{ flex: 1, position: 'relative', display: 'none', overflow: 'hidden' }} className="login-video-panel">
         <video autoPlay loop muted playsInline style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}>
           <source src="/video-default.mp4" type="video/mp4" />
         </video>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.4), rgba(14,14,16,0.8))' }} />
+        
+        {/* GRADIENTE MÁGICO */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(14,14,16,0.4) 0%, rgba(14,14,16,0.6) 60%, #0e0e10 100%)' }} />
+        
         <div style={{ position: 'relative', zIndex: 1, padding: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
           <div className="logo" style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#fff' }}>FIT<span style={{ color: '#ff5a1f' }}>PRO</span></div>
           <h1 style={{ fontSize: '3rem', fontWeight: 800, color: '#fff', lineHeight: 1.1, marginBottom: '20px' }}>
@@ -63,16 +65,16 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Lado Derecho: Formulario con Fondo Gradiente */}
+      {/* Lado Derecho: Formulario */}
       <div style={{ 
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative', zIndex: 2,
-        background: 'radial-gradient(circle at 50% 50%, rgba(255, 90, 31, 0.1) 0%, #0e0e10 70%)'
+        background: 'radial-gradient(circle at 50% 50%, rgba(255, 90, 31, 0.08) 0%, #0e0e10 70%)'
       }}>
         <div style={{ 
           width: '100%', maxWidth: '420px',
-          background: 'rgba(23, 23, 27, 0.6)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255,255,255,0.05)',
+          background: 'rgba(23, 23, 27, 0.4)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.08)',
           padding: '40px',
           borderRadius: '24px',
           boxShadow: '0 20px 40px rgba(0,0,0,0.5)'

@@ -12,6 +12,10 @@ async function GymContent({ params }: Params) {
   const { data: gym } = await supabase.from('gyms').select('*').eq('slug', slug).eq('activo', true).maybeSingle()
   if (!gym) notFound()
 
+  // Averiguar si el usuario logueado es el dueño
+  const { data: { user } } = await supabase.auth.getUser()
+  const isOwner = user?.id === gym.owner_id
+
   const [
     { data: servicios },
     { data: ejercicios },
@@ -35,6 +39,7 @@ async function GymContent({ params }: Params) {
   return (
     <GymClient
       gym={gym}
+      isOwner={isOwner}
       servicios={servicios || []}
       ejercicios={ejercicios || []}
       rutinas={rutinas || []}
@@ -49,7 +54,11 @@ async function GymContent({ params }: Params) {
 
 export default function GymPage({ params }: Params) {
   return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0e0e10', color: 'var(--accent)' }}>Cargando...</div>}>
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--accent)' }}>
+        Cargando tu gimnasio...
+      </div>
+    }>
       <GymContent params={params} />
     </Suspense>
   )

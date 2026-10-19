@@ -62,7 +62,7 @@ export default function LoginPage() {
             transition: 'transform 2s ease'
           }}
         >
-          <source src="/video default.mp4" type="video/mp4" />
+          <source src="/video-default.mp4" type="video/mp4" />
         </video>
 
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.6), rgba(14,14,16,0.9))' }} />

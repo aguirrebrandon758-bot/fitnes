@@ -12,9 +12,6 @@ async function PanelContent() {
   const { data: perfil } = await supabase.from('profiles').select('rol, nombre').eq('id', user.id).maybeSingle()
   const rol = perfil?.rol || 'cliente'
 
-  // ============================================
-  // PANEL DE CLIENTE
-  // ============================================
   if (rol === 'cliente') {
     const { data: relacion } = await supabase
       .from('gym_clientes')
@@ -59,9 +56,7 @@ async function PanelContent() {
     return <ClientPanel user={user} gym={gym} ejercicios={ejercicios || []} videos={videos || []} rutinaAsignada={rutinaAsignada} detalleRutina={rutinaEjercicios || []} dietaAsignada={dieta} />
   }
 
-  // ============================================
-  // PANEL DE ENTRENADOR
-  // ============================================
+  // ENTRENADOR
   const [{ count: totalEj }, { count: totalRu }, { count: totalDi }, { count: totalVi }] = await Promise.all([
     supabase.from('ejercicios').select('*', { count: 'exact', head: true }),
     supabase.from('rutinas').select('*', { count: 'exact', head: true }),
@@ -79,17 +74,9 @@ async function PanelContent() {
   return (
     <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px 20px' }}>
       <div className="container">
-        {/* HEADER ACTUALIZADO CON BOTÓN DE VOLVER AL INICIO */}
-        <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
+        <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="logo" style={{ fontSize: '1.8rem' }}>FIT<span>PRO</span></div>
-          <div style={{ display: 'flex', gap: '15px' }}>
-            <Link href="/" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid #a1a1aa', color: '#a1a1aa' }}>
-              🌐 Ver sitio público
-            </Link>
-            <form action="/auth/signout" method="post">
-              <button type="submit" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>Cerrar sesión</button>
-            </form>
-          </div>
+          <form action="/auth/signout" method="post"><button type="submit" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>Cerrar sesión</button></form>
         </header>
         
         <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>Resumen</h2>
@@ -105,15 +92,9 @@ async function PanelContent() {
         <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>Acciones rápidas</h2>
         <div className="services-grid">
           <Link href="/panel/clientes" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>👥 Clientes</h3><p style={{ marginTop: '10px' }}>Asignar rutinas y dietas</p></Link>
-          <Link href="/panel/mi-gym/editar" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>🏢 Mi Gym</h3><p style={{ marginTop: '10px' }}>Editar datos del gym</p></Link>
+          <Link href="/panel/mi-gym" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>🏢 Mi Gym</h3><p style={{ marginTop: '10px' }}>Editar nombre, logo, colores y datos</p></Link>
           <Link href="/panel/dietas" className="service-card" style={{ display: 'block' }}><h3>🍏 Dietas</h3><p style={{ marginTop: '10px' }}>Crear planes de alimentación</p></Link>
-          
-          {/* 👇 ACÁ ESTÁ LA TARJETA DE TESTIMONIOS 👇 */}
-          <Link href="/panel/testimonios" className="service-card" style={{ display: 'block' }}>
-            <h3>💬 Testimonios</h3>
-            <p style={{ marginTop: '10px' }}>Cargar opiniones de alumnos</p>
-          </Link>
-
+          <Link href="/panel/testimonios" className="service-card" style={{ display: 'block' }}><h3>💬 Testimonios</h3><p style={{ marginTop: '10px' }}>Cargar opiniones de alumnos</p></Link>
           <Link href="/panel/ejercicios" className="service-card" style={{ display: 'block' }}><h3>📋 Ejercicios</h3><p style={{ marginTop: '10px' }}>Biblioteca de ejercicios</p></Link>
           <Link href="/panel/rutinas" className="service-card" style={{ display: 'block' }}><h3>🏋️ Rutinas</h3><p style={{ marginTop: '10px' }}>Ver rutinas y ejercicios</p></Link>
           <Link href="/panel/videos" className="service-card" style={{ display: 'block' }}><h3>🎥 Videos</h3><p style={{ marginTop: '10px' }}>Videos de técnicas</p></Link>

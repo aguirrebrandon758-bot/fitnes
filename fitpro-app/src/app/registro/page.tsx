@@ -45,8 +45,11 @@ export default function RegistroPage() {
     setTimeout(() => router.push('/login'), 4000)
   }
 
-  // Colores dinámicos según la elección
+  // Colores e imágenes dinámicas
   const bgColor = rol === 'entrenador' ? '#ff5a1f' : rol === 'cliente' ? '#3b82f6' : '#0e0e10'
+  
+  // Lógica para cambiar el video
+  const videoActual = rol === 'entrenador' ? '/video-entrenador.mp4' : rol === 'cliente' ? '/video-cliente.mp4' : '/video-default.mp4'
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#0e0e10', overflow: 'hidden' }}>
@@ -62,7 +65,9 @@ export default function RegistroPage() {
       }}
       className="register-video-panel"
       >
+        {/* Usamos la etiqueta key para forzar a que el video se reinicie y cambie */}
         <video 
+          key={videoActual}
           autoPlay 
           loop 
           muted 
@@ -75,13 +80,12 @@ export default function RegistroPage() {
             height: '100%',
             objectFit: 'cover',
             transition: 'transform 1.5s ease, filter 1s ease, opacity 0.8s',
-            // EFECTO INTERACTIVO
             transform: rol === 'entrenador' ? 'scale(1.15) translateX(-5%)' : rol === 'cliente' ? 'scale(1.15) translateX(5%)' : 'scale(1)',
-            opacity: rol ? 0.4 : 0.7,
+            opacity: rol ? 0.5 : 0.8,
             filter: rol === 'entrenador' ? 'sepia(1) hue-rotate(-30deg) saturate(3)' : rol === 'cliente' ? 'hue-rotate(180deg) saturate(1.5)' : 'none'
           }}
         >
-          <source src="https://videos.pexels.com/video-files/5319098/5319098-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+          <source src={videoActual} type="video/mp4" />
         </video>
 
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.3), rgba(14,14,16,0.9))' }} />
@@ -94,7 +98,9 @@ export default function RegistroPage() {
           <p style={{ color: '#d4d4d8', fontSize: '1.2rem', maxWidth: '400px' }}>
             {rol === 'entrenador' 
               ? 'Gestioná rutinas, dietas y clientes desde una sola plataforma.' 
-              : 'Accedé a tu rutina personalizada y planes de alimentación.'}
+              : rol === 'cliente' 
+              ? 'Accedé a tu rutina personalizada y planes de alimentación.'
+              : 'Elegí cómo querés usar FitPro y empezá a cambiar tu vida.'}
           </p>
         </div>
       </div>

@@ -105,7 +105,7 @@ async function PanelContent() {
         <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>Acciones rápidas</h2>
         <div className="services-grid">
           <Link href="/panel/clientes" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>👥 Clientes</h3><p style={{ marginTop: '10px' }}>Asignar rutinas y dietas</p></Link>
-          <Link href="/panel/mi-gym" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>🏢 Mi Gym</h3><p style={{ marginTop: '10px' }}>Editar datos del gym</p></Link>
+          <Link href="/panel/mi-gym/editar" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>🏢 Mi Gym</h3><p style={{ marginTop: '10px' }}>Editar datos del gym</p></Link>
           <Link href="/panel/dietas" className="service-card" style={{ display: 'block' }}><h3>🍏 Dietas</h3><p style={{ marginTop: '10px' }}>Crear planes de alimentación</p></Link>
           
           {/* 👇 ACÁ ESTÁ LA TARJETA DE TESTIMONIOS 👇 */}

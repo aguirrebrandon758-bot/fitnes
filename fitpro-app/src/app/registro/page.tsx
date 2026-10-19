@@ -49,7 +49,7 @@ export default function RegistroPage() {
   const bgColor = rol === 'entrenador' ? '#ff5a1f' : rol === 'cliente' ? '#3b82f6' : '#0e0e10'
   
   // Lógica para cambiar el video
-  const videoActual = rol === 'entrenador' ? '/video-entrenador.mp4' : rol === 'cliente' ? '/video-cliente.mp4' : '/video-default.mp4'
+ const videoActual = rol === 'entrenador' ? '/video entrenador.mp4' : rol === 'cliente' ? '/video cliente.mp4' : '/video default.mp4'
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#0e0e10', overflow: 'hidden' }}>

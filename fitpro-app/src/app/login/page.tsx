@@ -62,7 +62,7 @@ export default function LoginPage() {
             transition: 'transform 2s ease'
           }}
         >
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-man-lifting-a-heavy-barbell-in-the-gym-2321-large.mp4" type="video/mp4" />
+          <source src="https://videos.pexels.com/video-files/5319098/5319098-uhd_2560_1440_25fps.mp4" type="video/mp4" />
         </video>
 
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.6), rgba(14,14,16,0.9))' }} />

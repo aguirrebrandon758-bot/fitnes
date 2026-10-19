@@ -34,17 +34,11 @@ export default function RegistroPage() {
   }
 
   const bgColor = rol === 'entrenador' ? '#ff5a1f' : rol === 'cliente' ? '#3b82f6' : '#0e0e10'
-  const videoActual = rol === 'entrenador' ? '/video-entrenador.mp4' : rol === 'cliente' ? '/video-cliente.mp4' : '/video-default.mp4'
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden', background: '#0e0e10' }}>
       
-      <div style={{ display: 'none' }}>
-        <video preload="auto" src="/video-entrenador.mp4" />
-        <video preload="auto" src="/video-cliente.mp4" />
-      </div>
-
-      {/* Lado Izquierdo: VIDEO CON DEGRADADO HACIA LA DERECHA */}
+      {/* Lado Izquierdo: LOS 3 VIDEOS SUPERPUESTOS */}
       <div style={{ 
         flex: 1, 
         position: 'relative',
@@ -55,25 +49,46 @@ export default function RegistroPage() {
       }}
       className="register-video-panel"
       >
+        {/* Video por defecto */}
         <video 
-          key={videoActual}
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
+          autoPlay loop muted playsInline 
           style={{
-            position: 'absolute',
-            top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
-            transition: 'transform 1.5s ease, filter 1s ease, opacity 0.8s',
-            transform: rol === 'entrenador' ? 'scale(1.15) translateX(-5%)' : rol === 'cliente' ? 'scale(1.15) translateX(5%)' : 'scale(1)',
-            opacity: rol ? 0.7 : 0.9,
-            filter: rol === 'entrenador' ? 'sepia(1) hue-rotate(-30deg) saturate(3)' : rol === 'cliente' ? 'hue-rotate(180deg) saturate(1.5)' : 'none'
+            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
+            transition: 'opacity 1s ease',
+            opacity: rol === '' ? 0.9 : 0, // Se muestra solo si no hay rol
           }}
         >
-          <source src={videoActual} type="video/mp4" />
+          <source src="/video-default.mp4" type="video/mp4" />
         </video>
 
-        {/* GRADIENTE MÁGICO: De transparente a negro para fundirse con el otro lado */}
+        {/* Video Entrenador */}
+        <video 
+          autoPlay loop muted playsInline 
+          style={{
+            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
+            transition: 'opacity 1s ease, transform 1.5s ease',
+            opacity: rol === 'entrenador' ? 0.7 : 0, // Se muestra solo si es entrenador
+            transform: rol === 'entrenador' ? 'scale(1.1)' : 'scale(1)',
+            filter: 'sepia(1) hue-rotate(-30deg) saturate(3)' // Tinte naranja
+          }}
+        >
+          <source src="/video-entrenador.mp4" type="video/mp4" />
+        </video>
+
+        {/* Video Cliente */}
+        <video 
+          autoPlay loop muted playsInline 
+          style={{
+            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
+            transition: 'opacity 1s ease, transform 1.5s ease',
+            opacity: rol === 'cliente' ? 0.7 : 0, // Se muestra solo si es cliente
+            transform: rol === 'cliente' ? 'scale(1.1)' : 'scale(1)',
+            filter: 'hue-rotate(180deg) saturate(1.5)' // Tinte azul
+          }}
+        >
+          <source src="/video-cliente.mp4" type="video/mp4" />
+        </video>
+
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(14,14,16,0.4) 0%, rgba(14,14,16,0.6) 60%, #0e0e10 100%)' }} />
 
         <div style={{ position: 'relative', zIndex: 1, padding: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
@@ -106,7 +121,7 @@ export default function RegistroPage() {
         <div style={{ 
           width: '100%', 
           maxWidth: '480px',
-          background: 'rgba(23, 23, 27, 0.4)', // Vidrio más transparente
+          background: 'rgba(23, 23, 27, 0.4)', 
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255,255,255,0.08)',
           padding: '40px',

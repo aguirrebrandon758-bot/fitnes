@@ -9,13 +9,7 @@ async function GymContent({ params }: Params) {
   const { slug } = await params
   const supabase = await createClient()
 
-  const { data: gym } = await supabase
-    .from('gyms')
-    .select('*')
-    .eq('slug', slug)
-    .eq('activo', true)
-    .maybeSingle()
-
+  const { data: gym } = await supabase.from('gyms').select('*').eq('slug', slug).eq('activo', true).maybeSingle()
   if (!gym) notFound()
 
   const [
@@ -28,12 +22,12 @@ async function GymContent({ params }: Params) {
     { data: alimentos },
     { data: testimonios },
   ] = await Promise.all([
-    supabase.from('servicios').select('*').eq('gym_id', gym.id).eq('activo', true).order('orden'),
+    supabase.from('servicios').select('*').eq('gym_id', gym.id).eq('activo', true),
     supabase.from('ejercicios').select('*').eq('gym_id', gym.id).eq('activo', true),
     supabase.from('rutinas').select('*').eq('gym_id', gym.id).eq('activo', true),
     supabase.from('rutina_ejercicios').select('*'),
     supabase.from('posts').select('*').eq('gym_id', gym.id).eq('publicado', true),
-    supabase.from('videos').select('*').eq('gym_id', gym.id).eq('activo', true).order('orden'),
+    supabase.from('videos').select('*').eq('gym_id', gym.id).eq('activo', true),
     supabase.from('alimentos').select('*').eq('gym_id', gym.id),
     supabase.from('testimonios').select('*').eq('gym_id', gym.id).order('creado_en', { ascending: false }),
   ])
@@ -55,11 +49,7 @@ async function GymContent({ params }: Params) {
 
 export default function GymPage({ params }: Params) {
   return (
-    <Suspense fallback={
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--accent)' }}>
-        Cargando tu gimnasio...
-      </div>
-    }>
+    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0e0e10', color: 'var(--accent)' }}>Cargando...</div>}>
       <GymContent params={params} />
     </Suspense>
   )

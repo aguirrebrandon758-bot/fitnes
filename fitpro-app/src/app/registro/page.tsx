@@ -20,39 +20,26 @@ export default function RegistroPage() {
     e.preventDefault()
     setError('')
     setMensaje('')
-
-    if (!rol) {
-      setError('Elegí si sos entrenador o cliente.')
-      return
-    }
-
+    if (!rol) { setError('Elegí si sos entrenador o cliente.'); return }
     setLoading(true)
 
     const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { rol: rol } },
+      email, password, options: { data: { rol: rol } },
     })
 
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-      return
-    }
-
+    if (error) { setError(error.message); setLoading(false); return }
     setMensaje('¡Cuenta creada! Revisá tu email para confirmar.')
     setLoading(false)
     setTimeout(() => router.push('/login'), 4000)
   }
 
-  // Colores e imágenes dinámicas
   const bgColor = rol === 'entrenador' ? '#ff5a1f' : rol === 'cliente' ? '#3b82f6' : '#0e0e10'
   const videoActual = rol === 'entrenador' ? '/video-entrenador.mp4' : rol === 'cliente' ? '/video-cliente.mp4' : '/video-default.mp4'
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#0e0e10', overflow: 'hidden' }}>
       
-      {/* Lado Izquierdo: VIDEO INTERACTIVO */}
+      {/* Lado Izquierdo: VIDEO (Sin capa oscura para que se vea bien) */}
       <div style={{ 
         flex: 1, 
         position: 'relative',
@@ -74,21 +61,22 @@ export default function RegistroPage() {
             top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
             transition: 'transform 1.5s ease, filter 1s ease, opacity 0.8s',
             transform: rol === 'entrenador' ? 'scale(1.15) translateX(-5%)' : rol === 'cliente' ? 'scale(1.15) translateX(5%)' : 'scale(1)',
-            opacity: rol ? 0.5 : 0.8,
+            opacity: rol ? 0.6 : 0.9,
             filter: rol === 'entrenador' ? 'sepia(1) hue-rotate(-30deg) saturate(3)' : rol === 'cliente' ? 'hue-rotate(180deg) saturate(1.5)' : 'none'
           }}
         >
           <source src={videoActual} type="video/mp4" />
         </video>
 
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.3), rgba(14,14,16,0.9))' }} />
+        {/* Capa de gradiente suave para que se lea el texto */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.2), rgba(14,14,16,0.6))' }} />
 
         <div style={{ position: 'relative', zIndex: 1, padding: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
           <div className="logo" style={{ fontSize: '2.5rem', marginBottom: '20px' }}>FIT<span>PRO</span></div>
           <h1 style={{ fontSize: '3rem', fontWeight: 800, color: '#fff', lineHeight: 1.1, marginBottom: '20px', transition: 'all 0.5s' }}>
             {rol === 'entrenador' ? 'Lidera tu propio equipo.' : rol === 'cliente' ? 'Alcanza tu mejor versión.' : 'Tu transformación empieza hoy.'}
           </h1>
-          <p style={{ color: '#d4d4d8', fontSize: '1.2rem', maxWidth: '400px' }}>
+          <p style={{ color: '#fff', fontSize: '1.2rem', maxWidth: '400px', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
             {rol === 'entrenador' 
               ? 'Gestioná rutinas, dietas y clientes desde una sola plataforma.' 
               : rol === 'cliente' 

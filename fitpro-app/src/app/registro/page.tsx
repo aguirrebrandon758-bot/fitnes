@@ -37,9 +37,15 @@ export default function RegistroPage() {
   const videoActual = rol === 'entrenador' ? '/video-entrenador.mp4' : rol === 'cliente' ? '/video-cliente.mp4' : '/video-default.mp4'
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#0e0e10', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden', background: '#0e0e10' }}>
       
-      {/* Lado Izquierdo: VIDEO (Sin capa oscura para que se vea bien) */}
+      {/* PRECARGA DE VIDEOS (Para que cambien al instante) */}
+      <div style={{ display: 'none' }}>
+        <video preload="auto" src="/video-entrenador.mp4" />
+        <video preload="auto" src="/video-cliente.mp4" />
+      </div>
+
+      {/* Lado Izquierdo: VIDEO */}
       <div style={{ 
         flex: 1, 
         position: 'relative',
@@ -68,11 +74,10 @@ export default function RegistroPage() {
           <source src={videoActual} type="video/mp4" />
         </video>
 
-        {/* Capa de gradiente suave para que se lea el texto */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.2), rgba(14,14,16,0.6))' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(14,14,16,0.2), rgba(14,14,16,0.7))' }} />
 
         <div style={{ position: 'relative', zIndex: 1, padding: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-          <div className="logo" style={{ fontSize: '2.5rem', marginBottom: '20px' }}>FIT<span>PRO</span></div>
+          <div className="logo" style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#fff' }}>FIT<span style={{ color: '#ff5a1f' }}>PRO</span></div>
           <h1 style={{ fontSize: '3rem', fontWeight: 800, color: '#fff', lineHeight: 1.1, marginBottom: '20px', transition: 'all 0.5s' }}>
             {rol === 'entrenador' ? 'Lidera tu propio equipo.' : rol === 'cliente' ? 'Alcanza tu mejor versión.' : 'Tu transformación empieza hoy.'}
           </h1>
@@ -86,15 +91,34 @@ export default function RegistroPage() {
         </div>
       </div>
 
-      {/* Lado Derecho: Formulario */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative', zIndex: 2 }}>
-        <div style={{ width: '100%', maxWidth: '480px' }}>
+      {/* Lado Derecho: Formulario con Fondo Gradiente */}
+      <div style={{ 
+        flex: 1, 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        padding: '20px', 
+        position: 'relative', 
+        zIndex: 2,
+        background: `radial-gradient(circle at 50% 50%, ${bgColor}22 0%, #0e0e10 70%)`, // Fondo dinámico
+        transition: 'background 0.8s ease'
+      }}>
+        <div style={{ 
+          width: '100%', 
+          maxWidth: '480px',
+          background: 'rgba(23, 23, 27, 0.6)', // Efecto vidrio
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255,255,255,0.05)',
+          padding: '40px',
+          borderRadius: '24px',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+        }}>
           
           <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <div className="logo" style={{ fontSize: '2rem', marginBottom: '20px', display: 'block' }}>
-              FIT<span>PRO</span>
+            <div className="logo" style={{ fontSize: '2rem', marginBottom: '20px', display: 'block', color: '#fff' }}>
+              FIT<span style={{ color: '#ff5a1f' }}>PRO</span>
             </div>
-            <h2 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '10px' }}>Creá tu cuenta</h2>
+            <h2 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '10px', color: '#fff' }}>Creá tu cuenta</h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '30px' }}>
@@ -102,51 +126,49 @@ export default function RegistroPage() {
               onClick={() => setRol('entrenador')}
               style={{
                 padding: '20px 15px', borderRadius: '12px',
-                border: rol === 'entrenador' ? '2px solid #ff5a1f' : '1px solid #2a2a32',
-                background: rol === 'entrenador' ? 'rgba(255, 90, 31, 0.1)' : '#17171b',
+                border: rol === 'entrenador' ? '2px solid #ff5a1f' : '1px solid rgba(255,255,255,0.1)',
+                background: rol === 'entrenador' ? 'rgba(255, 90, 31, 0.15)' : 'rgba(0,0,0,0.2)',
                 cursor: 'pointer', transition: 'all 0.3s', transform: rol === 'entrenador' ? 'scale(1.02)' : 'scale(1)'
               }}
             >
               <div style={{ fontSize: '2rem', marginBottom: '10px' }}>🏋️</div>
-              <h3 style={{ fontSize: '1rem', marginBottom: '5px' }}>Entrenador</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '0.75rem' }}>Dueño de gym</p>
+              <h3 style={{ fontSize: '1rem', marginBottom: '5px', color: '#fff' }}>Entrenador</h3>
             </div>
 
             <div
               onClick={() => setRol('cliente')}
               style={{
                 padding: '20px 15px', borderRadius: '12px',
-                border: rol === 'cliente' ? '2px solid #3b82f6' : '1px solid #2a2a32',
-                background: rol === 'cliente' ? 'rgba(59, 130, 246, 0.1)' : '#17171b',
+                border: rol === 'cliente' ? '2px solid #3b82f6' : '1px solid rgba(255,255,255,0.1)',
+                background: rol === 'cliente' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0,0,0,0.2)',
                 cursor: 'pointer', transition: 'all 0.3s', transform: rol === 'cliente' ? 'scale(1.02)' : 'scale(1)'
               }}
             >
               <div style={{ fontSize: '2rem', marginBottom: '10px' }}>🧍</div>
-              <h3 style={{ fontSize: '1rem', marginBottom: '5px' }}>Cliente</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '0.75rem' }}>Alumno</p>
+              <h3 style={{ fontSize: '1rem', marginBottom: '5px', color: '#fff' }}>Cliente</h3>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '20px' }}>
             <div>
-              <label style={{ fontSize: '0.9rem', color: 'var(--muted)', marginBottom: '8px', display: 'block' }}>Correo Electrónico</label>
-              <input type="email" placeholder="tu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: '14px', borderRadius: '10px', background: '#17171b', border: '1px solid #2a2a32', color: '#fff' }} />
+              <label style={{ fontSize: '0.9rem', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>Correo Electrónico</label>
+              <input type="email" placeholder="tu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: '14px', borderRadius: '10px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} />
             </div>
             <div>
-              <label style={{ fontSize: '0.9rem', color: 'var(--muted)', marginBottom: '8px', display: 'block' }}>Contraseña (mín. 6)</label>
-              <input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} style={{ width: '100%', padding: '14px', borderRadius: '10px', background: '#17171b', border: '1px solid #2a2a32', color: '#fff' }} />
+              <label style={{ fontSize: '0.9rem', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>Contraseña (mín. 6)</label>
+              <input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} style={{ width: '100%', padding: '14px', borderRadius: '10px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} />
             </div>
 
-            {error && <div style={{ padding: '12px', background: 'rgba(230,74,16,.1)', border: '1px solid #e64a10', borderRadius: '8px', color: '#fca5a5' }}>{error}</div>}
-            {mensaje && <div style={{ padding: '12px', background: 'rgba(34,197,94,.1)', border: '1px solid #22c55e', borderRadius: '8px', color: '#86efac' }}>{mensaje}</div>}
+            {error && <div style={{ padding: '12px', background: 'rgba(230,74,16,.15)', border: '1px solid #e64a10', borderRadius: '8px', color: '#fca5a5' }}>{error}</div>}
+            {mensaje && <div style={{ padding: '12px', background: 'rgba(34,197,94,.15)', border: '1px solid #22c55e', borderRadius: '8px', color: '#86efac' }}>{mensaje}</div>}
 
             <button type="submit" className="btn" disabled={loading || !rol} style={{ width: '100%', padding: '14px', fontSize: '1rem', marginTop: '10px' }}>
               {loading ? 'Creando cuenta...' : 'Crear mi cuenta'}
             </button>
           </form>
 
-          <p style={{ marginTop: '30px', textAlign: 'center', color: 'var(--muted)' }}>
-            ¿Ya tenés cuenta? <Link href="/login" style={{ color: 'var(--accent)', fontWeight: 'bold' }}>Iniciá sesión</Link>
+          <p style={{ marginTop: '30px', textAlign: 'center', color: '#a1a1aa' }}>
+            ¿Ya tenés cuenta? <Link href="/login" style={{ color: '#ff5a1f', fontWeight: 'bold' }}>Iniciá sesión</Link>
           </p>
         </div>
       </div>

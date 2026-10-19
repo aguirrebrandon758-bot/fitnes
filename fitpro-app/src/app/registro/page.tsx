@@ -47,9 +47,7 @@ export default function RegistroPage() {
 
   // Colores e imágenes dinámicas
   const bgColor = rol === 'entrenador' ? '#ff5a1f' : rol === 'cliente' ? '#3b82f6' : '#0e0e10'
-  
-  // Lógica para cambiar el video
- const videoActual = rol === 'entrenador' ? '/video entrenador.mp4' : rol === 'cliente' ? '/video cliente.mp4' : '/video default.mp4'
+  const videoActual = rol === 'entrenador' ? '/video-entrenador.mp4' : rol === 'cliente' ? '/video-cliente.mp4' : '/video-default.mp4'
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#0e0e10', overflow: 'hidden' }}>
@@ -65,7 +63,6 @@ export default function RegistroPage() {
       }}
       className="register-video-panel"
       >
-        {/* Usamos la etiqueta key para forzar a que el video se reinicie y cambie */}
         <video 
           key={videoActual}
           autoPlay 
@@ -74,11 +71,7 @@ export default function RegistroPage() {
           playsInline 
           style={{
             position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
+            top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
             transition: 'transform 1.5s ease, filter 1s ease, opacity 0.8s',
             transform: rol === 'entrenador' ? 'scale(1.15) translateX(-5%)' : rol === 'cliente' ? 'scale(1.15) translateX(5%)' : 'scale(1)',
             opacity: rol ? 0.5 : 0.8,

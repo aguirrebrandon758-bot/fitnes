@@ -12,8 +12,14 @@ export default function ClientesPage() {
   const [clientes, setClientes] = useState<any[]>([])
   const [rutinas, setRutinas] = useState<any[]>([])
   const [dietas, setDietas] = useState<any[]>([])
+  const [gymId, setGymId] = useState<string | null>(null)
   const [cargando, setCargando] = useState(true)
   const [guardando, setGuardando] = useState<string | null>(null)
+
+  // Estados para agregar alumno
+  const [nuevoEmail, setNuevoEmail] = useState('')
+  const [agregando, setAgregando] = useState(false)
+  const [mensajeNuevo, setMensajeNuevo] = useState('')
 
   useEffect(() => {
     async function cargar() {
@@ -23,6 +29,8 @@ export default function ClientesPage() {
       const { data: gym } = await supabase.from('gyms').select('id').eq('owner_id', user.id).maybeSingle()
       if (!gym) { router.push('/panel'); return }
 
+      setGymId(gym.id)
+
       const [{ data: rut }, { data: diet }] = await Promise.all([
         supabase.from('rutinas').select('*').eq('gym_id', gym.id),
         supabase.from('dietas').select('*').eq('gym_id', gym.id)
@@ -31,38 +39,86 @@ export default function ClientesPage() {
       setRutinas(rut || [])
       setDietas(diet || [])
 
-      const { data: cli } = await supabase
-        .from('gym_clientes')
-        .select(`id, user_id, rutina_asignada_id, dieta_asignada_id, profiles (email, nombre)`)
-        .eq('gym_id', gym.id)
-
-      setClientes(cli || [])
-      setCargando(false)
+      cargarClientes(gym.id)
     }
     cargar()
   }, [router, supabase])
 
+  async function cargarClientes(gId: string) {
+    const { data: cli } = await supabase
+      .from('gym_clientes')
+      .select(`id, user_id, rutina_asignada_id, dieta_asignada_id, profiles (email, nombre)`)
+      .eq('gym_id', gId)
+
+    setClientes(cli || [])
+    setCargando(false)
+  }
+
+  async function agregarAlumno(e: React.FormEvent) {
+    e.preventDefault()
+    if (!gymId || !nuevoEmail) return
+
+    setAgregando(true)
+    setMensajeNuevo('')
+
+    // 1. Buscar si el alumno existe por su email
+    const { data: userId, error: rpcError } = await supabase.rpc('get_user_id_by_email', { email_input: nuevoEmail.trim() })
+
+    if (rpcError || !userId) {
+      setMensajeNuevo('❌ El alumno no existe. Pedile que se registre primero.')
+      setAgregando(false)
+      return
+    }
+
+    // 2. Verificar si ya está en el gym
+    const { data: existente } = await supabase
+      .from('gym_clientes')
+      .select('id')
+      .eq('gym_id', gymId)
+      .eq('user_id', userId)
+      .maybeSingle()
+
+    if (existente) {
+      setMensajeNuevo('⚠️ Este alumno ya está en tu gimnasio.')
+      setAgregando(false)
+      return
+    }
+
+    // 3. Insertar la relación
+    const { error: insertError } = await supabase
+      .from('gym_clientes')
+      .insert({ gym_id: gymId, user_id: userId, activo: true })
+
+    if (insertError) {
+      setMensajeNuevo('❌ Error: ' + insertError.message)
+    } else {
+      setMensajeNuevo('✅ Alumno agregado correctamente.')
+      setNuevoEmail('')
+      cargarClientes(gymId)
+    }
+    setAgregando(false)
+    setTimeout(() => setMensajeNuevo(''), 5000)
+  }
+
   async function asignarRutina(clienteId: string, rutinaId: string) {
     setGuardando(clienteId)
     const { error } = await supabase.from('gym_clientes').update({ rutina_asignada_id: rutinaId || null }).eq('id', clienteId)
-    
-    if (error) {
-      alert('Error al asignar rutina: ' + error.message)
-    } else {
-      setClientes(prev => prev.map(c => c.id === clienteId ? { ...c, rutina_asignada_id: rutinaId || null } : c))
-    }
+    if (!error) setClientes(prev => prev.map(c => c.id === clienteId ? { ...c, rutina_asignada_id: rutinaId || null } : c))
     setGuardando(null)
   }
 
   async function asignarDieta(clienteId: string, dietaId: string) {
     setGuardando(clienteId)
     const { error } = await supabase.from('gym_clientes').update({ dieta_asignada_id: dietaId || null }).eq('id', clienteId)
-    
-    if (error) {
-      alert('Error al asignar dieta: ' + error.message)
-    } else {
-      setClientes(prev => prev.map(c => c.id === clienteId ? { ...c, dieta_asignada_id: dietaId || null } : c))
-    }
+    if (!error) setClientes(prev => prev.map(c => c.id === clienteId ? { ...c, dieta_asignada_id: dietaId || null } : c))
+    setGuardando(null)
+  }
+
+  async function eliminarAlumno(clienteId: string, email: string) {
+    if (!confirm(`¿Estás seguro que querés eliminar a ${email} de tu gimnasio?`)) return
+    setGuardando(clienteId)
+    await supabase.from('gym_clientes').delete().eq('id', clienteId)
+    setClientes(prev => prev.filter(c => c.id !== clienteId))
     setGuardando(null)
   }
 
@@ -79,6 +135,30 @@ export default function ClientesPage() {
         <h1 className="section-title">Gestión de Clientes</h1>
         <p className="section-sub" style={{ marginBottom: '30px' }}>Asigná rutinas y planes de alimentación a tus alumnos.</p>
 
+        {/* Formulario para agregar alumno */}
+        <div className="service-card" style={{ marginBottom: '30px', display: 'flex', flexWrap: 'wrap', gap: '15px', alignItems: 'flex-end' }}>
+          <div style={{ flex: 1, minWidth: '250px' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem' }}>Agregar alumno por Email</label>
+            <input 
+              type="email" 
+              placeholder="email@alumno.com" 
+              value={nuevoEmail} 
+              onChange={e => setNuevoEmail(e.target.value)}
+              style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'var(--bg-2)', border: '1px solid #2a2a32', color: '#fff' }}
+            />
+          </div>
+          <button onClick={agregarAlumno} disabled={agregando} className="btn" style={{ padding: '12px 24px' }}>
+            {agregando ? 'Buscando...' : '➕ Agregar Alumno'}
+          </button>
+        </div>
+        
+        {mensajeNuevo && (
+          <div style={{ padding: '12px', marginBottom: '20px', borderRadius: '8px', background: mensajeNuevo.includes('✅') ? 'rgba(34,197,94,.1)' : 'rgba(230,74,16,.1)', color: mensajeNuevo.includes('✅') ? '#86efac' : '#fca5a5', border: `1px solid ${mensajeNuevo.includes('✅') ? '#22c55e' : '#e64a10'}` }}>
+            {mensajeNuevo}
+          </div>
+        )}
+
+        {/* Tabla de clientes */}
         <div className="tabla-wrapper" style={{ background: 'var(--card)', borderRadius: '12px', border: '1px solid #2a2a32', overflow: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
             <thead>
@@ -86,7 +166,7 @@ export default function ClientesPage() {
                 <th style={{ padding: '16px' }}>Cliente</th>
                 <th style={{ padding: '16px' }}>Rutina Asignada</th>
                 <th style={{ padding: '16px' }}>Dieta Asignada</th>
-                <th style={{ padding: '16px' }}>Estado</th>
+                <th style={{ padding: '16px' }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -111,8 +191,14 @@ export default function ClientesPage() {
                         {dietas.map(d => <option key={d.id} value={d.id}>{d.nombre}</option>)}
                       </select>
                     </td>
-                    <td style={{ padding: '16px', fontSize: '0.9rem' }}>
-                      {guardando === c.id ? 'Guardando...' : '✅ Listo'}
+                    <td style={{ padding: '16px' }}>
+                      <button 
+                        onClick={() => eliminarAlumno(c.id, (c.profiles as any)?.email)} 
+                        disabled={guardando === c.id}
+                        style={{ background: 'transparent', border: '1px solid #e64a10', color: '#e64a10', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}
+                      >
+                        🗑️ Quitar
+                      </button>
                     </td>
                   </tr>
                 ))

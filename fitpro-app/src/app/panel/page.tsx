@@ -12,6 +12,9 @@ async function PanelContent() {
   const { data: perfil } = await supabase.from('profiles').select('rol, nombre').eq('id', user.id).maybeSingle()
   const rol = perfil?.rol || 'cliente'
 
+  // ============================================
+  // PANEL DE CLIENTE
+  // ============================================
   if (rol === 'cliente') {
     const { data: relacion } = await supabase
       .from('gym_clientes')
@@ -56,7 +59,40 @@ async function PanelContent() {
     return <ClientPanel user={user} gym={gym} ejercicios={ejercicios || []} videos={videos || []} rutinaAsignada={rutinaAsignada} detalleRutina={rutinaEjercicios || []} dietaAsignada={dieta} />
   }
 
-  // ENTRENADOR
+  // ============================================
+  // PANEL DE ENTRENADOR
+  // ============================================
+  
+  // Verificar si el entrenador ya tiene un gym
+  const { data: checkGym } = await supabase
+    .from('gyms')
+    .select('id')
+    .eq('owner_id', user.id)
+    .maybeSingle()
+
+  if (!checkGym) {
+    return (
+      <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="service-card" style={{ maxWidth: '500px', width: '100%', padding: '40px', textAlign: 'center', borderColor: 'var(--accent)' }}>
+          <h1 style={{ fontSize: '1.5rem', marginBottom: '15px' }}>¡Bienvenido a FitPro!</h1>
+          <p style={{ color: 'var(--muted)', marginBottom: '30px' }}>Parece que es tu primera vez. Creá tu gimnasio para empezar a gestionar tus clientes.</p>
+          
+          <form action="/api/crear-gym" method="POST" style={{ display: 'grid', gap: '15px', textAlign: 'left' }}>
+            <div>
+              <label>Nombre de tu Gym</label>
+              <input type="text" name="nombre" placeholder="Ej: FitZone" required />
+            </div>
+            <div>
+              <label>URL de tu página (sin espacios)</label>
+              <input type="text" name="slug" placeholder="Ej: fitzone" required />
+            </div>
+            <button type="submit" className="btn" style={{ marginTop: '10px' }}>Crear mi Gimnasio</button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
   const [{ count: totalEj }, { count: totalRu }, { count: totalDi }, { count: totalVi }] = await Promise.all([
     supabase.from('ejercicios').select('*', { count: 'exact', head: true }),
     supabase.from('rutinas').select('*', { count: 'exact', head: true }),

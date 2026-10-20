@@ -8,8 +8,13 @@ export default async function AdminPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: perfil } = await supabase.from('profiles').select('rol').eq('id', user.id).single()
-  if (perfil?.rol !== 'admin') {
+  // 👇 LLAVE MAESTRA: Si sos este email, sos Dios. Sin importar qué diga la base de datos.
+  const isSuperAdmin = user.email === 'aguirrebrandon758@gmail.com'
+  
+  // También consultamos el perfil por las dudas (usando maybeSingle para que no explote si falla)
+  const { data: perfil } = await supabase.from('profiles').select('rol').eq('id', user.id).maybeSingle()
+  
+  if (!isSuperAdmin && perfil?.rol !== 'admin') {
     return <div style={{ padding: '50px', textAlign: 'center', color: '#fff', background: '#0e0e10', minHeight: '100vh' }}><h1>Acceso Denegado. Solo el dueño de FitPro puede ver esto.</h1></div>
   }
 

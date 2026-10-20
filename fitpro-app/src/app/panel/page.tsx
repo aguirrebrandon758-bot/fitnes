@@ -70,16 +70,8 @@ async function PanelContent() {
   if (isSuperAdmin) {
     const { data } = await supabase.from('gyms').select('*').eq('slug', 'gym-demo').maybeSingle()
     checkGym = data
-
-    // 👇 SI LA BASE DE DATOS FALLA, INVENTAMOS UN GYM PARA QUE NO TE ECHEN 👇
     if (!checkGym) {
-      checkGym = {
-        id: '00000000-0000-0000-0000-000000000000',
-        nombre: 'Mi Gym (Modo Dios)',
-        slug: 'gym-demo',
-        color_primario: '#ff5a1f',
-        color_secundario: '#ffb703'
-      }
+      checkGym = { id: '00000000-0000-0000-0000-000000000000', nombre: 'Mi Gym (Modo Dios)', slug: 'gym-demo', color_primario: '#ff5a1f', color_secundario: '#ffb703' }
     }
   } else {
     const { data } = await supabase.from('gyms').select('*').eq('owner_id', user.id).maybeSingle()
@@ -127,10 +119,19 @@ async function PanelContent() {
         <div className="container">
           <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
             <div className="logo" style={{ fontSize: '1.8rem' }}>FIT<span>PRO</span></div>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              {/* 👇 BOTÓN PARA VOLVER AL ADMIN 👇 */}
+              {isSuperAdmin && (
+                <Link href="/admin" className="btn btn-sm" style={{ background: 'rgba(255,90,31,0.1)', color: 'var(--accent)', border: '1px solid var(--accent)', textDecoration: 'none' }}>
+                  👑 Panel Admin
+                </Link>
+              )}
+
               <Link href={`/${checkGym.slug}`} className="btn btn-sm" style={{ background: 'var(--accent)', color: '#fff', textDecoration: 'none' }}>
                 🌐 Mi Página Pública
               </Link>
+              
               <form action="/auth/signout" method="post">
                 <button type="submit" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>Cerrar sesión</button>
               </form>

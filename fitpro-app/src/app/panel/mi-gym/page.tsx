@@ -11,6 +11,7 @@ export default function MiGymPage() {
   const [gym, setGym] = useState<any>(null)
   const [cargando, setCargando] = useState(true)
   const [guardando, setGuardando] = useState(false)
+  const [subiendo, setSubiendo] = useState<string | null>(null)
   const [mensaje, setMensaje] = useState('')
 
   useEffect(() => {
@@ -27,6 +28,27 @@ export default function MiGymPage() {
   function actualizar(campo: string, valor: string) {
     if (!gym) return
     setGym({ ...gym, [campo]: valor })
+  }
+
+  async function subirImagen(e: React.ChangeEvent<HTMLInputElement>, campo: string) {
+    const file = e.target.files?.[0]
+    if (!file || !gym) return
+
+    setSubiendo(campo)
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${gym.id}-${campo}-${Date.now()}.${fileExt}`
+
+    const { error } = await supabase.storage.from('imagenes').upload(fileName, file)
+    
+    if (error) {
+      alert('Error al subir la imagen: ' + error.message)
+      setSubiendo(null)
+      return
+    }
+
+    const { data: { publicUrl } } = supabase.storage.from('imagenes').getPublicUrl(fileName)
+    actualizar(campo, publicUrl)
+    setSubiendo(null)
   }
 
   async function guardar(e: React.FormEvent) {
@@ -48,29 +70,47 @@ export default function MiGymPage() {
     setGuardando(false)
     if (error) { setMensaje('❌ Error: ' + error.message) } 
     else {
-      setMensaje('✅ Cambios guardados')
+      setMensaje('✅ Cambios guardados correctamente')
       setTimeout(() => setMensaje(''), 4000)
     }
   }
 
-  if (cargando) return <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px' }}><p>Cargando...</p></div>
+  if (cargando) return <div style={{ padding: '40px', textAlign: 'center', color: '#fff' }}>Cargando...</div>
+
+  // 👇 PROTECCIÓN MÁGICA: Si no hay gym, mostramos un mensaje en vez de colapsar
+  if (!gym) {
+    return (
+      <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <h2 style={{ marginBottom: '20px', color: '#fff' }}>Todavía no tenés un gimnasio creado</h2>
+        <Link href="/panel" className="btn">Volver al panel para crearlo</Link>
+      </div>
+    )
+  }
 
   return (
     <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px 20px' }}>
-      <div className="container">
+      <div className="container" style={{ maxWidth: '900px' }}>
         <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
           <Link href="/panel" className="logo" style={{ fontSize: '1.8rem' }}>FIT<span>PRO</span></Link>
           <Link href="/panel" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>← Volver al panel</Link>
         </header>
 
-        <h1 className="section-title">Mi Gym</h1>
-        <p className="section-sub" style={{ marginBottom: '40px' }}>Configurá los datos de tu gimnasio. Todo lo que cambies acá se va a ver en tu página pública.</p>
+        <div style={{ marginBottom: '40px' }}>
+          <h1 className="section-title">Mi Gym</h1>
+          <p className="section-sub">Configurá los datos de tu gimnasio. Todo lo que cambies acá se va a ver en tu página pública.</p>
+        </div>
 
         <form onSubmit={guardar} className="service-card" style={{ padding: '35px' }}>
+          
           <h3 style={{ color: 'var(--accent)', marginBottom: '20px', fontSize: '1rem', textTransform: 'uppercase' }}>Identidad</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '30px' }}>
             <div><label>Nombre</label><input type="text" value={gym.nombre || ''} onChange={(e) => actualizar('nombre', e.target.value)} required /></div>
             <div><label>Sufijo</label><input type="text" value={gym.sufijo || ''} onChange={(e) => actualizar('sufijo', e.target.value)} /></div>
+            <div>
+              <label>Código de Invitación</label>
+              <input type="text" value={gym.codigo_invitacion || ''} readOnly style={{ background: 'var(--bg-2)', color: 'var(--accent)', fontWeight: 'bold', textAlign: 'center', width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #2a2a32' }} />
+              <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '5px' }}>Pasale este código a tus alumnos.</p>
+            </div>
             <div><label>Slug (URL)</label><input type="text" value={gym.slug || ''} onChange={(e) => actualizar('slug', e.target.value)} required /><p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '5px' }}>Tu web: /{gym.slug}</p></div>
           </div>
 
@@ -81,11 +121,26 @@ export default function MiGymPage() {
             <div><label>Descripción</label><textarea rows={3} value={gym.descripcion || ''} onChange={(e) => actualizar('descripcion', e.target.value)} style={{ padding: '12px', borderRadius: '10px', border: '1px solid #2a2a32', background: 'var(--card)', color: '#fff', width: '100%' }} /></div>
           </div>
 
-          <h3 style={{ color: 'var(--accent)', marginBottom: '20px', fontSize: '1rem', textTransform: 'uppercase' }}>Imágenes (URLs)</h3>
+          <h3 style={{ color: 'var(--accent)', marginBottom: '20px', fontSize: '1rem', textTransform: 'uppercase' }}>Imágenes (Subir archivos)</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '30px' }}>
-            <div><label>Logo</label><input type="text" value={gym.logo_url || ''} onChange={(e) => actualizar('logo_url', e.target.value)} /></div>
-            <div><label>Imagen Hero</label><input type="text" value={gym.hero_img_url || ''} onChange={(e) => actualizar('hero_img_url', e.target.value)} /></div>
-            <div><label>Imagen "Sobre mí"</label><input type="text" value={gym.sobre_mi_img_url || ''} onChange={(e) => actualizar('sobre_mi_img_url', e.target.value)} /></div>
+            <div>
+              <label>Logo</label>
+              <input type="file" accept="image/*" onChange={(e) => subirImagen(e, 'logo_url')} style={{ width: '100%', padding: '10px', background: 'var(--bg-2)', borderRadius: '8px', border: '1px solid #2a2a32' }} />
+              {subiendo === 'logo_url' && <p style={{ fontSize: '0.8rem', color: 'var(--accent)' }}>Subiendo...</p>}
+              {gym.logo_url && <img src={gym.logo_url} alt="Logo" style={{ height: '40px', marginTop: '10px', borderRadius: '4px' }} />}
+            </div>
+            <div>
+              <label>Imagen de Fondo (Hero)</label>
+              <input type="file" accept="image/*" onChange={(e) => subirImagen(e, 'hero_img_url')} style={{ width: '100%', padding: '10px', background: 'var(--bg-2)', borderRadius: '8px', border: '1px solid #2a2a32' }} />
+              {subiendo === 'hero_img_url' && <p style={{ fontSize: '0.8rem', color: 'var(--accent)' }}>Subiendo...</p>}
+              {gym.hero_img_url && <img src={gym.hero_img_url} alt="Hero" style={{ height: '40px', marginTop: '10px', borderRadius: '4px', objectFit: 'cover' }} />}
+            </div>
+            <div>
+              <label>Imagen "Sobre mí"</label>
+              <input type="file" accept="image/*" onChange={(e) => subirImagen(e, 'sobre_mi_img_url')} style={{ width: '100%', padding: '10px', background: 'var(--bg-2)', borderRadius: '8px', border: '1px solid #2a2a32' }} />
+              {subiendo === 'sobre_mi_img_url' && <p style={{ fontSize: '0.8rem', color: 'var(--accent)' }}>Subiendo...</p>}
+              {gym.sobre_mi_img_url && <img src={gym.sobre_mi_img_url} alt="Sobre mi" style={{ height: '40px', marginTop: '10px', borderRadius: '4px', objectFit: 'cover' }} />}
+            </div>
           </div>
 
           <h3 style={{ color: 'var(--accent)', marginBottom: '20px', fontSize: '1rem', textTransform: 'uppercase' }}>Colores</h3>

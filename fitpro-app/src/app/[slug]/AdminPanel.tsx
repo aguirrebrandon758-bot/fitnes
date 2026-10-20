@@ -26,6 +26,9 @@ export default function AdminPanel({ gym }: { gym: any }) {
           <Link href="/panel" className="btn btn-sm" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}>
             🏋️ Ir a mi panel
           </Link>
+          <Link href="/panel/galeria" className="btn btn-sm" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}>
+            📸 Galería
+          </Link>
           <Link href="/admin" className="btn btn-sm" style={{ background: 'rgba(255,90,31,0.1)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>
             👑 Volver al Admin
           </Link>

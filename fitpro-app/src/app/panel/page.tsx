@@ -9,12 +9,9 @@ async function PanelContent() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // 👇 ARREGLO: Pasamos todo a minúsculas y quitamos espacios 👇
   const isSuperAdmin = user.email?.toLowerCase().trim() === 'aguirrebrandon758@gmail.com'
 
   const { data: perfil } = await supabase.from('profiles').select('rol, nombre').eq('id', user.id).maybeSingle()
-  
-  // Si es superadmin, le damos el rol de admin. Si no, leemos su perfil.
   const rol = isSuperAdmin ? 'admin' : (perfil?.rol || 'cliente')
 
   // ============================================
@@ -68,18 +65,24 @@ async function PanelContent() {
   // PANEL DE ENTRENADOR / ADMIN
   // ============================================
   
-  const { data: checkGym } = await supabase
-    .from('gyms')
-    .select('*')
-    .eq('owner_id', user.id)
-    .maybeSingle()
+  let checkGym = null;
+
+  if (isSuperAdmin) {
+    // 👇 TRUCO MAESTRO: Si sos el admin, buscamos "gym-demo" directamente sin importar quién sea el dueño 👇
+    const { data } = await supabase.from('gyms').select('*').eq('slug', 'gym-demo').maybeSingle()
+    checkGym = data
+  } else {
+    // Si es un entrenador normal, lo buscamos por su ID
+    const { data } = await supabase.from('gyms').select('*').eq('owner_id', user.id).maybeSingle()
+    checkGym = data
+  }
 
   if (!checkGym) {
     return (
       <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="service-card" style={{ maxWidth: '500px', width: '100%', padding: '40px', textAlign: 'center', borderColor: 'var(--accent)' }}>
           <h1 style={{ fontSize: '1.5rem', marginBottom: '15px' }}>¡Bienvenido a FitPro!</h1>
-          <p style={{ color: 'var(--muted)', marginBottom: '30px' }}>Parece que es tu primera vez. Creá tu gimnasio para empezar a gestionar tus clientes.</p>
+          <p style={{ color: 'var(--muted)', marginBottom: '30px' }}>Parece que es tu primera vez. Creá tu gimnasio para empezar.</p>
           
           <form action="/api/crear-gym" method="POST" style={{ display: 'grid', gap: '15px', textAlign: 'left' }}>
             <div>

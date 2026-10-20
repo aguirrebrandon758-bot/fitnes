@@ -153,6 +153,7 @@ async function PanelContent() {
             <Link href="/panel/clientes" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>👥 Clientes</h3><p style={{ marginTop: '10px' }}>Asignar rutinas y dietas</p></Link>
             <Link href="/panel/mi-gym" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>🏢 Mi Gym</h3><p style={{ marginTop: '10px' }}>Editar nombre, logo, colores y datos</p></Link>
             <Link href="/panel/dietas" className="service-card" style={{ display: 'block' }}><h3>🍏 Dietas</h3><p style={{ marginTop: '10px' }}>Crear planes de alimentación</p></Link>
+                        <Link href="/panel/galeria" className="service-card" style={{ display: 'block' }}><h3>📸 Galería</h3><p style={{ marginTop: '10px' }}>Subir fotos a tu página</p></Link>
             <Link href="/panel/testimonios" className="service-card" style={{ display: 'block' }}><h3>💬 Testimonios</h3><p style={{ marginTop: '10px' }}>Cargar opiniones de alumnos</p></Link>
             <Link href="/panel/ejercicios" className="service-card" style={{ display: 'block' }}><h3>📋 Ejercicios</h3><p style={{ marginTop: '10px' }}>Biblioteca de ejercicios</p></Link>
             <Link href="/panel/rutinas" className="service-card" style={{ display: 'block' }}><h3>🏋️ Rutinas</h3><p style={{ marginTop: '10px' }}>Ver rutinas y ejercicios</p></Link>

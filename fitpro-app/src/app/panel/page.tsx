@@ -68,11 +68,20 @@ async function PanelContent() {
   let checkGym = null;
 
   if (isSuperAdmin) {
-    // 👇 TRUCO MAESTRO: Si sos el admin, buscamos "gym-demo" directamente sin importar quién sea el dueño 👇
     const { data } = await supabase.from('gyms').select('*').eq('slug', 'gym-demo').maybeSingle()
     checkGym = data
+
+    // 👇 SI LA BASE DE DATOS FALLA, INVENTAMOS UN GYM PARA QUE NO TE ECHEN 👇
+    if (!checkGym) {
+      checkGym = {
+        id: '00000000-0000-0000-0000-000000000000',
+        nombre: 'Mi Gym (Modo Dios)',
+        slug: 'gym-demo',
+        color_primario: '#ff5a1f',
+        color_secundario: '#ffb703'
+      }
+    }
   } else {
-    // Si es un entrenador normal, lo buscamos por su ID
     const { data } = await supabase.from('gyms').select('*').eq('owner_id', user.id).maybeSingle()
     checkGym = data
   }
@@ -83,16 +92,9 @@ async function PanelContent() {
         <div className="service-card" style={{ maxWidth: '500px', width: '100%', padding: '40px', textAlign: 'center', borderColor: 'var(--accent)' }}>
           <h1 style={{ fontSize: '1.5rem', marginBottom: '15px' }}>¡Bienvenido a FitPro!</h1>
           <p style={{ color: 'var(--muted)', marginBottom: '30px' }}>Parece que es tu primera vez. Creá tu gimnasio para empezar.</p>
-          
           <form action="/api/crear-gym" method="POST" style={{ display: 'grid', gap: '15px', textAlign: 'left' }}>
-            <div>
-              <label>Nombre de tu Gym</label>
-              <input type="text" name="nombre" placeholder="Ej: FitZone" required />
-            </div>
-            <div>
-              <label>URL de tu página (sin espacios)</label>
-              <input type="text" name="slug" placeholder="Ej: fitzone" required />
-            </div>
+            <div><label>Nombre de tu Gym</label><input type="text" name="nombre" placeholder="Ej: FitZone" required /></div>
+            <div><label>URL de tu página</label><input type="text" name="slug" placeholder="Ej: fitzone" required /></div>
             <button type="submit" className="btn" style={{ marginTop: '10px' }}>Crear mi Gimnasio</button>
           </form>
         </div>
@@ -100,7 +102,6 @@ async function PanelContent() {
     )
   }
 
-  // Colores del gym
   const dynamicStyles = {
     '--accent': checkGym.color_primario || '#ff5a1f',
     '--accent-2': checkGym.color_secundario || '#ffb703',
@@ -126,12 +127,10 @@ async function PanelContent() {
         <div className="container">
           <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
             <div className="logo" style={{ fontSize: '1.8rem' }}>FIT<span>PRO</span></div>
-            
             <div style={{ display: 'flex', gap: '10px' }}>
               <Link href={`/${checkGym.slug}`} className="btn btn-sm" style={{ background: 'var(--accent)', color: '#fff', textDecoration: 'none' }}>
                 🌐 Mi Página Pública
               </Link>
-              
               <form action="/auth/signout" method="post">
                 <button type="submit" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>Cerrar sesión</button>
               </form>

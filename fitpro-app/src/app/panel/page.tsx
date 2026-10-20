@@ -18,7 +18,7 @@ async function PanelContent() {
   if (rol === 'cliente') {
     const { data: relacion } = await supabase
       .from('gym_clientes')
-      .select(`gym_id, rutina_asignada_id, dieta_asignada_id, gyms(id, nombre, sufijo, slug)`)
+      .select(`gym_id, rutina_asignada_id, dieta_asignada_id, gyms(id, nombre, sufijo, slug, color_primario, color_secundario)`)
       .eq('user_id', user.id).eq('activo', true).maybeSingle()
 
     if (!relacion) {
@@ -63,10 +63,9 @@ async function PanelContent() {
   // PANEL DE ENTRENADOR
   // ============================================
   
-  // Verificar si el entrenador ya tiene un gym
   const { data: checkGym } = await supabase
     .from('gyms')
-    .select('id')
+    .select('*')
     .eq('owner_id', user.id)
     .maybeSingle()
 
@@ -93,11 +92,17 @@ async function PanelContent() {
     )
   }
 
+  // 👇 ACÁ TOMAMOS LOS COLORES DEL GYM
+  const dynamicStyles = {
+    '--accent': checkGym.color_primario || '#ff5a1f',
+    '--accent-2': checkGym.color_secundario || '#ffb703',
+  } as React.CSSProperties
+
   const [{ count: totalEj }, { count: totalRu }, { count: totalDi }, { count: totalVi }] = await Promise.all([
-    supabase.from('ejercicios').select('*', { count: 'exact', head: true }),
-    supabase.from('rutinas').select('*', { count: 'exact', head: true }),
-    supabase.from('dietas').select('*', { count: 'exact', head: true }),
-    supabase.from('videos').select('*', { count: 'exact', head: true }),
+    supabase.from('ejercicios').select('*', { count: 'exact', head: true }).eq('gym_id', checkGym.id),
+    supabase.from('rutinas').select('*', { count: 'exact', head: true }).eq('gym_id', checkGym.id),
+    supabase.from('dietas').select('*', { count: 'exact', head: true }).eq('gym_id', checkGym.id),
+    supabase.from('videos').select('*', { count: 'exact', head: true }).eq('gym_id', checkGym.id),
   ])
 
   const stats = [
@@ -108,32 +113,34 @@ async function PanelContent() {
   ]
 
   return (
-    <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px 20px' }}>
-      <div className="container">
-        <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div className="logo" style={{ fontSize: '1.8rem' }}>FIT<span>PRO</span></div>
-          <form action="/auth/signout" method="post"><button type="submit" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>Cerrar sesión</button></form>
-        </header>
-        
-        <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>Resumen</h2>
-        <div className="services-grid" style={{ marginBottom: '50px' }}>
-          {stats.map((s) => (
-            <div key={s.label} className="service-card" style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: s.color }}>{s.value}</div>
-              <p style={{ color: 'var(--muted)', marginTop: '10px', fontSize: '0.9rem', textTransform: 'uppercase' }}>{s.label}</p>
-            </div>
-          ))}
-        </div>
+    <div style={dynamicStyles}>
+      <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px 20px' }}>
+        <div className="container">
+          <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="logo" style={{ fontSize: '1.8rem' }}>FIT<span>PRO</span></div>
+            <form action="/auth/signout" method="post"><button type="submit" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>Cerrar sesión</button></form>
+          </header>
+          
+          <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>Resumen</h2>
+          <div className="services-grid" style={{ marginBottom: '50px' }}>
+            {stats.map((s) => (
+              <div key={s.label} className="service-card" style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: s.color }}>{s.value}</div>
+                <p style={{ color: 'var(--muted)', marginTop: '10px', fontSize: '0.9rem', textTransform: 'uppercase' }}>{s.label}</p>
+              </div>
+            ))}
+          </div>
 
-        <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>Acciones rápidas</h2>
-        <div className="services-grid">
-          <Link href="/panel/clientes" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>👥 Clientes</h3><p style={{ marginTop: '10px' }}>Asignar rutinas y dietas</p></Link>
-          <Link href="/panel/mi-gym" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>🏢 Mi Gym</h3><p style={{ marginTop: '10px' }}>Editar nombre, logo, colores y datos</p></Link>
-          <Link href="/panel/dietas" className="service-card" style={{ display: 'block' }}><h3>🍏 Dietas</h3><p style={{ marginTop: '10px' }}>Crear planes de alimentación</p></Link>
-          <Link href="/panel/testimonios" className="service-card" style={{ display: 'block' }}><h3>💬 Testimonios</h3><p style={{ marginTop: '10px' }}>Cargar opiniones de alumnos</p></Link>
-          <Link href="/panel/ejercicios" className="service-card" style={{ display: 'block' }}><h3>📋 Ejercicios</h3><p style={{ marginTop: '10px' }}>Biblioteca de ejercicios</p></Link>
-          <Link href="/panel/rutinas" className="service-card" style={{ display: 'block' }}><h3>🏋️ Rutinas</h3><p style={{ marginTop: '10px' }}>Ver rutinas y ejercicios</p></Link>
-          <Link href="/panel/videos" className="service-card" style={{ display: 'block' }}><h3>🎥 Videos</h3><p style={{ marginTop: '10px' }}>Videos de técnicas</p></Link>
+          <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>Acciones rápidas</h2>
+          <div className="services-grid">
+            <Link href="/panel/clientes" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>👥 Clientes</h3><p style={{ marginTop: '10px' }}>Asignar rutinas y dietas</p></Link>
+            <Link href="/panel/mi-gym" className="service-card" style={{ display: 'block', borderColor: 'var(--accent)' }}><h3>🏢 Mi Gym</h3><p style={{ marginTop: '10px' }}>Editar nombre, logo, colores y datos</p></Link>
+            <Link href="/panel/dietas" className="service-card" style={{ display: 'block' }}><h3>🍏 Dietas</h3><p style={{ marginTop: '10px' }}>Crear planes de alimentación</p></Link>
+            <Link href="/panel/testimonios" className="service-card" style={{ display: 'block' }}><h3>💬 Testimonios</h3><p style={{ marginTop: '10px' }}>Cargar opiniones de alumnos</p></Link>
+            <Link href="/panel/ejercicios" className="service-card" style={{ display: 'block' }}><h3>📋 Ejercicios</h3><p style={{ marginTop: '10px' }}>Biblioteca de ejercicios</p></Link>
+            <Link href="/panel/rutinas" className="service-card" style={{ display: 'block' }}><h3>🏋️ Rutinas</h3><p style={{ marginTop: '10px' }}>Ver rutinas y ejercicios</p></Link>
+            <Link href="/panel/videos" className="service-card" style={{ display: 'block' }}><h3>🎥 Videos</h3><p style={{ marginTop: '10px' }}>Videos de técnicas</p></Link>
+          </div>
         </div>
       </div>
     </div>

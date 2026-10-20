@@ -9,8 +9,13 @@ async function PanelContent() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  // 👇 ARREGLO: Pasamos todo a minúsculas y quitamos espacios 👇
+  const isSuperAdmin = user.email?.toLowerCase().trim() === 'aguirrebrandon758@gmail.com'
+
   const { data: perfil } = await supabase.from('profiles').select('rol, nombre').eq('id', user.id).maybeSingle()
-  const rol = perfil?.rol || 'cliente'
+  
+  // Si es superadmin, le damos el rol de admin. Si no, leemos su perfil.
+  const rol = isSuperAdmin ? 'admin' : (perfil?.rol || 'cliente')
 
   // ============================================
   // PANEL DE CLIENTE
@@ -60,7 +65,7 @@ async function PanelContent() {
   }
 
   // ============================================
-  // PANEL DE ENTRENADOR
+  // PANEL DE ENTRENADOR / ADMIN
   // ============================================
   
   const { data: checkGym } = await supabase
@@ -92,7 +97,7 @@ async function PanelContent() {
     )
   }
 
-  // Tomamos los colores del gym
+  // Colores del gym
   const dynamicStyles = {
     '--accent': checkGym.color_primario || '#ff5a1f',
     '--accent-2': checkGym.color_secundario || '#ffb703',
@@ -120,7 +125,6 @@ async function PanelContent() {
             <div className="logo" style={{ fontSize: '1.8rem' }}>FIT<span>PRO</span></div>
             
             <div style={{ display: 'flex', gap: '10px' }}>
-              {/* 👇 BOTÓN PARA IR A LA PÁGINA PÚBLICA 👇 */}
               <Link href={`/${checkGym.slug}`} className="btn btn-sm" style={{ background: 'var(--accent)', color: '#fff', textDecoration: 'none' }}>
                 🌐 Mi Página Pública
               </Link>

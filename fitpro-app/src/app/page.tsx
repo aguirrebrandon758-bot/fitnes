@@ -10,17 +10,61 @@ export default function Home() {
       background: '#09090b'
     }}>
       
-      {/* NAVBAR */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 40px', position: 'fixed', top: 0, left: 0, right: 0, background: 'rgba(9,9,11,0.8)', backdropFilter: 'blur(12px)', zIndex: 100, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="logo" style={{ fontSize: '1.8rem', fontWeight: 800, color: '#fff' }}>FIT<span style={{ color: '#ff5a1f' }}>PRO</span></div>
-        <div style={{ display: 'flex', gap: '15px' }}>
-          <Link href="/login" style={{ color: '#fff', textDecoration: 'none', padding: '10px 20px', fontWeight: 600 }}>Iniciar sesión</Link>
-          <Link href="/registro" style={{ background: '#ff5a1f', color: '#fff', textDecoration: 'none', padding: '10px 24px', borderRadius: '8px', fontWeight: 600, transition: '0.3s', boxShadow: '0 4px 14px rgba(255,90,31,0.3)' }}>Crear cuenta gratis</Link>
+      {/* NAVBAR FLOTANTE ESTILO GLASSMORPHISM */}
+      <nav style={{ 
+        position: 'fixed', 
+        top: '20px', 
+        left: '50%', 
+        transform: 'translateX(-50%)',
+        width: 'calc(100% - 40px)',
+        maxWidth: '1200px',
+        background: 'rgba(20, 20, 24, 0.6)', // Fondo semitransparente
+        backdropFilter: 'blur(20px)',       // Efecto vidrio esmerilado
+        border: '1px solid rgba(255, 255, 255, 0.08)', // Borde sutil
+        borderRadius: '20px',               // Bordes bien redondeados
+        padding: '12px 24px', 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        zIndex: 100,
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)' // Sombra flotante
+      }}>
+        {/* Logo */}
+        <div className="logo" style={{ fontSize: '1.8rem', fontWeight: 900, color: '#fff', letterSpacing: '-1px', display: 'flex', alignItems: 'center' }}>
+          FIT<span style={{ color: '#ff5a1f' }}>PRO</span>
+        </div>
+
+        {/* Botones */}
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <Link href="/login" style={{ 
+            color: '#e4e4e7', 
+            textDecoration: 'none', 
+            padding: '10px 20px', 
+            fontWeight: 600, 
+            fontSize: '0.95rem',
+            borderRadius: '10px',
+            transition: 'background 0.2s'
+          }}>
+            Iniciar sesión
+          </Link>
+          
+          <Link href="/registro" style={{ 
+            background: 'linear-gradient(135deg, #ff5a1f, #ff8c00)', // Degradado naranja
+            color: '#fff', 
+            textDecoration: 'none', 
+            padding: '10px 24px', 
+            borderRadius: '12px', 
+            fontWeight: 700, 
+            fontSize: '0.95rem', 
+            boxShadow: '0 4px 15px rgba(255,90,31,0.3)',
+            transition: 'transform 0.2s'
+          }}>
+            Crear cuenta gratis
+          </Link>
         </div>
       </nav>
 
       {/* HERO SECTION CON VIDEO DE FONDO */}
-      {/* 👇 Aumentamos el minHeight a 120vh para que ocupe más espacio hacia abajo 👇 */}
       <section style={{ position: 'relative', minHeight: '120vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 20px', overflow: 'hidden' }}>
         
         {/* VIDEO DE FONDO */}
@@ -36,14 +80,14 @@ export default function Home() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            opacity: 0.65, // 👈 Subimos la opacidad para que se vea más claro
+            opacity: 0.65,
             zIndex: 0
           }}
         >
           <source src="/video-default.mp4" type="video/mp4" />
         </video>
 
-        {/* CAPA OSCURA PARA LEER EL TEXTO (Mucho más suave arriba, oscura al final) */}
+        {/* CAPA OSCURA */}
         <div style={{ 
           position: 'absolute', 
           inset: 0, 
@@ -67,7 +111,6 @@ export default function Home() {
       </section>
 
       {/* FEATURES SECTION */}
-      {/* El fondo arranca justo donde termina el degradado del video */}
       <section style={{ padding: '100px 20px', position: 'relative', background: '#09090b' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '60px' }}>
@@ -114,7 +157,7 @@ export default function Home() {
       <section style={{ padding: '100px 20px', background: 'linear-gradient(to bottom, #09090b, rgba(23, 23, 27, 0.5))', textAlign: 'center' }}>
         <h2 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '20px' }}>¿Listo para despegar?</h2>
         <p style={{ color: '#a1a1aa', fontSize: '1.2rem', marginBottom: '40px' }}>Unite a la plataforma que está revolucionando la gestión de gimnasios.</p>
-        <Link href="/registro" style={{ background: '#ff5a1f', color: '#fff', textDecoration: 'none', padding: '18px 40px', borderRadius: '12px', fontWeight: 800, fontSize: '1.2rem', display: 'inline-block', boxShadow: '0 10px 30px rgba(255,90,31,0.4)' }}>
+        <Link href="/registro" style={{ background: 'linear-gradient(135deg, #ff5a1f, #ff8c00)', color: '#fff', textDecoration: 'none', padding: '18px 40px', borderRadius: '12px', fontWeight: 800, fontSize: '1.2rem', display: 'inline-block', boxShadow: '0 10px 30px rgba(255,90,31,0.4)' }}>
           Crear mi cuenta gratis
         </Link>
       </section>

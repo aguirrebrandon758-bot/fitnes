@@ -30,20 +30,27 @@ export default function LoginPage() {
     const { data: { user } } = await supabase.auth.getUser()
     const rol = user?.user_metadata?.rol
 
-    if (rol === 'cliente') {
+    // 👇 LÓGICA DE REDIRECCIÓN CON EL NUEVO ROL ADMIN 👇
+    if (rol === 'admin') {
+      router.push('/admin')
+    } else if (rol === 'cliente') {
       router.push('/panel')
     } else {
       router.push('/panel/mi-gym')
     }
+    
     router.refresh()
   }
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden', background: '#0e0e10' }}>
       
+      <div style={{ display: 'none' }}>
+        <video preload="auto" src="/video-default.mp4" />
+      </div>
+
       <div style={{ flex: 1, position: 'relative', display: 'none', overflow: 'hidden' }} className="login-video-panel">
-        {/* Los 3 videos superpuestos, pero acá solo se ve el default */}
-        <video autoPlay loop muted playsInline style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }}>
+        <video autoPlay loop muted playsInline style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}>
           <source src="/video-default.mp4" type="video/mp4" />
         </video>
         

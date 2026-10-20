@@ -92,7 +92,7 @@ async function PanelContent() {
     )
   }
 
-  // 👇 ACÁ TOMAMOS LOS COLORES DEL GYM
+  // Tomamos los colores del gym
   const dynamicStyles = {
     '--accent': checkGym.color_primario || '#ff5a1f',
     '--accent-2': checkGym.color_secundario || '#ffb703',
@@ -116,9 +116,19 @@ async function PanelContent() {
     <div style={dynamicStyles}>
       <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px 20px' }}>
         <div className="container">
-          <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
             <div className="logo" style={{ fontSize: '1.8rem' }}>FIT<span>PRO</span></div>
-            <form action="/auth/signout" method="post"><button type="submit" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>Cerrar sesión</button></form>
+            
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {/* 👇 BOTÓN PARA IR A LA PÁGINA PÚBLICA 👇 */}
+              <Link href={`/${checkGym.slug}`} className="btn btn-sm" style={{ background: 'var(--accent)', color: '#fff', textDecoration: 'none' }}>
+                🌐 Mi Página Pública
+              </Link>
+              
+              <form action="/auth/signout" method="post">
+                <button type="submit" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>Cerrar sesión</button>
+              </form>
+            </div>
           </header>
           
           <h2 style={{ fontSize: '1.3rem', marginBottom: '20px' }}>Resumen</h2>

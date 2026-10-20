@@ -8,7 +8,7 @@ type Gym = any
 type Item = any
 
 export default function GymClient({
-  gym, isOwner, servicios, ejercicios, rutinas, rutinaEjercicios, posts, videos, alimentos, testimonios
+  gym, isOwner, servicios, ejercicios, rutinas, rutinaEjercicios, posts, videos, alimentos, testimonios, galeria
 }: {
   gym: Gym
   isOwner: boolean
@@ -20,8 +20,10 @@ export default function GymClient({
   videos: Item[]
   alimentos: Item[]
   testimonios: Item[]
+  galeria: Item[]
 }) {
   const [videoId, setVideoId] = useState<string | null>(null)
+  const [fotoSeleccionada, setFotoSeleccionada] = useState<string | null>(null)
 
   const dynamicStyles = {
     '--accent': gym.color_primario || '#ff5a1f',
@@ -43,6 +45,7 @@ export default function GymClient({
           </div>
           <ul style={{ display: 'flex', gap: '28px', listStyle: 'none', alignItems: 'center' }}>
             <li><a href="#sobre-mi" style={{ color: '#a1a1aa', fontWeight: 500 }}>Sobre mí</a></li>
+            <li><a href="#galeria" style={{ color: '#a1a1aa', fontWeight: 500 }}>Galería</a></li>
             <li><a href="#ejercicios" style={{ color: '#a1a1aa', fontWeight: 500 }}>Ejercicios</a></li>
             <li><a href="#videos" style={{ color: '#a1a1aa', fontWeight: 500 }}>Videos</a></li>
             {testimonios.length > 0 && <li><a href="#testimonios" style={{ color: 'var(--accent)', fontWeight: 600 }}>Opiniones</a></li>}
@@ -50,7 +53,6 @@ export default function GymClient({
         </nav>
       </header>
 
-      {/* PANEL DE ADMIN (Si es el dueño) */}
       {isOwner && (
         <div style={{ paddingTop: '70px' }}>
           <AdminPanel gym={gym} />
@@ -73,12 +75,10 @@ export default function GymClient({
         </div>
       </section>
 
-      {/* 👇 NUEVA SECCIÓN: SOBRE MÍ 👇 */}
+      {/* SOBRE MÍ */}
       {(gym.sobre_mi_img_url || gym.descripcion) && (
         <section id="sobre-mi" style={{ padding: '90px 0', background: '#0e0e10' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '50px', alignItems: 'center' }}>
-            
-            {/* Texto */}
             <div>
               <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '20px', fontWeight: 800 }}>
                 Sobre <span style={{ color: 'var(--accent)' }}>mí</span>
@@ -87,24 +87,37 @@ export default function GymClient({
                 {gym.descripcion || 'Conocé más sobre mi experiencia y cómo puedo ayudarte a alcanzar tus objetivos.'}
               </p>
             </div>
-
-            {/* Imagen */}
             {gym.sobre_mi_img_url && (
               <div>
-                <img 
-                  src={gym.sobre_mi_img_url} 
-                  alt="Sobre mí" 
-                  style={{ width: '100%', borderRadius: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', objectFit: 'cover', maxHeight: '500px' }} 
-                />
+                <img src={gym.sobre_mi_img_url} alt="Sobre mí" style={{ width: '100%', borderRadius: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', objectFit: 'cover', maxHeight: '500px' }} />
               </div>
             )}
           </div>
         </section>
       )}
 
+      {/* GALERÍA DE FOTOS */}
+      {galeria && galeria.length > 0 && (
+        <section id="galeria" style={{ padding: '90px 0', background: '#17171b' }}>
+          <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '30px', textAlign: 'center' }}>Nuestra Galería</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '15px' }}>
+              {galeria.map((foto: any) => (
+                <div key={foto.id} onClick={() => setFotoSeleccionada(foto.url)} style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', aspectRatio: '1/1', cursor: 'pointer', background: '#000' }}>
+                  <img src={foto.url} alt={foto.titulo} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s', opacity: 0.9 }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} />
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 15px 10px', background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', color: '#fff', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                    {foto.titulo}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* EJERCICIOS */}
       {ejercicios.length > 0 && (
-        <section id="ejercicios" style={{ padding: '90px 0', background: '#17171b' }}>
+        <section id="ejercicios" style={{ padding: '90px 0', background: '#0e0e10' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
             <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '30px' }}>Biblioteca de ejercicios</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
@@ -125,7 +138,7 @@ export default function GymClient({
 
       {/* VIDEOS */}
       {videos.length > 0 && (
-        <section id="videos" style={{ padding: '90px 0', background: '#0e0e10' }}>
+        <section id="videos" style={{ padding: '90px 0', background: '#17171b' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
             <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '30px' }}>Mi trabajo en acción</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
@@ -141,7 +154,7 @@ export default function GymClient({
       )}
 
       {/* TESTIMONIOS */}
-      <section id="testimonios" style={{ padding: '90px 0', background: '#17171b' }}>
+      <section id="testimonios" style={{ padding: '90px 0', background: '#0e0e10' }}>
         <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
           <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '14px', textAlign: 'center' }}>Lo que dicen nuestros alumnos</h2>
           <p style={{ color: '#a1a1aa', marginBottom: '50px', maxWidth: '600px', textAlign: 'center', margin: '0 auto 50px' }}>Resultados reales. ¡Dejá tu opinión!</p>
@@ -158,7 +171,7 @@ export default function GymClient({
             </div>
           )}
 
-          <div style={{ maxWidth: '500px', margin: '0 auto', background: '#0e0e10', padding: '30px', borderRadius: '14px', border: '1px solid #2a2a32' }}>
+          <div style={{ maxWidth: '500px', margin: '0 auto', background: '#17171b', padding: '30px', borderRadius: '14px', border: '1px solid #2a2a32' }}>
             <h3 style={{ textAlign: 'center', marginBottom: '20px' }}>Dejá tu testimonio</h3>
             <TestimonioForm gymId={gym.id} />
           </div>
@@ -167,9 +180,9 @@ export default function GymClient({
 
       {/* FOOTER */}
       <footer style={{ background: '#0a0a0c', padding: '60px 20px 30px', borderTop: '1px solid #26262c' }}>
-        <div style={{ maxWidth: '1180px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '30px' }}>
-          <div><div style={{ fontWeight: 800, fontSize: '1.4rem', marginBottom: '10px' }}>{gym.nombre} <span style={{ color: 'var(--accent)' }}>{gym.sufijo}</span></div></div>
-          <div><h4 style={{ marginBottom: '14px' }}>Contacto</h4><p style={{ color: '#a1a1aa', fontSize: '.92rem' }}>{gym.email_contacto}</p></div>
+        <div style={{ maxWidth: '1180px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px' }}>
+          <div style={{ fontWeight: 800, fontSize: '1.4rem' }}>{gym.nombre} <span style={{ color: 'var(--accent)' }}>{gym.sufijo}</span></div>
+          <p style={{ color: '#a1a1aa', fontSize: '.92rem' }}>{gym.email_contacto}</p>
         </div>
       </footer>
 
@@ -182,6 +195,14 @@ export default function GymClient({
               <iframe src={`https://www.youtube.com/embed/${videoId.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&\n?#]+)/)?.[1] || videoId}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen style={{ width: '100%', height: '100%', border: 'none' }} />
             </div>
           </div>
+        </div>
+      )}
+
+      {/* MODAL DE GALERÍA */}
+      {fotoSeleccionada && (
+        <div style={{ display: 'flex', position: 'fixed', inset: 0, background: 'rgba(0,0,0,.9)', zIndex: 200, alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setFotoSeleccionada(null)}>
+          <img src={fotoSeleccionada} alt="Foto" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '8px' }} />
+          <button onClick={() => setFotoSeleccionada(null)} style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.2)', color: '#fff', border: 'none', width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
         </div>
       )}
     </div>
@@ -210,15 +231,15 @@ function TestimonioForm({ gymId }: { gymId: string }) {
   return (
     <form onSubmit={enviar} style={{ display: 'grid', gap: '15px' }}>
       {ok && <div style={{ padding: '10px', background: 'rgba(34,197,94,.1)', color: '#4ade80', borderRadius: '8px', textAlign: 'center' }}>¡Gracias por tu opinión!</div>}
-      <input type="text" placeholder="Tu nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required style={{ width: '100%', padding: '12px', borderRadius: '8px', background: '#17171b', border: '1px solid #2a2a32', color: '#fff' }} />
-      <select value={estrellas} onChange={(e) => setEstrellas(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '8px', background: '#17171b', border: '1px solid #2a2a32', color: '#fff' }}>
+      <input type="text" placeholder="Tu nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required style={{ width: '100%', padding: '12px', borderRadius: '8px', background: '#0e0e10', border: '1px solid #2a2a32', color: '#fff' }} />
+      <select value={estrellas} onChange={(e) => setEstrellas(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '8px', background: '#0e0e10', border: '1px solid #2a2a32', color: '#fff' }}>
         <option value="5">⭐⭐⭐⭐⭐ (5 estrellas)</option>
         <option value="4">⭐⭐⭐⭐ (4 estrellas)</option>
         <option value="3">⭐⭐⭐ (3 estrellas)</option>
         <option value="2">⭐⭐ (2 estrellas)</option>
         <option value="1">⭐ (1 estrella)</option>
       </select>
-      <textarea placeholder="Contanos tu experiencia..." value={texto} onChange={(e) => setTexto(e.target.value)} required rows={3} style={{ width: '100%', padding: '12px', borderRadius: '8px', background: '#17171b', border: '1px solid #2a2a32', color: '#fff', resize: 'vertical' }} />
+      <textarea placeholder="Contanos tu experiencia..." value={texto} onChange={(e) => setTexto(e.target.value)} required rows={3} style={{ width: '100%', padding: '12px', borderRadius: '8px', background: '#0e0e10', border: '1px solid #2a2a32', color: '#fff', resize: 'vertical' }} />
       <button type="submit" disabled={loading} className="btn" style={{ width: '100%' }}>{loading ? 'Enviando...' : 'Publicar mi testimonio'}</button>
     </form>
   )

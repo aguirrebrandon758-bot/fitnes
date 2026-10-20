@@ -20,7 +20,8 @@ export default function Home() {
       </nav>
 
       {/* HERO SECTION CON VIDEO DE FONDO */}
-      <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 20px', overflow: 'hidden' }}>
+      {/* 👇 Aumentamos el minHeight a 120vh para que ocupe más espacio hacia abajo 👇 */}
+      <section style={{ position: 'relative', minHeight: '120vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 20px', overflow: 'hidden' }}>
         
         {/* VIDEO DE FONDO */}
         <video 
@@ -35,33 +36,39 @@ export default function Home() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            opacity: 0.4, // Lo hacemos semitransparente
+            opacity: 0.65, // 👈 Subimos la opacidad para que se vea más claro
             zIndex: 0
           }}
         >
           <source src="/video-default.mp4" type="video/mp4" />
         </video>
 
-        {/* CAPA OSCURA PARA LEER EL TEXTO */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(9,9,11,0.6) 0%, rgba(9,9,11,0.9) 100%)', zIndex: 1 }} />
+        {/* CAPA OSCURA PARA LEER EL TEXTO (Mucho más suave arriba, oscura al final) */}
+        <div style={{ 
+          position: 'absolute', 
+          inset: 0, 
+          background: 'linear-gradient(to bottom, rgba(9,9,11,0.3) 0%, rgba(9,9,11,0.5) 50%, #09090b 100%)', 
+          zIndex: 1 
+        }} />
 
         {/* CONTENIDO DEL HERO */}
         <div style={{ maxWidth: '800px', zIndex: 2, paddingTop: '80px' }}>
-          <span style={{ background: 'rgba(255,90,31,0.1)', color: '#ff5a1f', padding: '6px 16px', borderRadius: '50px', fontSize: '0.9rem', fontWeight: 700, border: '1px solid rgba(255,90,31,0.2)' }}>🚀 La plataforma #1 para gimnasios</span>
-          <h1 style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', fontWeight: 900, lineHeight: 1.1, marginTop: '20px', marginBottom: '20px' }}>
+          <span style={{ background: 'rgba(255,90,31,0.15)', color: '#ff5a1f', padding: '6px 16px', borderRadius: '50px', fontSize: '0.9rem', fontWeight: 700, border: '1px solid rgba(255,90,31,0.3)', backdropFilter: 'blur(5px)' }}>🚀 La plataforma #1 para gimnasios</span>
+          <h1 style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', fontWeight: 900, lineHeight: 1.1, marginTop: '20px', marginBottom: '20px', textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
             Lleva tu gimnasio al <br/> <span style={{ color: '#ff5a1f' }}>siguiente nivel.</span>
           </h1>
-          <p style={{ fontSize: '1.2rem', color: '#d4d4d8', maxWidth: '600px', margin: '0 auto 40px auto', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.2rem', color: '#e4e4e7', maxWidth: '600px', margin: '0 auto 40px auto', lineHeight: 1.6, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
             Gestioná rutinas, dietas, alumnos y tu propia página web personalizada. Todo en una sola plataforma rápida y moderna.
           </p>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link href="/registro" style={{ background: '#ff5a1f', color: '#fff', textDecoration: 'none', padding: '16px 40px', borderRadius: '12px', fontWeight: 700, fontSize: '1.2rem', boxShadow: '0 10px 20px rgba(255,90,31,0.3)' }}>Empezar ahora</Link>
+            <Link href="/registro" style={{ background: '#ff5a1f', color: '#fff', textDecoration: 'none', padding: '16px 40px', borderRadius: '12px', fontWeight: 700, fontSize: '1.2rem', boxShadow: '0 10px 30px rgba(255,90,31,0.4)', transition: 'transform 0.2s' }}>Empezar ahora</Link>
           </div>
         </div>
       </section>
 
       {/* FEATURES SECTION */}
-      <section style={{ padding: '100px 20px', position: 'relative', background: 'radial-gradient(circle at 50% 0%, rgba(255, 90, 31, 0.1) 0%, #09090b 50%)' }}>
+      {/* El fondo arranca justo donde termina el degradado del video */}
+      <section style={{ padding: '100px 20px', position: 'relative', background: '#09090b' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '60px' }}>
             <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '15px' }}>Todo lo que necesitás, en un solo lugar</h2>
@@ -104,7 +111,7 @@ export default function Home() {
       </section>
 
       {/* CTA FINAL */}
-      <section style={{ padding: '100px 20px', background: 'linear-gradient(to bottom, transparent, rgba(23, 23, 27, 0.5))', textAlign: 'center' }}>
+      <section style={{ padding: '100px 20px', background: 'linear-gradient(to bottom, #09090b, rgba(23, 23, 27, 0.5))', textAlign: 'center' }}>
         <h2 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '20px' }}>¿Listo para despegar?</h2>
         <p style={{ color: '#a1a1aa', fontSize: '1.2rem', marginBottom: '40px' }}>Unite a la plataforma que está revolucionando la gestión de gimnasios.</p>
         <Link href="/registro" style={{ background: '#ff5a1f', color: '#fff', textDecoration: 'none', padding: '18px 40px', borderRadius: '12px', fontWeight: 800, fontSize: '1.2rem', display: 'inline-block', boxShadow: '0 10px 30px rgba(255,90,31,0.4)' }}>

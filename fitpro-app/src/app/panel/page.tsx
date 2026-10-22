@@ -106,12 +106,14 @@ async function PanelContent() {
     <div style={dynamicStyles}>
       <div style={{ display: 'flex', minHeight: '100vh', background: '#09090b', color: '#fff', fontFamily: 'system-ui' }}>
         
-        {/* SIDEBAR LATERAL */}
+        {/* SIDEBAR LATERAL MEJORADO */}
         <aside className="sidebar-panel" style={{ 
-          width: '280px', background: 'rgba(14, 14, 16, 0.95)', borderRight: '1px solid rgba(255,255,255,0.05)',
+          width: '280px', 
+          background: '#111113', // Fondo un poco más claro que el main
+          borderRight: '1px solid rgba(255,255,255,0.05)',
           display: 'flex', flexDirection: 'column', padding: '30px 20px',
           position: 'sticky', top: 0, height: '100vh', overflowY: 'auto',
-          boxShadow: '10px 0 30px rgba(0,0,0,0.5)', zIndex: 10
+          zIndex: 10
         }}>
           
           <div style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '40px', paddingLeft: '10px' }}>
@@ -134,7 +136,8 @@ async function PanelContent() {
             <Link href="/panel/videos" className="sidebar-link"><span style={{ fontSize: '1.2rem' }}>🎥</span> Videos</Link>
           </nav>
 
-          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          {/* Espacio para que la música no tape los botones */}
+          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingTop: '20px', paddingBottom: '80px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
             {isSuperAdmin && (
               <Link href="/admin" className="sidebar-link-admin">👑 Panel Admin</Link>
             )}
@@ -145,33 +148,56 @@ async function PanelContent() {
           </div>
         </aside>
 
-        {/* ÁREA PRINCIPAL */}
-        <main className="main-content" style={{ flex: 1, padding: '50px', overflowY: 'auto' }}>
+        {/* ÁREA PRINCIPAL CON FONDO GRADIENTE */}
+        <main className="main-content" style={{ 
+          flex: 1, 
+          padding: '60px 50px', 
+          overflowY: 'auto',
+          background: 'radial-gradient(circle at 50% 0%, rgba(255,90,31,0.05) 0%, #09090b 60%)' // Fondo sutil
+        }}>
           
           <header style={{ marginBottom: '50px' }}>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '10px' }}>Resumen General</h1>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '10px', letterSpacing: '-1px' }}>Resumen General</h1>
             <p style={{ color: '#a1a1aa', fontSize: '1.1rem' }}>Bienvenido de vuelta a <strong style={{ color: 'var(--accent)' }}>{checkGym.nombre} {checkGym.sufijo}</strong>.</p>
           </header>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '25px' }}>
+          {/* GRILLA DE TARJETAS REDISEÑADA */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '30px' }}>
             {stats.map((s) => (
               <div key={s.label} className="stat-card" style={{ 
-                background: 'rgba(23, 23, 27, 0.6)', backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '35px 30px',
-                position: 'relative', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                background: 'linear-gradient(145deg, rgba(30,30,36,0.8) 0%, rgba(20,20,24,0.8) 100%)', 
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.05)', 
+                borderRadius: '24px', 
+                padding: '35px',
+                position: 'relative',
+                overflow: 'hidden',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
                 transition: 'transform 0.3s ease, borderColor 0.3s ease'
               }}>
-                <div style={{ position: 'absolute', top: '-20px', right: '-20px', fontSize: '8rem', opacity: 0.05, pointerEvents: 'none' }}>{s.icon}</div>
-                <div style={{ fontSize: '1.2rem', marginBottom: '20px', background: 'rgba(255,255,255,0.05)', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px' }}>{s.icon}</div>
-                <div style={{ fontSize: '3.5rem', fontWeight: 900, lineHeight: 1, color: 'var(--accent)', marginBottom: '10px' }}>{s.value}</div>
-                <div style={{ color: '#a1a1aa', fontSize: '1rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>{s.label}</div>
+                {/* Ícono gigante de fondo */}
+                <div style={{ position: 'absolute', top: '-10px', right: '-10px', fontSize: '7rem', opacity: 0.03, pointerEvents: 'none', transform: 'rotate(15deg)' }}>
+                  {s.icon}
+                </div>
+                
+                {/* Ícono en cajita */}
+                <div style={{ fontSize: '1.5rem', marginBottom: '25px', background: 'rgba(255,255,255,0.05)', width: '55px', height: '55px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  {s.icon}
+                </div>
+                
+                <div style={{ fontSize: '3.5rem', fontWeight: 900, lineHeight: 1, color: '#fff', marginBottom: '10px', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+                  {s.value}
+                </div>
+                <div style={{ color: 'var(--accent)', fontSize: '0.9rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+                  {s.label}
+                </div>
               </div>
             ))}
           </div>
         </main>
       </div>
 
-      {/* 👇 ACÁ ESTÁ LA MAGIA: CAMBIAMOS <style jsx> POR UN <style> NORMAL 👇 */}
+      {/* ESTILOS CSS */}
       <style>{`
         .sidebar-link {
           display: flex; align-items: center; gap: 12px; padding: 12px 15px;
@@ -199,15 +225,20 @@ async function PanelContent() {
           padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
         }
         .sidebar-btn-logout:hover { background: rgba(255,255,255,0.05); color: #fff; }
-        .stat-card:hover { transform: translateY(-5px); border-color: var(--accent) !important; }
+        
+        .stat-card:hover { 
+          transform: translateY(-8px); 
+          border-color: var(--accent) !important; 
+          box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
         
         @media (max-width: 900px) {
-          .sidebar-panel { width: 100% !important; height: auto !important; position: relative !important; padding: 20px !important; }
+          .sidebar-panel { width: 100% !important; height: auto !important; position: relative !important; padding: 20px !important; padding-bottom: 20px !important; }
           .sidebar-panel nav { flex-direction: row !important; overflow-x: auto !important; padding-bottom: 10px !important; }
           .sidebar-link { white-space: nowrap; padding: 8px 15px !important; }
           .sidebar-panel > div:first-child { margin-bottom: 20px !important; }
-          .sidebar-panel > div:last-child { border-top: none !important; flex-direction: row !important; flex-wrap: wrap !important; }
-          .main-content { padding: 20px !important; }
+          .sidebar-panel > div:last-child { border-top: none !important; flex-direction: row !important; flex-wrap: wrap !important; padding-bottom: 20px !important; }
+          .main-content { padding: 30px 20px !important; }
         }
       `}</style>
     </div>

@@ -106,20 +106,34 @@ async function PanelContent() {
     <div style={{ ...dynamicStyles, display: 'flex', height: '100vh', width: '100vw', background: '#050505', color: '#fff', fontFamily: 'system-ui', overflow: 'hidden' }}>
       
       {/* ================= SIDEBAR ================= */}
-      <aside style={{ 
+      <aside className="custom-scrollbar" style={{ 
         width: '280px', 
         background: '#0a0a0c', 
         borderRight: '1px solid rgba(255,255,255,0.05)',
         display: 'flex', 
         flexDirection: 'column', 
-        padding: '30px 20px 100px 20px', // Padding bottom para que el reproductor no tape
+        padding: '30px 20px 20px 20px',
         overflowY: 'auto',
         zIndex: 10
       }}>
         {/* Logo */}
-        <div style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '40px', paddingLeft: '10px' }}>
+        <div style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '30px', paddingLeft: '10px' }}>
           FIT<span style={{ color: 'var(--accent)' }}>PRO</span>
         </div>
+
+        {/* 👇 BOTONES DE ACCIÓN MOVIDOS ARRIBA 👇 */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '30px' }}>
+          {isSuperAdmin && (
+            <Link href="/admin" className="sidebar-link-admin">👑 Panel Admin</Link>
+          )}
+          <Link href={`/${checkGym.slug}`} className="sidebar-btn-public">🌐 Mi Página Pública</Link>
+          <form action="/auth/signout" method="post" style={{ width: '100%' }}>
+            <button type="submit" className="sidebar-btn-logout">Cerrar sesión</button>
+          </form>
+        </div>
+
+        {/* Divisor */}
+        <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)', marginBottom: '20px' }}></div>
 
         {/* Navegación */}
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
@@ -135,34 +149,21 @@ async function PanelContent() {
           <Link href="/panel/rutinas" className="sidebar-link"><span>🏋️</span> Rutinas</Link>
           <Link href="/panel/videos" className="sidebar-link"><span>🎥</span> Videos</Link>
         </nav>
-
-        {/* Footer Sidebar */}
-        <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingTop: '20px' }}>
-          {isSuperAdmin && (
-            <Link href="/admin" className="sidebar-link-admin">👑 Panel Admin</Link>
-          )}
-          <Link href={`/${checkGym.slug}`} className="sidebar-btn-public">🌐 Mi Página Pública</Link>
-          <form action="/auth/signout" method="post" style={{ width: '100%' }}>
-            <button type="submit" className="sidebar-btn-logout">Cerrar sesión</button>
-          </form>
-        </div>
       </aside>
 
       {/* ================= ÁREA PRINCIPAL ================= */}
-      <main style={{ 
+      <main className="custom-scrollbar" style={{ 
         flex: 1, 
         padding: '60px', 
         overflowY: 'auto',
         background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.02) 0%, transparent 50%)'
       }}>
         
-        {/* Header */}
         <div style={{ marginBottom: '50px' }}>
           <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '10px', letterSpacing: '-1px' }}>Resumen General</h1>
           <p style={{ color: '#a1a1aa', fontSize: '1.1rem' }}>Bienvenido de vuelta a <strong style={{ color: 'var(--accent)' }}>{checkGym.nombre} {checkGym.sufijo}</strong>.</p>
         </div>
 
-        {/* Grid de Estadísticas */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '25px' }}>
           {stats.map((s) => (
             <div key={s.label} className="stat-card" style={{ 
@@ -176,30 +177,17 @@ async function PanelContent() {
               position: 'relative',
               overflow: 'hidden'
             }}>
-              {/* Brillo superior con color */}
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: s.color }}></div>
-
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.05)', 
-                  width: '50px', height: '50px', 
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                  borderRadius: '12px',
-                  fontSize: '1.5rem'
-                }}>
+                <div style={{ background: 'rgba(255,255,255,0.05)', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px', fontSize: '1.5rem' }}>
                   {s.icon}
                 </div>
                 <div style={{ color: s.color, fontSize: '0.8rem', fontWeight: 700, background: `${s.color}20`, padding: '4px 10px', borderRadius: '50px' }}>
                   +{s.label}
                 </div>
               </div>
-
-              <div style={{ fontSize: '3rem', fontWeight: 900, lineHeight: 1, marginBottom: '5px' }}>
-                {s.value}
-              </div>
-              <div style={{ color: '#71717a', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '0.5px' }}>
-                Total de {s.label}
-              </div>
+              <div style={{ fontSize: '3rem', fontWeight: 900, lineHeight: 1, marginBottom: '5px' }}>{s.value}</div>
+              <div style={{ color: '#71717a', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '0.5px' }}>Total de {s.label}</div>
             </div>
           ))}
         </div>
@@ -207,6 +195,21 @@ async function PanelContent() {
 
       {/* ESTILOS CSS */}
       <style>{`
+        /* 👇 ESTILOS PARA LAS BARRAS DE SCROLL ELEGANTES 👇 */
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+
         .sidebar-link {
           display: flex; align-items: center; gap: 12px; padding: 12px 15px;
           border-radius: 12px; color: #a1a1aa; text-decoration: none;

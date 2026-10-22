@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react' // 👈 Agregamos useRef
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -8,6 +8,9 @@ import Link from 'next/link'
 export default function GaleriaPage() {
   const router = useRouter()
   const supabase = createClient()
+  
+  // 👇 Creamos la referencia al input oculto 👇
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [gymId, setGymId] = useState<string | null>(null)
   const [fotos, setFotos] = useState<any[]>([])
@@ -60,6 +63,8 @@ export default function GaleriaPage() {
     } else {
       setFotos(prev => [data, ...prev])
       setTitulo('')
+      // Limpiamos el input para poder subir la misma foto de nuevo si queremos
+      if (fileInputRef.current) fileInputRef.current.value = ''
     }
     setSubiendo(false)
   }
@@ -91,10 +96,18 @@ export default function GaleriaPage() {
             <input type="text" placeholder="Ej: Nuestro gym" value={titulo} onChange={(e) => setTitulo(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'var(--bg-2)', border: '1px solid #2a2a32', color: '#fff' }} />
           </div>
           <div>
-            <input type="file" accept="image/*" onChange={subirFoto} disabled={subiendo} style={{ display: 'none' }} id="upload-photo" />
-            <label htmlFor="upload-photo" className="btn" style={{ cursor: 'pointer', display: 'inline-block', padding: '12px 24px' }}>
+            {/* Input invisible */}
+            <input type="file" accept="image/*" onChange={subirFoto} disabled={subiendo} style={{ display: 'none' }} ref={fileInputRef} />
+            {/* Botón que activa el input */}
+            <button 
+              type="button" 
+              onClick={() => fileInputRef.current?.click()} 
+              disabled={subiendo}
+              className="btn" 
+              style={{ cursor: 'pointer', padding: '12px 24px' }}
+            >
               {subiendo ? 'Subiendo...' : '📸 Subir Foto'}
-            </label>
+            </button>
           </div>
         </div>
 

@@ -5,8 +5,8 @@ import Link from 'next/link'
 export default function AdminPanel({ gym }: { gym: any }) {
   return (
     <div style={{ 
-      background: 'rgba(23, 23, 27, 0.8)', // Fondo semitransparente
-      backdropFilter: 'blur(16px)',        // Efecto vidrio
+      background: 'rgba(23, 23, 27, 0.8)',
+      backdropFilter: 'blur(16px)',
       borderBottom: '1px solid rgba(255,255,255,0.05)', 
       padding: '12px 20px', 
       position: 'sticky', 
@@ -27,8 +27,9 @@ export default function AdminPanel({ gym }: { gym: any }) {
           <Link href="/panel" className="admin-btn" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '8px 16px', borderRadius: '50px', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
             🏋️ Ir a mi panel
           </Link>
+          {/* 👇 LE CAMBIAMOS EL NOMBRE PARA NO CONFUNDIR CON EL DE ARRIBA 👇 */}
           <Link href="/panel/galeria" className="admin-btn" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '8px 16px', borderRadius: '50px', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
-            📸 Galería
+            📸 Subir Fotos
           </Link>
           <Link href="/admin" className="admin-btn" style={{ background: 'rgba(255,90,31,0.1)', color: 'var(--accent)', border: '1px solid var(--accent)', padding: '8px 16px', borderRadius: '50px', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
             👑 Volver al Admin

@@ -25,7 +25,6 @@ export default function GymClient({
   const [videoId, setVideoId] = useState<string | null>(null)
   const [fotoSeleccionada, setFotoSeleccionada] = useState<string | null>(null)
 
-  // Colores dinámicos del gimnasio
   const dynamicStyles = {
     '--accent': gym.color_primario || '#ff5a1f',
     '--accent-2': gym.color_secundario || '#ffb703',
@@ -34,20 +33,14 @@ export default function GymClient({
   return (
     <div style={dynamicStyles}>
       
-      {/* HEADER PÚBLICO ESTILO GLASSMORPHISM */}
+      {/* HEADER PÚBLICO */}
       <header style={{ 
-        position: 'fixed', 
-        top: 0, 
-        left: 0, 
-        right: 0, 
-        background: 'rgba(9, 9, 11, 0.7)', 
-        backdropFilter: 'blur(16px)',        
-        zIndex: 100, 
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        position: 'fixed', top: 0, left: 0, right: 0, 
+        background: 'rgba(9, 9, 11, 0.7)', backdropFilter: 'blur(16px)',        
+        zIndex: 100, borderBottom: '1px solid rgba(255,255,255,0.08)',
         transition: 'all 0.3s ease'
       }}>
         <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', maxWidth: '1180px', margin: '0 auto' }}>
-          
           <div style={{ fontWeight: 900, fontSize: '1.5rem', display: 'flex', alignItems: 'center', letterSpacing: '-0.5px' }}>
             {gym.logo_url ? (
               <img src={gym.logo_url} alt={gym.nombre} style={{ height: '40px', objectFit: 'contain' }} />
@@ -55,7 +48,6 @@ export default function GymClient({
               <span>{gym.nombre} <span style={{ color: 'var(--accent)' }}>{gym.sufijo}</span></span>
             )}
           </div>
-
           <ul style={{ display: 'flex', gap: '25px', listStyle: 'none', alignItems: 'center', margin: 0, padding: 0 }}>
             <li><a href="#sobre-mi" className="nav-link">Sobre mí</a></li>
             <li><a href="#galeria" className="nav-link">Galería</a></li>
@@ -72,18 +64,18 @@ export default function GymClient({
         </div>
       )}
 
-      {/* HERO: Arreglamos el padding para que el título no quede tapado */}
+      {/* HERO: Arreglado con flex-start y más padding para que no se corte */}
       <section id="home" style={{ 
         minHeight: '100vh', 
         display: 'flex', 
-        alignItems: 'center', 
-        paddingTop: isOwner ? '180px' : '120px', // 👈 Más espacio arriba
-        paddingBottom: '60px',
+        alignItems: 'flex-start', // 👈 Alineado arriba
+        paddingTop: isOwner ? '220px' : '140px', // 👈 Más espacio
+        paddingBottom: '80px',
         background: gym.hero_img_url ? `linear-gradient(rgba(9,9,11,.7),rgba(9,9,11,.95)), url(${gym.hero_img_url}) center/cover` : 'linear-gradient(rgba(9,9,11,.7),rgba(9,9,11,.95)), url(https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600) center/cover' 
       }}>
         <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px', width: '100%' }}>
           <div style={{ maxWidth: '680px' }}>
-            <h1 style={{ fontSize: 'clamp(2.2rem, 6vw, 4rem)', lineHeight: 1.1, marginBottom: '20px', fontWeight: 900, textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+            <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', lineHeight: 1.1, marginBottom: '20px', fontWeight: 900, textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
               {gym.titulo_hero || 'Transforma tu cuerpo'} <br />
               <span style={{ color: 'var(--accent)' }}>{gym.subtitulo_hero || 'en 90 días'}</span>
             </h1>
@@ -97,7 +89,7 @@ export default function GymClient({
 
       {/* SOBRE MÍ */}
       {(gym.sobre_mi_img_url || gym.descripcion) && (
-        <section id="sobre-mi" style={{ padding: '100px 0', background: '#09090b' }}>
+        <section id="sobre-mi" style={{ padding: '100px 0', background: '#09090b', scrollMarginTop: '120px' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '60px', alignItems: 'center' }}>
             <div>
               <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '20px', fontWeight: 900 }}>
@@ -116,9 +108,9 @@ export default function GymClient({
         </section>
       )}
 
-      {/* GALERÍA DE FOTOS CON COLORES DINÁMICOS */}
+      {/* GALERÍA DE FOTOS (Arreglado el scrollMarginTop para que no la tape el menú) */}
       {galeria && galeria.length > 0 && (
-        <section id="galeria" style={{ padding: '100px 0', background: '#0e0e10' }}>
+        <section id="galeria" style={{ padding: '100px 0', background: '#0e0e10', scrollMarginTop: '120px' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
             <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '40px', textAlign: 'center', fontWeight: 900 }}>
               Nuestra <span style={{ color: 'var(--accent)' }}>Galería</span>
@@ -129,14 +121,8 @@ export default function GymClient({
                   key={foto.id} 
                   onClick={() => setFotoSeleccionada(foto.url)} 
                   style={{ 
-                    position: 'relative', 
-                    borderRadius: '16px', 
-                    overflow: 'hidden', 
-                    aspectRatio: '1/1', 
-                    cursor: 'pointer', 
-                    background: '#000', 
-                    border: '2px solid transparent', // Borde transparente que se ilumina
-                    transition: 'border-color 0.3s'
+                    position: 'relative', borderRadius: '16px', overflow: 'hidden', aspectRatio: '1/1', cursor: 'pointer', 
+                    background: '#000', border: '2px solid transparent', transition: 'border-color 0.3s'
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
                   onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
@@ -154,7 +140,7 @@ export default function GymClient({
 
       {/* EJERCICIOS */}
       {ejercicios.length > 0 && (
-        <section id="ejercicios" style={{ padding: '100px 0', background: '#09090b' }}>
+        <section id="ejercicios" style={{ padding: '100px 0', background: '#09090b', scrollMarginTop: '120px' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
             <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '30px', fontWeight: 900 }}>
               Biblioteca de <span style={{ color: 'var(--accent)' }}>Ejercicios</span>
@@ -177,7 +163,7 @@ export default function GymClient({
 
       {/* VIDEOS */}
       {videos.length > 0 && (
-        <section id="videos" style={{ padding: '100px 0', background: '#0e0e10' }}>
+        <section id="videos" style={{ padding: '100px 0', background: '#0e0e10', scrollMarginTop: '120px' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
             <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '30px', fontWeight: 900 }}>
               Mi trabajo en <span style={{ color: 'var(--accent)' }}>acción</span>
@@ -195,7 +181,7 @@ export default function GymClient({
       )}
 
       {/* TESTIMONIOS */}
-      <section id="testimonios" style={{ padding: '100px 0', background: '#09090b' }}>
+      <section id="testimonios" style={{ padding: '100px 0', background: '#09090b', scrollMarginTop: '120px' }}>
         <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
           <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '14px', textAlign: 'center', fontWeight: 900 }}>
             Lo que dicen nuestros <span style={{ color: 'var(--accent)' }}>alumnos</span>

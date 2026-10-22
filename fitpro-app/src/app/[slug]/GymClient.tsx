@@ -25,6 +25,7 @@ export default function GymClient({
   const [videoId, setVideoId] = useState<string | null>(null)
   const [fotoSeleccionada, setFotoSeleccionada] = useState<string | null>(null)
 
+  // Colores dinámicos del gimnasio
   const dynamicStyles = {
     '--accent': gym.color_primario || '#ff5a1f',
     '--accent-2': gym.color_secundario || '#ffb703',
@@ -39,15 +40,14 @@ export default function GymClient({
         top: 0, 
         left: 0, 
         right: 0, 
-        background: 'rgba(9, 9, 11, 0.7)', // Fondo muy oscuro y transparente
-        backdropFilter: 'blur(16px)',        // Efecto vidrio
+        background: 'rgba(9, 9, 11, 0.7)', 
+        backdropFilter: 'blur(16px)',        
         zIndex: 100, 
         borderBottom: '1px solid rgba(255,255,255,0.08)',
         transition: 'all 0.3s ease'
       }}>
         <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', maxWidth: '1180px', margin: '0 auto' }}>
           
-          {/* Logo */}
           <div style={{ fontWeight: 900, fontSize: '1.5rem', display: 'flex', alignItems: 'center', letterSpacing: '-0.5px' }}>
             {gym.logo_url ? (
               <img src={gym.logo_url} alt={gym.nombre} style={{ height: '40px', objectFit: 'contain' }} />
@@ -56,13 +56,12 @@ export default function GymClient({
             )}
           </div>
 
-          {/* Links */}
           <ul style={{ display: 'flex', gap: '25px', listStyle: 'none', alignItems: 'center', margin: 0, padding: 0 }}>
             <li><a href="#sobre-mi" className="nav-link">Sobre mí</a></li>
             <li><a href="#galeria" className="nav-link">Galería</a></li>
             <li><a href="#ejercicios" className="nav-link">Ejercicios</a></li>
             <li><a href="#videos" className="nav-link">Videos</a></li>
-            {testimonios.length > 0 && <li><a href="#testimonios" className="nav-link" style={{ color: 'var(--accent)' }}>Opiniones</a></li>}
+            {testimonios.length > 0 && <li><a href="#testimonios" className="nav-link" style={{ color: 'var(--accent)', fontWeight: 700 }}>Opiniones</a></li>}
           </ul>
         </nav>
       </header>
@@ -73,8 +72,15 @@ export default function GymClient({
         </div>
       )}
 
-      {/* HERO */}
-      <section id="home" style={{ minHeight: isOwner ? '80vh' : '100vh', display: 'flex', alignItems: 'center', paddingTop: isOwner ? '150px' : '80px', background: gym.hero_img_url ? `linear-gradient(rgba(14,14,16,.6),rgba(14,14,16,.9)), url(${gym.hero_img_url}) center/cover` : 'linear-gradient(rgba(14,14,16,.6),rgba(14,14,16,.9)), url(https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600) center/cover' }}>
+      {/* HERO: Arreglamos el padding para que el título no quede tapado */}
+      <section id="home" style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        paddingTop: isOwner ? '180px' : '120px', // 👈 Más espacio arriba
+        paddingBottom: '60px',
+        background: gym.hero_img_url ? `linear-gradient(rgba(9,9,11,.7),rgba(9,9,11,.95)), url(${gym.hero_img_url}) center/cover` : 'linear-gradient(rgba(9,9,11,.7),rgba(9,9,11,.95)), url(https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600) center/cover' 
+      }}>
         <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px', width: '100%' }}>
           <div style={{ maxWidth: '680px' }}>
             <h1 style={{ fontSize: 'clamp(2.2rem, 6vw, 4rem)', lineHeight: 1.1, marginBottom: '20px', fontWeight: 900, textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
@@ -91,8 +97,8 @@ export default function GymClient({
 
       {/* SOBRE MÍ */}
       {(gym.sobre_mi_img_url || gym.descripcion) && (
-        <section id="sobre-mi" style={{ padding: '90px 0', background: '#09090b' }}>
-          <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '50px', alignItems: 'center' }}>
+        <section id="sobre-mi" style={{ padding: '100px 0', background: '#09090b' }}>
+          <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '60px', alignItems: 'center' }}>
             <div>
               <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '20px', fontWeight: 900 }}>
                 Sobre <span style={{ color: 'var(--accent)' }}>mí</span>
@@ -103,21 +109,38 @@ export default function GymClient({
             </div>
             {gym.sobre_mi_img_url && (
               <div>
-                <img src={gym.sobre_mi_img_url} alt="Sobre mí" style={{ width: '100%', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', objectFit: 'cover', maxHeight: '500px' }} />
+                <img src={gym.sobre_mi_img_url} alt="Sobre mí" style={{ width: '100%', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', objectFit: 'cover', maxHeight: '500px', border: '1px solid rgba(255,255,255,0.05)' }} />
               </div>
             )}
           </div>
         </section>
       )}
 
-      {/* GALERÍA DE FOTOS */}
+      {/* GALERÍA DE FOTOS CON COLORES DINÁMICOS */}
       {galeria && galeria.length > 0 && (
-        <section id="galeria" style={{ padding: '90px 0', background: '#17171b' }}>
+        <section id="galeria" style={{ padding: '100px 0', background: '#0e0e10' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '40px', textAlign: 'center', fontWeight: 900 }}>Nuestra Galería</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '15px' }}>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '40px', textAlign: 'center', fontWeight: 900 }}>
+              Nuestra <span style={{ color: 'var(--accent)' }}>Galería</span>
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
               {galeria.map((foto: any) => (
-                <div key={foto.id} onClick={() => setFotoSeleccionada(foto.url)} style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', aspectRatio: '1/1', cursor: 'pointer', background: '#000', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div 
+                  key={foto.id} 
+                  onClick={() => setFotoSeleccionada(foto.url)} 
+                  style={{ 
+                    position: 'relative', 
+                    borderRadius: '16px', 
+                    overflow: 'hidden', 
+                    aspectRatio: '1/1', 
+                    cursor: 'pointer', 
+                    background: '#000', 
+                    border: '2px solid transparent', // Borde transparente que se ilumina
+                    transition: 'border-color 0.3s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+                  onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
+                >
                   <img src={foto.url} alt={foto.titulo} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', opacity: 0.9 }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} />
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 15px 15px', background: 'linear-gradient(transparent, rgba(0,0,0,0.9))', color: '#fff', fontSize: '0.9rem', fontWeight: 600 }}>
                     {foto.titulo}
@@ -131,13 +154,15 @@ export default function GymClient({
 
       {/* EJERCICIOS */}
       {ejercicios.length > 0 && (
-        <section id="ejercicios" style={{ padding: '90px 0', background: '#09090b' }}>
+        <section id="ejercicios" style={{ padding: '100px 0', background: '#09090b' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '30px', fontWeight: 900 }}>Biblioteca de ejercicios</h2>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '30px', fontWeight: 900 }}>
+              Biblioteca de <span style={{ color: 'var(--accent)' }}>Ejercicios</span>
+            </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
               {ejercicios.map((e: any) => (
                 <div key={e.id} onClick={() => e.video_url && setVideoId(e.video_url)} style={{ background: 'rgba(23, 23, 27, 0.8)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px', cursor: e.video_url ? 'pointer' : 'default', transition: 'transform 0.2s, borderColor 0.2s' }} onMouseEnter={(ev) => { ev.currentTarget.style.transform = 'translateY(-4px)'; ev.currentTarget.style.borderColor = 'var(--accent)'; }} onMouseLeave={(ev) => { ev.currentTarget.style.transform = 'translateY(0)'; ev.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)'; }}>
-                  <span style={{ display: 'inline-block', fontSize: '.7rem', fontWeight: 700, padding: '4px 10px', borderRadius: '99px', background: 'rgba(255,90,31,.15)', color: 'var(--accent)', marginBottom: '12px' }}>{e.grupo_muscular}</span>
+                  <span style={{ display: 'inline-block', fontSize: '.7rem', fontWeight: 700, padding: '4px 10px', borderRadius: '99px', background: 'rgba(255,255,255,0.05)', color: 'var(--accent)', marginBottom: '12px', border: '1px solid var(--accent)' }}>{e.grupo_muscular}</span>
                   <h3 style={{ fontSize: '1.2rem', marginBottom: '10px' }}>{e.nombre}</h3>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '.85rem', color: '#a1a1aa', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '15px', marginTop: '15px' }}>
                     <span>{e.equipamiento}</span>
@@ -152,9 +177,11 @@ export default function GymClient({
 
       {/* VIDEOS */}
       {videos.length > 0 && (
-        <section id="videos" style={{ padding: '90px 0', background: '#17171b' }}>
+        <section id="videos" style={{ padding: '100px 0', background: '#0e0e10' }}>
           <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '30px', fontWeight: 900 }}>Mi trabajo en acción</h2>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '30px', fontWeight: 900 }}>
+              Mi trabajo en <span style={{ color: 'var(--accent)' }}>acción</span>
+            </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
               {videos.map((v: any) => (
                 <div key={v.id} onClick={() => v.youtube_id && setVideoId(v.youtube_id)} style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', aspectRatio: '16/10', background: '#000', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -168,9 +195,11 @@ export default function GymClient({
       )}
 
       {/* TESTIMONIOS */}
-      <section id="testimonios" style={{ padding: '90px 0', background: '#09090b' }}>
+      <section id="testimonios" style={{ padding: '100px 0', background: '#09090b' }}>
         <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 20px' }}>
-          <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '14px', textAlign: 'center', fontWeight: 900 }}>Lo que dicen nuestros alumnos</h2>
+          <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginBottom: '14px', textAlign: 'center', fontWeight: 900 }}>
+            Lo que dicen nuestros <span style={{ color: 'var(--accent)' }}>alumnos</span>
+          </h2>
           <p style={{ color: '#a1a1aa', marginBottom: '50px', maxWidth: '600px', textAlign: 'center', margin: '0 auto 50px', fontSize: '1.1rem' }}>Resultados reales. ¡Dejá tu opinión!</p>
           
           {testimonios && testimonios.length > 0 && (
@@ -269,7 +298,7 @@ function TestimonioForm({ gymId }: { gymId: string }) {
         <option value="1">⭐ (1 estrella)</option>
       </select>
       <textarea placeholder="Contanos tu experiencia..." value={texto} onChange={(e) => setTexto(e.target.value)} required rows={3} style={{ width: '100%', padding: '14px', borderRadius: '10px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', resize: 'vertical', outline: 'none' }} />
-      <button type="submit" disabled={loading} className="btn" style={{ width: '100%', padding: '14px', borderRadius: '10px', fontWeight: 700 }}>{loading ? 'Enviando...' : 'Publicar mi testimonio'}</button>
+      <button type="submit" disabled={loading} className="btn" style={{ width: '100%', padding: '14px', borderRadius: '10px', fontWeight: 700, background: 'var(--accent)' }}>{loading ? 'Enviando...' : 'Publicar mi testimonio'}</button>
     </form>
   )
 }

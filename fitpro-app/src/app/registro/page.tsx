@@ -34,65 +34,42 @@ export default function RegistroPage() {
   }
 
   const bgColor = rol === 'entrenador' ? '#ff5a1f' : rol === 'cliente' ? '#3b82f6' : '#0e0e10'
+  const videoActual = rol === 'entrenador' ? '/video-entrenador.mp4' : rol === 'cliente' ? '/video-cliente.mp4' : '/video-default.mp4'
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden', background: '#0e0e10' }}>
       
-      {/* Lado Izquierdo: LOS 3 VIDEOS SUPERPUESTOS */}
+      <div style={{ display: 'none' }}>
+        <video preload="auto" src="/video-entrenador.mp4" />
+        <video preload="auto" src="/video-cliente.mp4" />
+      </div>
+
       <div style={{ 
-        flex: 1, 
-        position: 'relative',
-        display: 'none',
-        overflow: 'hidden',
-        backgroundColor: bgColor,
-        transition: 'background-color 0.8s ease'
-      }}
-      className="register-video-panel"
-      >
-        {/* Video por defecto */}
+        flex: 1, position: 'relative', display: 'none', overflow: 'hidden',
+        backgroundColor: bgColor, transition: 'background-color 0.8s ease'
+      }} className="register-video-panel">
         <video 
-          autoPlay loop muted playsInline 
+          key={videoActual} autoPlay loop muted playsInline 
           style={{
             position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
-            transition: 'opacity 1s ease',
-            opacity: rol === '' ? 0.9 : 0, // Se muestra solo si no hay rol
+            transition: 'transform 1.5s ease, filter 1s ease, opacity 0.8s',
+            transform: rol === 'entrenador' ? 'scale(1.15) translateX(-5%)' : rol === 'cliente' ? 'scale(1.15) translateX(5%)' : 'scale(1)',
+            opacity: rol ? 0.6 : 0.9,
+            filter: rol === 'entrenador' ? 'sepia(1) hue-rotate(-30deg) saturate(3)' : rol === 'cliente' ? 'hue-rotate(180deg) saturate(1.5)' : 'none'
           }}
         >
-          <source src="/video-default.mp4" type="video/mp4" />
+          <source src={videoActual} type="video/mp4" />
         </video>
 
-        {/* Video Entrenador */}
-        <video 
-          autoPlay loop muted playsInline 
-          style={{
-            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
-            transition: 'opacity 1s ease, transform 1.5s ease',
-            opacity: rol === 'entrenador' ? 0.7 : 0, // Se muestra solo si es entrenador
-            transform: rol === 'entrenador' ? 'scale(1.1)' : 'scale(1)',
-            filter: 'sepia(1) hue-rotate(-30deg) saturate(3)' // Tinte naranja
-          }}
-        >
-          <source src="/video-entrenador.mp4" type="video/mp4" />
-        </video>
-
-        {/* Video Cliente */}
-        <video 
-          autoPlay loop muted playsInline 
-          style={{
-            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover',
-            transition: 'opacity 1s ease, transform 1.5s ease',
-            opacity: rol === 'cliente' ? 0.7 : 0, // Se muestra solo si es cliente
-            transform: rol === 'cliente' ? 'scale(1.1)' : 'scale(1)',
-            filter: 'hue-rotate(180deg) saturate(1.5)' // Tinte azul
-          }}
-        >
-          <source src="/video-cliente.mp4" type="video/mp4" />
-        </video>
-
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(14,14,16,0.4) 0%, rgba(14,14,16,0.6) 60%, #0e0e10 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(14,14,16,0.2) 0%, rgba(14,14,16,0.6) 60%, #0e0e10 100%)' }} />
 
         <div style={{ position: 'relative', zIndex: 1, padding: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-          <div className="logo" style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#fff' }}>FIT<span style={{ color: '#ff5a1f' }}>PRO</span></div>
+          
+          {/* 👇 LOGO CLICKEABLE 👇 */}
+          <Link href="/" style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#fff', textDecoration: 'none', fontWeight: 900, letterSpacing: '-1px', display: 'inline-block' }}>
+            FIT<span style={{ color: '#ff5a1f' }}>PRO</span>
+          </Link>
+
           <h1 style={{ fontSize: '3rem', fontWeight: 800, color: '#fff', lineHeight: 1.1, marginBottom: '20px', transition: 'all 0.5s' }}>
             {rol === 'entrenador' ? 'Lidera tu propio equipo.' : rol === 'cliente' ? 'Alcanza tu mejor versión.' : 'Tu transformación empieza hoy.'}
           </h1>
@@ -106,33 +83,20 @@ export default function RegistroPage() {
         </div>
       </div>
 
-      {/* Lado Derecho: Formulario */}
       <div style={{ 
-        flex: 1, 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        padding: '20px', 
-        position: 'relative', 
-        zIndex: 2,
-        background: `radial-gradient(circle at 50% 50%, ${bgColor}22 0%, #0e0e10 70%)`,
-        transition: 'background 0.8s ease'
+        flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative', zIndex: 2,
+        background: `radial-gradient(circle at 50% 50%, ${bgColor}22 0%, #0e0e10 70%)`, transition: 'background 0.8s ease'
       }}>
         <div style={{ 
-          width: '100%', 
-          maxWidth: '480px',
-          background: 'rgba(23, 23, 27, 0.4)', 
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          padding: '40px',
-          borderRadius: '24px',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+          width: '100%', maxWidth: '480px', background: 'rgba(23, 23, 27, 0.4)', backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.08)', padding: '40px', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
         }}>
           
           <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <div className="logo" style={{ fontSize: '2rem', marginBottom: '20px', display: 'block', color: '#fff' }}>
+            {/* 👇 LOGO CLICKEABLE (Para celular) 👇 */}
+            <Link href="/" className="logo-mobile" style={{ fontSize: '2rem', marginBottom: '20px', display: 'block', color: '#fff', textDecoration: 'none', fontWeight: 900 }}>
               FIT<span style={{ color: '#ff5a1f' }}>PRO</span>
-            </div>
+            </Link>
             <h2 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '10px', color: '#fff' }}>Creá tu cuenta</h2>
           </div>
 
@@ -191,10 +155,7 @@ export default function RegistroPage() {
       <style>{`
         @media (min-width: 900px) {
           .register-video-panel { display: flex !important; }
-          .logo { display: none !important; }
-          @media (min-width: 900px) {
-            .register-video-panel .logo { display: block !important; }
-          }
+          .logo-mobile { display: none !important; }
         }
       `}</style>
     </div>

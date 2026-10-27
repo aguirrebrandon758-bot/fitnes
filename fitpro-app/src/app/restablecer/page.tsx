@@ -16,16 +16,30 @@ export default function RestablecerPage() {
   const [mensaje, setMensaje] = useState('')
   const [verificando, setVerificando] = useState(true)
 
-  // Verificamos que el usuario haya llegado desde el link del correo
   useEffect(() => {
-    async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        setError('El link es inválido o expiró. Por favor, volvé a pedir uno nuevo.')
+    // Escuchamos si Supabase procesa el login automáticamente
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+        setVerificando(false)
+        setError('')
       }
-      setVerificando(false)
+    })
+
+    // Damos 3 segundos de margen para que la librería procese el link
+    const timer = setTimeout(async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        setVerificando(false)
+      } else {
+        setVerificando(false)
+        setError('El link es inválido o expiró. REGLA DE ORO: Pedí uno nuevo y abrilo en el mismo navegador donde lo pediste, sin darle a "atrás" ni recargar la página.')
+      }
+    }, 3000)
+
+    return () => {
+      clearTimeout(timer)
+      subscription.unsubscribe()
     }
-    checkSession()
   }, [supabase])
 
   async function handleSubmit(e: React.FormEvent) {
@@ -47,14 +61,14 @@ export default function RestablecerPage() {
     } else {
       setMensaje('¡Contraseña actualizada con éxito! Redirigiendo...')
       setTimeout(() => {
-        router.push('/panel')
+        router.push('/login') // Lo mandamos al login para que entre con su nueva clave
         router.refresh()
       }, 2000)
     }
   }
 
   if (verificando) {
-    return <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', background: '#0e0e10', color: '#fff' }}>Verificando link...</div>
+    return <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', background: '#0e0e10', color: '#fff', fontSize: '1.2rem' }}>Verificando link seguro... ⏳</div>
   }
 
   return (
@@ -66,12 +80,11 @@ export default function RestablecerPage() {
             FIT<span style={{ color: '#ff5a1f' }}>PRO</span>
           </Link>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '10px', color: '#fff' }}>Nueva contraseña</h2>
-          <p style={{ color: '#a1a1aa', fontSize: '0.9rem' }}>Ingresá tu nueva clave para recuperar el acceso.</p>
         </div>
 
         {error && !password ? (
           <div style={{ textAlign: 'center' }}>
-            <div style={{ padding: '12px', background: 'rgba(230,74,16,.15)', border: '1px solid #e64a10', borderRadius: '8px', color: '#fca5a5', marginBottom: '20px' }}>{error}</div>
+            <div style={{ padding: '12px', background: 'rgba(230,74,16,.15)', border: '1px solid #e64a10', borderRadius: '8px', color: '#fca5a5', marginBottom: '20px', fontSize: '0.9rem' }}>{error}</div>
             <Link href="/recuperar" className="btn" style={{ display: 'inline-block', padding: '12px 24px' }}>Pedir nuevo link</Link>
           </div>
         ) : (

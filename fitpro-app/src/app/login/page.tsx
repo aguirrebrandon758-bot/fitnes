@@ -58,7 +58,6 @@ export default function LoginPage() {
         
         <div style={{ position: 'relative', zIndex: 1, padding: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
           
-          {/* 👇 LOGO CLICKEABLE 👇 */}
           <Link href="/" style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#fff', textDecoration: 'none', fontWeight: 900, letterSpacing: '-1px', display: 'inline-block' }}>
             FIT<span style={{ color: '#ff5a1f' }}>PRO</span>
           </Link>
@@ -82,7 +81,6 @@ export default function LoginPage() {
         }}>
           
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            {/* 👇 LOGO CLICKEABLE (Para celular) 👇 */}
             <Link href="/" className="logo-mobile" style={{ fontSize: '2rem', marginBottom: '20px', display: 'block', color: '#fff', textDecoration: 'none', fontWeight: 900 }}>
               FIT<span style={{ color: '#ff5a1f' }}>PRO</span>
             </Link>
@@ -94,9 +92,17 @@ export default function LoginPage() {
               <label style={{ fontSize: '0.9rem', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>Correo</label>
               <input type="email" placeholder="tu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: '14px', borderRadius: '10px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} />
             </div>
+            
             <div>
               <label style={{ fontSize: '0.9rem', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>Contraseña</label>
               <input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: '14px', borderRadius: '10px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} />
+              
+              {/* 👇 ACÁ ESTÁ EL LINK DE RECUPERACIÓN 👇 */}
+              <div style={{ textAlign: 'right', marginTop: '8px' }}>
+                <Link href="/recuperar" style={{ color: '#a1a1aa', fontSize: '0.85rem', textDecoration: 'none', transition: 'color 0.2s' }}>
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
             </div>
 
             {error && <div style={{ padding: '12px', background: 'rgba(230,74,16,.15)', border: '1px solid #e64a10', borderRadius: '8px', color: '#fca5a5', fontSize: '0.9rem' }}>{error}</div>}

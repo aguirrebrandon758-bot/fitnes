@@ -1,6 +1,46 @@
 import Link from 'next/link'
 
 export default function Home() {
+  // Acá definimos las 6 tarjetas con íconos SVG profesionales
+  const features = [
+    { 
+      title: 'Gestión de Alumnos', 
+      desc: 'Administrá a todos tus clientes, asignales rutinas y dietas con un solo clic.',
+      color: '#3b82f6', // Azul
+      icon: <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+    },
+    { 
+      title: 'Rutinas Inteligentes', 
+      desc: 'Creá rutinas con series, repeticiones o tiempo. Asigná videos y ejercicios.',
+      color: '#eab308', // Amarillo
+      icon: <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M14.4 14.4L9.6 9.6M9 2v4m6-4v4M9 18v4m6-4v4M2 9h4m-4 6h4M18 9h4m-4 6h4M6 6l12 12"></path></svg>
+    },
+    { 
+      title: 'Planes Nutricionales', 
+      desc: 'Base de datos de alimentos y dietas personalizadas para cada objetivo.',
+      color: '#22c55e', // Verde
+      icon: <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+    },
+    { 
+      title: 'Tu Página Pública', 
+      desc: 'Cada entrenador tiene su propia web (ej: fitpro.com/tu-gym) con sus colores.',
+      color: '#a855f7', // Violeta
+      icon: <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+    },
+    { 
+      title: 'Reproductor Musical', 
+      desc: 'Tus alumnos entrenan con la música de fondo que vos elijas. ¡Puro hype!',
+      color: '#ec4899', // Rosa
+      icon: <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+    },
+    { 
+      title: '100% Adaptable', 
+      desc: 'Tus alumnos pueden ver sus rutinas y videos desde el celular en el mismo gimnasio.',
+      color: '#f97316', // Naranja
+      icon: <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+    }
+  ]
+
   return (
     <div style={{ 
       minHeight: '100vh', 
@@ -10,138 +50,108 @@ export default function Home() {
       background: '#09090b'
     }}>
       
-      {/* NAVBAR CORREGIDA PARA MÓVILES */}
+      {/* NAVBAR */}
       <nav style={{ 
-        position: 'fixed', 
-        top: '15px', 
-        left: '50%', 
-        transform: 'translateX(-50%)',
-        width: 'calc(100% - 30px)', // Un poco más de margen en celus
-        maxWidth: '1200px',
-        background: 'rgba(20, 20, 24, 0.7)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '20px',
-        padding: '10px 15px', // Menos padding en celus
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        zIndex: 100,
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+        position: 'fixed', top: '15px', left: '50%', transform: 'translateX(-50%)',
+        width: 'calc(100% - 30px)', maxWidth: '1200px',
+        background: 'rgba(20, 20, 24, 0.7)', backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '20px',
+        padding: '10px 15px', display: 'flex', justifyContent: 'space-between', 
+        alignItems: 'center', zIndex: 100, boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
       }}>
-        
-        {/* Logo un poco más chico en celus */}
         <div className="logo" style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff', letterSpacing: '-1px', display: 'flex', alignItems: 'center' }}>
           FIT<span style={{ color: '#ff5a1f' }}>PRO</span>
         </div>
 
-        {/* Botones */}
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <Link href="/login" className="nav-btn-login" style={{ 
-            color: '#e4e4e7', 
-            textDecoration: 'none', 
-            fontWeight: 600, 
-            borderRadius: '10px',
-            whiteSpace: 'nowrap' // 👈 Evita que el texto se corte en varias líneas
+            color: '#e4e4e7', textDecoration: 'none', fontWeight: 600, 
+            borderRadius: '10px', whiteSpace: 'nowrap'
           }}>
             Iniciar sesión
           </Link>
           
           <Link href="/registro" className="nav-btn-register" style={{ 
-            background: 'linear-gradient(135deg, #ff5a1f, #ff8c00)',
-            color: '#fff', 
-            textDecoration: 'none', 
-            borderRadius: '12px', 
-            fontWeight: 700, 
-            boxShadow: '0 4px 15px rgba(255,90,31,0.3)',
-            whiteSpace: 'nowrap', // 👈 Evita que el texto se corte
-            textAlign: 'center'
+            background: 'linear-gradient(135deg, #ff5a1f, #ff8c00)', color: '#fff', 
+            textDecoration: 'none', borderRadius: '12px', fontWeight: 700, 
+            boxShadow: '0 4px 15px rgba(255,90,31,0.3)', whiteSpace: 'nowrap', textAlign: 'center'
           }}>
             Crear cuenta
           </Link>
         </div>
       </nav>
 
-      {/* HERO SECTION CON VIDEO DE FONDO */}
+      {/* HERO SECTION */}
       <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 15px', overflow: 'hidden' }}>
-        
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          style={{
-            position: 'absolute',
-            top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.65, zIndex: 0
-          }}
-        >
+        <video autoPlay loop muted playsInline style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.65, zIndex: 0 }}>
           <source src="/video-default.mp4" type="video/mp4" />
         </video>
-
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(9,9,11,0.4) 0%, rgba(9,9,11,0.8) 100%)', zIndex: 1 }} />
 
         <div style={{ maxWidth: '800px', zIndex: 2, paddingTop: '80px' }}>
-          <span style={{ 
-            background: 'rgba(255,90,31,0.15)', color: '#ff5a1f', padding: '6px 14px', 
-            borderRadius: '50px', fontSize: '0.8rem', fontWeight: 700, 
-            border: '1px solid rgba(255,90,31,0.3)', backdropFilter: 'blur(5px)',
-            display: 'inline-block', marginBottom: '20px'
-          }}>
+          <span style={{ background: 'rgba(255,90,31,0.15)', color: '#ff5a1f', padding: '6px 14px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 700, border: '1px solid rgba(255,90,31,0.3)', backdropFilter: 'blur(5px)', display: 'inline-block', marginBottom: '20px' }}>
             🚀 La plataforma #1 para gimnasios
           </span>
-          
-          {/* Título ajustado para que no sea gigante en celular */}
-          <h1 className="hero-title" style={{ 
-            fontSize: 'clamp(2.2rem, 6vw, 4.5rem)', // 👈 Reduje el tamaño mínimo
-            fontWeight: 900, 
-            lineHeight: 1.1, 
-            marginBottom: '20px', 
-            textShadow: '0 4px 20px rgba(0,0,0,0.5)' 
-          }}>
+          <h1 className="hero-title" style={{ fontSize: 'clamp(2.2rem, 6vw, 4.5rem)', fontWeight: 900, lineHeight: 1.1, marginBottom: '20px', textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
             Lleva tu gimnasio al <br/> <span style={{ color: '#ff5a1f' }}>siguiente nivel.</span>
           </h1>
-          
           <p style={{ fontSize: '1.05rem', color: '#e4e4e7', maxWidth: '600px', margin: '0 auto 35px auto', lineHeight: 1.6, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
             Gestioná rutinas, dietas, alumnos y tu propia página web personalizada. Todo en una sola plataforma rápida y moderna.
           </p>
-          
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link href="/registro" style={{ background: '#ff5a1f', color: '#fff', textDecoration: 'none', padding: '16px 40px', borderRadius: '12px', fontWeight: 700, fontSize: '1.1rem', boxShadow: '0 10px 30px rgba(255,90,31,0.4)', transition: 'transform 0.2s', display: 'inline-block' }}>
+            <Link href="/registro" style={{ background: '#ff5a1f', color: '#fff', textDecoration: 'none', padding: '16px 40px', borderRadius: '12px', fontWeight: 700, fontSize: '1.1rem', boxShadow: '0 10px 30px rgba(255,90,31,0.4)', display: 'inline-block' }}>
               Empezar ahora
             </Link>
           </div>
         </div>
       </section>
 
-      {/* FEATURES SECTION */}
-      <section style={{ padding: '80px 20px', position: 'relative', background: '#09090b' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+      {/* FEATURES SECTION REDISEÑADA */}
+      <section style={{ padding: '100px 20px', position: 'relative', background: '#09090b' }}>
+        {/* Brillo de fondo */}
+        <div style={{ position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(255,90,31,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
             <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, marginBottom: '15px' }}>Todo lo que necesitás</h2>
-            <p style={{ color: '#a1a1aa', fontSize: '1rem' }}>Diseñado para entrenadores que quieren profesionalizar su servicio.</p>
+            <p style={{ color: '#a1a1aa', fontSize: '1.1rem' }}>Diseñado para entrenadores que quieren profesionalizar su servicio.</p>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-            <div style={{ background: 'rgba(23, 23, 27, 0.8)', padding: '25px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '15px' }}>👥</div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '10px' }}>Gestión de Alumnos</h3>
-              <p style={{ color: '#a1a1aa', lineHeight: 1.5, fontSize: '0.95rem' }}>Administrá a todos tus clientes, asignales rutinas y dietas con un solo clic.</p>
-            </div>
-            <div style={{ background: 'rgba(23, 23, 27, 0.8)', padding: '25px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '15px' }}>📋</div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '10px' }}>Rutinas Inteligentes</h3>
-              <p style={{ color: '#a1a1aa', lineHeight: 1.5, fontSize: '0.95rem' }}>Creá rutinas con series, repeticiones o tiempo. Asigná videos y ejercicios.</p>
-            </div>
-            <div style={{ background: 'rgba(23, 23, 27, 0.8)', padding: '25px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '15px' }}>🌐</div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '10px' }}>Página Pública</h3>
-              <p style={{ color: '#a1a1aa', lineHeight: 1.5, fontSize: '0.95rem' }}>Cada entrenador tiene su propia web (ej: fitpro.com/tu-gym) con sus colores.</p>
-            </div>
-            <div style={{ background: 'rgba(23, 23, 27, 0.8)', padding: '25px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '15px' }}>🎵</div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '10px' }}>Reproductor Musical</h3>
-              <p style={{ color: '#a1a1aa', lineHeight: 1.5, fontSize: '0.95rem' }}>Tus alumnos entrenan con la música de fondo que vos elijas. ¡Puro hype!</p>
-            </div>
+          {/* Grilla de 6 Tarjetas */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
+            {features.map((f, i) => (
+              <div 
+                key={i} 
+                className="feature-card"
+                style={{
+                  background: 'linear-gradient(145deg, rgba(30, 30, 36, 0.8) 0%, rgba(20, 20, 24, 0.9) 100%)',
+                  padding: '35px',
+                  borderRadius: '24px',
+                  border: '1px solid rgba(255,255,255,0.05)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {/* Brillo superior del color del ícono */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: `linear-gradient(to right, transparent, ${f.color}, transparent)`, opacity: 0.7 }}></div>
+                
+                {/* Ícono SVG con fondo */}
+                <div style={{ 
+                  color: f.color, 
+                  backgroundColor: `${f.color}15`, 
+                  border: `1px solid ${f.color}30`,
+                  width: '64px', height: '64px', 
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                  borderRadius: '16px', marginBottom: '25px' 
+                }}>
+                  {f.icon}
+                </div>
+
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '12px' }}>{f.title}</h3>
+                <p style={{ color: '#a1a1aa', lineHeight: 1.6, fontSize: '1rem' }}>{f.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -161,13 +171,18 @@ export default function Home() {
         <p style={{ fontSize: '0.9rem' }}>© {new Date().getFullYear()} FitPro. Todos los derechos reservados.</p>
       </footer>
 
-      {/* CSS EXTRA PARA CELULARES */}
+      {/* CSS EXTRA */}
       <style>{`
+        .feature-card:hover {
+          transform: translateY(-8px);
+          border-color: rgba(255,255,255,0.15) !important;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
         @media (max-width: 500px) {
           .nav-btn-login { font-size: 0.8rem !important; padding: 8px 10px !important; }
           .nav-btn-register { font-size: 0.8rem !important; padding: 8px 12px !important; }
           .logo { font-size: 1.3rem !important; }
-          .hero-title br { display: none; } /* Quita el salto de línea forzado en celus para que fluya mejor */
+          .hero-title br { display: none; }
         }
       `}</style>
 

@@ -81,7 +81,7 @@ export default function MusicPlayer() {
     <div className="music-player-wrapper" style={{
       position: 'fixed',
       bottom: '20px',
-      left: '20px',
+      left: '100px',
       zIndex: 9999,
       display: 'flex',
       flexDirection: 'column',

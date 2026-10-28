@@ -27,6 +27,7 @@ export default function LoginPage() {
       return
     }
 
+    // Si es el creador de la plataforma, va al panel de súper admin
     if (email.trim() === 'aguirrebrandon758@gmail.com') {
       router.push('/admin')
       router.refresh()
@@ -36,12 +37,14 @@ export default function LoginPage() {
     const { data: perfil } = await supabase.from('profiles').select('rol').eq('id', data.user.id).single()
     const rol = perfil?.rol || 'cliente'
 
+    // 👇 ACÁ ESTÁ EL ARREGLO 👇
+    // Tanto clientes como entrenadores van a /panel
     if (rol === 'admin') {
       router.push('/admin')
-    } else if (rol === 'cliente') {
-      router.push('/panel')
     } else {
-      router.push('/panel/mi-gym')
+      // Si es cliente o entrenador, va al resumen. 
+      // El sistema ya sabe si tiene que mostrarle su gym o el formulario de creación.
+      router.push('/panel')
     }
     
     router.refresh()
@@ -97,9 +100,8 @@ export default function LoginPage() {
               <label style={{ fontSize: '0.9rem', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>Contraseña</label>
               <input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: '14px', borderRadius: '10px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} />
               
-              {/* 👇 ACÁ ESTÁ EL LINK DE RECUPERACIÓN 👇 */}
               <div style={{ textAlign: 'right', marginTop: '8px' }}>
-                <Link href="/recuperar" style={{ color: '#a1a1aa', fontSize: '0.85rem', textDecoration: 'none', transition: 'color 0.2s' }}>
+                <Link href="/recuperar" style={{ color: '#a1a1aa', fontSize: '0.85rem', textDecoration: 'none' }}>
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>

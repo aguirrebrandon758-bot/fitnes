@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 const TRACKS = [
   { title: 'Lose Yourself', artist: 'Eminem', url: '/music/Eminem - Lose Yourself.mp3', cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=100&h=100&fit=crop' },
@@ -78,7 +78,7 @@ export default function MusicPlayer() {
   }
 
   return (
-    <div style={{
+    <div className="music-player-wrapper" style={{
       position: 'fixed',
       bottom: '20px',
       left: '20px',
@@ -97,7 +97,6 @@ export default function MusicPlayer() {
         onLoadedMetadata={onLoadedMetadata}
       />
 
-      {/* Contenedor principal del reproductor (Pastilla) */}
       <div style={{
         background: 'rgba(20, 20, 24, 0.95)',
         backdropFilter: 'blur(10px)',
@@ -113,7 +112,6 @@ export default function MusicPlayer() {
         overflow: 'hidden'
       }}>
         
-        {/* Foto del artista / Cover */}
         <div 
           onClick={() => setExpanded(!expanded)}
           style={{ cursor: 'pointer', position: 'relative' }}
@@ -141,7 +139,6 @@ export default function MusicPlayer() {
           )}
         </div>
 
-        {/* Info de la canción */}
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
           <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {TRACKS[currentTrack].title}
@@ -151,7 +148,6 @@ export default function MusicPlayer() {
           </div>
         </div>
 
-        {/* Botón Play/Pausa principal */}
         <button 
           onClick={togglePlay} 
           style={{ 
@@ -173,7 +169,6 @@ export default function MusicPlayer() {
         </button>
       </div>
 
-      {/* Panel expandido (Barra de progreso y lista) */}
       {expanded && (
         <div style={{
           background: 'rgba(20, 20, 24, 0.95)',
@@ -185,7 +180,6 @@ export default function MusicPlayer() {
           boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
           marginTop: '-5px'
         }}>
-          {/* Barra de progreso */}
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--muted)', marginBottom: '5px', fontFamily: 'monospace' }}>
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
@@ -208,7 +202,6 @@ export default function MusicPlayer() {
             }}
           />
 
-          {/* Lista de canciones */}
           <h4 style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
             Playlist ({TRACKS.length} canciones)
           </h4>

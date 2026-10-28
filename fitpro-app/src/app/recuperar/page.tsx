@@ -17,15 +17,21 @@ export default function RecuperarPage() {
     setError('')
     setMensaje('')
 
-    // Enviamos el correo de recuperación
+    // 👇 FORZAMOS LA URL PRINCIPAL 👇
+    // Si estás en producción, usa siempre la URL maestra. Si estás en local, usa localhost.
+    const isProduction = process.env.NODE_ENV === 'production'
+    const redirectUrl = isProduction 
+      ? 'https://fitnes-82rs.vercel.app/restablecer' 
+      : 'http://localhost:3000/restablecer'
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/restablecer`,
+      redirectTo: redirectUrl,
     })
 
     if (error) {
       setError(error.message)
     } else {
-      setMensaje('¡Listo! Revisá tu correo (y la carpeta de Spam). Te enviamos un link para restablecer tu contraseña.')
+      setMensaje('¡Listo! Revisá tu correo. Te enviamos un link para restablecer tu contraseña.')
     }
     setLoading(false)
   }

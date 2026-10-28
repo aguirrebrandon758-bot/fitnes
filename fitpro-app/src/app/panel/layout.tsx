@@ -73,7 +73,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
         <nav className="nav-container" style={{ display: 'flex', flexDirection: 'column', gap: '5px', flex: 1 }}>
           
-          {/* 👇 LE AGREGAMOS LA CLASE nav-label PARA OCULTARLO EN CELULAR 👇 */}
           <span className="nav-label" style={{ fontSize: '0.65rem', color: '#52525b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '10px', paddingLeft: '10px' }}>Menú</span>
           
           <Link href="/panel" className="sidebar-link active">
@@ -116,11 +115,12 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             Videos
           </Link>
 
-          <div className="mobile-only-link" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          {/* LINK SOLO PARA CELULAR (AHORA DICE "SALIR") */}
+          <div className="mobile-only-link">
              <form action="/auth/signout" method="post">
-              <button type="submit" className="sidebar-link" style={{ width: '100%', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button type="submit" className="sidebar-link" style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <svg className="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                Cerrar sesión
+                Salir
               </button>
             </form>
           </div>
@@ -205,7 +205,12 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             gap: 4px !important; white-space: nowrap !important; min-width: 65px; text-align: center; border-radius: 12px !important;
           }
           
-          .mobile-only-link { display: block !important; }
+          .mobile-only-link { 
+            display: flex !important; 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            border: none !important; 
+          }
           
           .main-content { padding: 20px 15px 180px 15px !important; }
           .page-container { padding: 20px 0; }

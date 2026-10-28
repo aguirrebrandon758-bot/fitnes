@@ -10,7 +10,16 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
   return (
     <aside className={`sidebar-panel ${isExpanded ? 'expanded' : 'collapsed'}`}>
       
-      {/* PARTE SUPERIOR (LOGO, PERFIL, BUSCADOR) - Solo visible al expandir */}
+      {/* 👇 LA FLECHA AHORA ESTÁ ARRIBA DE TODO 👇 */}
+      <button className="toggle-btn" onClick={() => setIsExpanded(!isExpanded)} title={isExpanded ? 'Cerrar menú' : 'Abrir menú'}>
+        {isExpanded ? (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        ) : (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        )}
+      </button>
+
+      {/* PARTE SUPERIOR (LOGO Y PERFIL) - Solo visible al expandir */}
       <div className="sidebar-header">
         <div className="logo" style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '25px' }}>
           FIT<span style={{ color: 'var(--accent)' }}>PRO</span>
@@ -22,20 +31,7 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
             <div className="role">Entrenador</div>
           </div>
         </div>
-        <div className="search-bar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#71717a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '10px' }}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" placeholder="BUSCAR..." />
-        </div>
       </div>
-
-      {/* 👇 LA FLECHA PARA DESPLEGAR (ARRIBA DE LA BARRA DE ACCIÓN) 👇 */}
-      <button className="toggle-btn" onClick={() => setIsExpanded(!isExpanded)} title={isExpanded ? 'Cerrar menú' : 'Abrir menú'}>
-        {isExpanded ? (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        )}
-      </button>
 
       {/* BARRA DE ACCIÓN (ADMIN Y PÁGINA PÚBLICA) */}
       <div className="sidebar-actions">
@@ -110,7 +106,7 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
       <style>{`
         /* --- ESTILOS DE ESCRITORIO --- */
         .sidebar-panel {
-          width: 80px; /* Colapsado por defecto */
+          width: 80px; 
           background: rgba(20, 20, 24, 0.7); backdrop-filter: blur(20px);
           border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;
           padding: 20px 10px; overflow-y: auto; overflow-x: hidden; height: 100vh;
@@ -168,9 +164,6 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
         .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; color: #fff; }
         .info .name { font-size: 0.9rem; font-weight: bold; }
         .info .role { font-size: 0.75rem; color: #71717a; }
-        
-        .search-bar { display: flex; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 15px; margin-bottom: 25px; }
-        .search-bar input { background: transparent; border: none; color: #fff; outline: none; width: 100%; font-size: 0.75rem; }
 
         /* --- ESTILOS PARA CELULAR (ANULA EL COLAPSADO) --- */
         @media (max-width: 900px) {

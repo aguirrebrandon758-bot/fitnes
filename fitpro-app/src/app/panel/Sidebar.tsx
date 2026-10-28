@@ -1,16 +1,12 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 
-export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperAdmin: boolean, gymSlug: string, userEmail: string | undefined }) {
-  // Por defecto, en la compu empieza colapsado (solo íconos)
-  const [isExpanded, setIsExpanded] = useState(false)
-
+export default function Sidebar({ isExpanded, setIsExpanded, isSuperAdmin, gymSlug, userEmail }: any) {
   return (
     <aside className={`sidebar-panel ${isExpanded ? 'expanded' : 'collapsed'}`}>
       
-      {/* 👇 LA FLECHA AHORA ESTÁ ARRIBA DE TODO 👇 */}
+      {/* LA FLECHA */}
       <button className="toggle-btn" onClick={() => setIsExpanded(!isExpanded)} title={isExpanded ? 'Cerrar menú' : 'Abrir menú'}>
         {isExpanded ? (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -19,7 +15,6 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
         )}
       </button>
 
-      {/* PARTE SUPERIOR (LOGO Y PERFIL) - Solo visible al expandir */}
       <div className="sidebar-header">
         <div className="logo" style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '25px' }}>
           FIT<span style={{ color: 'var(--accent)' }}>PRO</span>
@@ -33,7 +28,6 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
         </div>
       </div>
 
-      {/* BARRA DE ACCIÓN (ADMIN Y PÁGINA PÚBLICA) */}
       <div className="sidebar-actions">
         {isSuperAdmin && (
           <Link href="/admin" className="sidebar-link-admin">
@@ -47,7 +41,6 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
         </Link>
       </div>
 
-      {/* MENÚ DE NAVEGACIÓN */}
       <nav className="nav-container">
         <span className="nav-label">Menú</span>
         
@@ -92,7 +85,6 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
         </Link>
       </nav>
 
-      {/* BOTÓN DE SALIR */}
       <div className="sidebar-footer">
         <form action="/auth/signout" method="post" style={{ width: '100%' }}>
           <button type="submit" className="sidebar-btn-logout">
@@ -102,9 +94,7 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
         </form>
       </div>
 
-      {/* ESTILOS CSS */}
       <style>{`
-        /* --- ESTILOS DE ESCRITORIO --- */
         .sidebar-panel {
           width: 80px; 
           background: rgba(20, 20, 24, 0.7); backdrop-filter: blur(20px);
@@ -126,7 +116,6 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
           text-transform: uppercase; letter-spacing: 1.5px; margin: 20px 0 10px 10px; 
         }
 
-        /* Botón de la flecha */
         .toggle-btn {
           background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
           color: #fff; border-radius: 8px; width: 100%; padding: 10px;
@@ -142,7 +131,6 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
           text-decoration: none; transition: all 0.2s ease; color: #a1a1aa; overflow: hidden;
         }
         
-        /* Centrar íconos cuando está colapsado */
         .sidebar-panel.collapsed .sidebar-link-admin,
         .sidebar-panel.collapsed .sidebar-btn-public,
         .sidebar-panel.collapsed .sidebar-link,
@@ -165,7 +153,6 @@ export default function Sidebar({ isSuperAdmin, gymSlug, userEmail }: { isSuperA
         .info .name { font-size: 0.9rem; font-weight: bold; }
         .info .role { font-size: 0.75rem; color: #71717a; }
 
-        /* --- ESTILOS PARA CELULAR (ANULA EL COLAPSADO) --- */
         @media (max-width: 900px) {
           .sidebar-panel {
             width: 92% !important; max-width: 450px !important; height: 68px !important; position: fixed !important;

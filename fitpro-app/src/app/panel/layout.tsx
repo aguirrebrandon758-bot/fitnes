@@ -38,23 +38,15 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     <div className="panel-wrapper" style={{ ...dynamicStyles, display: 'flex', height: '100vh', width: '100vw', background: '#09090b', color: '#fff', fontFamily: 'system-ui', overflow: 'hidden' }}>
       
       <aside className="sidebar-panel" style={{ 
-        width: '280px', 
-        background: 'rgba(20, 20, 24, 0.7)', 
-        backdropFilter: 'blur(20px)',
-        borderRight: '1px solid rgba(255,255,255,0.05)',
-        display: 'flex', flexDirection: 'column', 
-        padding: '25px 20px',
-        overflowY: 'auto',
-        zIndex: 100,
-        flexShrink: 0
+        width: '280px', background: 'rgba(20, 20, 24, 0.7)', backdropFilter: 'blur(20px)',
+        borderRight: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', 
+        padding: '25px 20px', overflowY: 'auto', zIndex: 100, flexShrink: 0
       }}>
         
-        {/* LOGO */}
         <div className="sidebar-logo" style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '25px', paddingLeft: '5px' }}>
           FIT<span style={{ color: 'var(--accent)' }}>PRO</span>
         </div>
 
-        {/* PERFIL DEL USUARIO (ESTILO IMAGEN 1) */}
         <div className="user-profile" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', marginBottom: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.2rem', color: '#fff' }}>
             {user.email?.charAt(0).toUpperCase()}
@@ -67,13 +59,11 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           </div>
         </div>
 
-        {/* BUSCADOR VISUAL */}
         <div className="search-bar" style={{ display: 'flex', alignItems: 'center', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '10px 15px', marginBottom: '25px' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#71717a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '10px' }}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           <input type="text" placeholder="BUSCAR..." style={{ background: 'transparent', border: 'none', color: '#fff', outline: 'none', width: '100%', fontSize: '0.75rem', letterSpacing: '1px' }} />
         </div>
 
-        {/* ACCIONES RÁPIDAS */}
         <div className="sidebar-actions" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '25px' }}>
           {isSuperAdmin && (
             <Link href="/admin" className="sidebar-link-admin">👑 Panel Admin</Link>
@@ -81,10 +71,10 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           <Link href={`/${checkGym.slug}`} className="sidebar-btn-public">🌐 Mi Página Pública</Link>
         </div>
 
-        {/* MENÚ DE NAVEGACIÓN AGRUPADO */}
         <nav className="nav-container" style={{ display: 'flex', flexDirection: 'column', gap: '5px', flex: 1 }}>
           
-          <span style={{ fontSize: '0.65rem', color: '#52525b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '10px', paddingLeft: '10px' }}>Menú</span>
+          {/* 👇 LE AGREGAMOS LA CLASE nav-label PARA OCULTARLO EN CELULAR 👇 */}
+          <span className="nav-label" style={{ fontSize: '0.65rem', color: '#52525b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '10px', paddingLeft: '10px' }}>Menú</span>
           
           <Link href="/panel" className="sidebar-link active">
             <svg className="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -111,7 +101,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             Opiniones
           </Link>
 
-          <span style={{ fontSize: '0.65rem', color: '#52525b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px', marginTop: '20px', marginBottom: '10px', paddingLeft: '10px' }}>Contenido</span>
+          <span className="nav-label" style={{ fontSize: '0.65rem', color: '#52525b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px', marginTop: '20px', marginBottom: '10px', paddingLeft: '10px' }}>Contenido</span>
 
           <Link href="/panel/ejercicios" className="sidebar-link">
             <svg className="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8h12"></path><path d="M6 12h12"></path><path d="M6 16h12"></path><path d="M3 4v16"></path><path d="M21 4v16"></path></svg>
@@ -126,7 +116,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             Videos
           </Link>
 
-          {/* LINKS SOLO PARA CELULAR */}
           <div className="mobile-only-link" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
              <form action="/auth/signout" method="post">
               <button type="submit" className="sidebar-link" style={{ width: '100%', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -137,7 +126,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           </div>
         </nav>
 
-        {/* LOGOUT (ESCRITORIO) */}
         <div className="desktop-only" style={{ marginTop: 'auto', paddingTop: '20px' }}>
           <form action="/auth/signout" method="post" style={{ width: '100%' }}>
             <button type="submit" className="sidebar-btn-logout">
@@ -203,7 +191,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             overflow: visible !important; box-shadow: 0 10px 40px rgba(0,0,0,0.8) !important; z-index: 9999 !important;
           }
           
-          .sidebar-logo, .user-profile, .search-bar, .sidebar-actions, .desktop-only { display: none !important; }
+          .sidebar-logo, .user-profile, .search-bar, .sidebar-actions, .desktop-only, .nav-label { display: none !important; }
           
           .nav-container {
             flex-direction: row !important; width: 100% !important; justify-content: flex-start !important;

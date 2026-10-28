@@ -37,7 +37,10 @@ export default function DietasPage() {
     <div className="page-container">
       
       <header className="dietas-header">
-        <h1 className="section-title" style={{ margin: 0 }}>Alimentación</h1>
+        {/* 👇 VOLVEMOS A PONER EL LOGO FITPRO 👇 */}
+        <div className="logo" style={{ fontSize: '1.8rem', fontWeight: 900 }}>
+          FIT<span style={{ color: 'var(--accent)' }}>PRO</span>
+        </div>
 
         <div className="dietas-actions">
           <Link href="/panel" className="btn-volver">
@@ -84,7 +87,7 @@ export default function DietasPage() {
           display: flex;
           justify-content: space-between;
           align-items: flex-end;
-          margin-bottom: 10px;
+          margin-bottom: 30px; /* 👈 Le damos más espacio acá */
           flex-wrap: wrap;
           gap: 20px;
         }
@@ -150,11 +153,14 @@ export default function DietasPage() {
             flex-direction: column;
             align-items: flex-start;
             gap: 15px;
+            margin-bottom: 20px; 
           }
           .dietas-actions {
             width: 100%;
             display: flex;
             gap: 10px;
+            padding-bottom: 15px; /* 👈 Le damos espacio para que no toque las tarjetas */
+            border-bottom: 1px solid rgba(255,255,255,0.05);
           }
           .btn-volver {
             flex: 1;
@@ -164,7 +170,7 @@ export default function DietasPage() {
             font-size: 0.8rem;
           }
           .btn-nueva {
-            flex: 2; /* Ocupa el doble de ancho que el de volver */
+            flex: 2;
             text-align: center;
             padding: 10px;
             border-radius: 10px;

@@ -36,7 +36,6 @@ export default function DietasPage() {
   return (
     <div className="page-container">
       
-      {/* HEADER RESPONSIVO MEJORADO */}
       <header className="dietas-header">
         <h1 className="section-title" style={{ margin: 0 }}>Alimentación</h1>
 
@@ -54,7 +53,6 @@ export default function DietasPage() {
         <p className="section-sub">Creá guías para perder peso, ganar masa o déficit.</p>
       </div>
 
-      {/* GRILLA DE DIETAS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
         {dietas.length === 0 ? (
           <div className="service-card" style={{ textAlign: 'center', padding: '40px 20px', gridColumn: '1 / -1' }}>
@@ -81,13 +79,11 @@ export default function DietasPage() {
         )}
       </div>
 
-      {/* ESTILOS CSS */}
       <style>{`
-        /* --- HEADER DESKTOP --- */
         .dietas-header {
           display: flex;
           justify-content: space-between;
-          align-items: flex-end; /* Alinea los botones con la base del título */
+          align-items: flex-end;
           margin-bottom: 10px;
           flex-wrap: wrap;
           gap: 20px;
@@ -99,7 +95,6 @@ export default function DietasPage() {
           align-items: center;
         }
 
-        /* Botones */
         .btn-volver {
           background: transparent;
           border: 1px solid rgba(255,255,255,0.2);
@@ -128,7 +123,6 @@ export default function DietasPage() {
           transform: translateY(-2px);
         }
 
-        /* --- TARJETAS --- */
         .dieta-card {
           background: rgba(20, 20, 24, 0.7);
           backdrop-filter: blur(10px);
@@ -142,7 +136,6 @@ export default function DietasPage() {
         }
         .dieta-card:hover { border-color: rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-        /* --- BOTÓN ELIMINAR --- */
         .delete-btn {
           display: flex; align-items: center; justify-content: center; gap: 8px;
           width: 100%; padding: 12px; border-radius: 12px;
@@ -160,13 +153,22 @@ export default function DietasPage() {
           }
           .dietas-actions {
             width: 100%;
-            justify-content: space-between; /* Los pone uno a cada lado */
+            display: flex;
+            gap: 10px;
           }
-          .btn-volver, .btn-nueva {
-            flex: 1; /* Hace que ocupen 50% y 50% */
+          .btn-volver {
+            flex: 1;
             text-align: center;
-            padding: 12px 10px;
-            font-size: 0.85rem;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+          }
+          .btn-nueva {
+            flex: 2; /* Ocupa el doble de ancho que el de volver */
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
           }
         }
       `}</style>

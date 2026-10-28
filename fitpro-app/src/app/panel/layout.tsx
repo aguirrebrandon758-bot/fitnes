@@ -48,12 +48,10 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         zIndex: 100,
         flexShrink: 0
       }}>
-        {/* Logo (Oculto en celular) */}
         <div className="sidebar-logo" style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '30px', paddingLeft: '10px' }}>
           FIT<span style={{ color: 'var(--accent)' }}>PRO</span>
         </div>
 
-        {/* Botones de Acción (Ocultos en celular, se mueven al menú inferior) */}
         <div className="sidebar-actions" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '30px' }}>
           {isSuperAdmin && (
             <Link href="/admin" className="sidebar-link-admin">👑 Panel Admin</Link>
@@ -66,7 +64,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
         <div className="sidebar-divider" style={{ height: '1px', background: 'rgba(255,255,255,0.05)', marginBottom: '20px' }}></div>
 
-        {/* Links de Navegación (Se convierten en la barra inferior en celular) */}
         <nav className="nav-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
           <Link href="/panel" className="sidebar-link"><span>📊</span> Resumen</Link>
           <Link href="/panel/clientes" className="sidebar-link"><span>👥</span> Clientes</Link>
@@ -78,7 +75,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           <Link href="/panel/rutinas" className="sidebar-link"><span>🏋️</span> Rutinas</Link>
           <Link href="/panel/videos" className="sidebar-link"><span>🎥</span> Videos</Link>
           
-          {/* En celular, estos botones extra se suman a la barra deslizable */}
           {isSuperAdmin && (
             <Link href="/admin" className="sidebar-link mobile-only-link"><span>👑</span> Admin</Link>
           )}
@@ -89,7 +85,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         </nav>
       </aside>
 
-      {/* ÁREA DE CONTENIDO */}
       <main className="main-content custom-scrollbar" style={{ 
         flex: 1, 
         overflowY: 'auto',
@@ -100,9 +95,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
       <MusicPlayer />
 
-      {/* ESTILOS CSS */}
       <style>{`
-        /* --- ESTILOS GLOBALES (ESCRITORIO) --- */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
@@ -137,9 +130,8 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         .sidebar-btn-logout:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
         .page-container { padding: 60px; max-width: 1200px; margin: 0 auto; }
-        .mobile-only-link { display: none !important; } /* Oculto en PC */
+        .mobile-only-link { display: none !important; }
 
-        /* --- ESTILOS EXCLUSIVOS PARA CELULARES --- */
         @media (max-width: 900px) {
           .panel-wrapper {
             flex-direction: column !important;
@@ -147,30 +139,28 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             overflow: hidden !important;
           }
 
-          /* Transformar Sidebar en Bottom Navigation Bar */
+          /* BARRA INFERIOR FLOTANTE */
           .sidebar-panel {
-            width: 95% !important;
-            max-width: 500px !important;
-            height: 70px !important;
+            width: 92% !important;
+            max-width: 450px !important;
+            height: 68px !important;
             position: fixed !important;
             bottom: 20px !important;
             left: 50% !important;
             transform: translateX(-50%) !important;
             border-radius: 50px !important;
-            background: rgba(20, 20, 24, 0.85) !important;
-            backdrop-filter: blur(16px) !important;
+            background: rgba(20, 20, 24, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
             border: 1px solid rgba(255,255,255,0.1) !important;
             padding: 0 10px !important;
             flex-direction: row !important;
             overflow: visible !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8) !important;
             z-index: 9999 !important;
           }
 
-          /* Ocultar Logo, botones de acción y divisor en celular */
           .sidebar-logo, .sidebar-actions, .sidebar-divider { display: none !important; }
 
-          /* El contenedor de links se vuelve horizontal */
           .nav-container {
             flex-direction: row !important;
             width: 100% !important;
@@ -184,10 +174,8 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             -webkit-overflow-scrolling: touch;
           }
           
-          /* Ocultar la barra de scroll en celular */
           .nav-container::-webkit-scrollbar { display: none; }
 
-          /* Estilo de los botones en el menú inferior */
           .sidebar-link, .sidebar-link-admin {
             flex-direction: column !important;
             padding: 8px 15px !important;
@@ -201,15 +189,22 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           
           .sidebar-link span { font-size: 1.3rem !important; margin-bottom: 2px; }
           
-          /* Mostrar los links extra en el celular */
           .mobile-only-link { display: flex !important; }
 
-          /* Ajustar el contenido principal para que la barra no lo tape */
+          /* ESPACIO EXTRA PARA QUE EL CONTENIDO NO QUEDE TAPADO POR LA BARRA NI POR LA MÚSICA */
           .main-content {
-            padding: 20px 15px 110px 15px !important;
+            padding: 20px 15px 180px 15px !important; 
           }
           
           .page-container { padding: 20px 0; }
+
+          /* MOVER EL REPRODUCTOR DE MÚSICA ARRIBA DE LA BARRA */
+          .music-player-wrapper {
+            bottom: 100px !important;
+            left: 15px !important;
+            transform: scale(0.85) !important;
+            transform-origin: bottom left !important;
+          }
         }
       `}</style>
     </div>

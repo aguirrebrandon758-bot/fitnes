@@ -35,24 +35,26 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   } as React.CSSProperties
 
   return (
-    <div style={{ ...dynamicStyles, display: 'flex', height: '100vh', width: '100vw', background: '#050505', color: '#fff', fontFamily: 'system-ui', overflow: 'hidden' }}>
+    <div className="panel-wrapper" style={{ ...dynamicStyles, display: 'flex', height: '100vh', width: '100vw', background: '#050505', color: '#fff', fontFamily: 'system-ui', overflow: 'hidden' }}>
       
-      {/* SIDEBAR */}
-      <aside className="custom-scrollbar sidebar-panel" style={{ 
+      {/* SIDEBAR (Escritorio) / BOTTOM NAV (Celular) */}
+      <aside className="sidebar-panel" style={{ 
         width: '280px', 
         background: '#0a0a0c', 
         borderRight: '1px solid rgba(255,255,255,0.05)',
         display: 'flex', flexDirection: 'column', 
         padding: '30px 20px 20px 20px',
         overflowY: 'auto',
-        zIndex: 10,
+        zIndex: 100,
         flexShrink: 0
       }}>
-        <div style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '30px', paddingLeft: '10px' }}>
+        {/* Logo (Oculto en celular) */}
+        <div className="sidebar-logo" style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '30px', paddingLeft: '10px' }}>
           FIT<span style={{ color: 'var(--accent)' }}>PRO</span>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '30px' }}>
+        {/* Botones de Acción (Ocultos en celular, se mueven al menú inferior) */}
+        <div className="sidebar-actions" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '30px' }}>
           {isSuperAdmin && (
             <Link href="/admin" className="sidebar-link-admin">👑 Panel Admin</Link>
           )}
@@ -62,26 +64,33 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           </form>
         </div>
 
-        <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)', marginBottom: '20px' }}></div>
+        <div className="sidebar-divider" style={{ height: '1px', background: 'rgba(255,255,255,0.05)', marginBottom: '20px' }}></div>
 
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
-          <span style={{ fontSize: '0.7rem', color: '#71717a', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', paddingLeft: '10px' }}>Gestión</span>
+        {/* Links de Navegación (Se convierten en la barra inferior en celular) */}
+        <nav className="nav-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
           <Link href="/panel" className="sidebar-link"><span>📊</span> Resumen</Link>
           <Link href="/panel/clientes" className="sidebar-link"><span>👥</span> Clientes</Link>
           <Link href="/panel/mi-gym" className="sidebar-link"><span>🏢</span> Mi Gym</Link>
           <Link href="/panel/dietas" className="sidebar-link"><span>🍏</span> Dietas</Link>
           <Link href="/panel/galeria" className="sidebar-link"><span>📸</span> Galería</Link>
-          <Link href="/panel/testimonios" className="sidebar-link"><span>💬</span> Testimonios</Link>
-
-          <span style={{ fontSize: '0.7rem', color: '#71717a', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '25px', marginBottom: '10px', paddingLeft: '10px' }}>Contenido</span>
+          <Link href="/panel/testimonios" className="sidebar-link"><span>💬</span> Opiniones</Link>
           <Link href="/panel/ejercicios" className="sidebar-link"><span>📋</span> Ejercicios</Link>
           <Link href="/panel/rutinas" className="sidebar-link"><span>🏋️</span> Rutinas</Link>
           <Link href="/panel/videos" className="sidebar-link"><span>🎥</span> Videos</Link>
+          
+          {/* En celular, estos botones extra se suman a la barra deslizable */}
+          {isSuperAdmin && (
+            <Link href="/admin" className="sidebar-link mobile-only-link"><span>👑</span> Admin</Link>
+          )}
+          <Link href={`/${checkGym.slug}`} className="sidebar-link mobile-only-link"><span>🌐</span> Mi Web</Link>
+          <form action="/auth/signout" method="post" className="mobile-only-link" style={{ display: 'flex', width: '100%' }}>
+            <button type="submit" className="sidebar-link" style={{ width: '100%', background: 'transparent', border: 'none', cursor: 'pointer' }}><span>🚪</span> Salir</button>
+          </form>
         </nav>
       </aside>
 
       {/* ÁREA DE CONTENIDO */}
-      <main className="custom-scrollbar main-content" style={{ 
+      <main className="main-content custom-scrollbar" style={{ 
         flex: 1, 
         overflowY: 'auto',
         background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.02) 0%, transparent 50%)'
@@ -91,13 +100,13 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
       <MusicPlayer />
 
-      {/* ESTILOS GLOBALES DEL PANEL */}
+      {/* ESTILOS CSS */}
       <style>{`
+        /* --- ESTILOS GLOBALES (ESCRITORIO) --- */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
-
+        
         .sidebar-link {
           display: flex; align-items: center; gap: 12px; padding: 12px 15px;
           border-radius: 12px; color: #a1a1aa; text-decoration: none;
@@ -127,39 +136,80 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         }
         .sidebar-btn-logout:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-        .page-container {
-          padding: 60px;
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-        
+        .page-container { padding: 60px; max-width: 1200px; margin: 0 auto; }
+        .mobile-only-link { display: none !important; } /* Oculto en PC */
+
+        /* --- ESTILOS EXCLUSIVOS PARA CELULARES --- */
         @media (max-width: 900px) {
-          .page-container { padding: 30px 20px; }
-          /* En móviles, el sidebar se convierte en una barra superior */
-          .sidebar-panel { 
-            width: 100% !important; 
-            height: auto !important; 
-            position: relative !important; 
-            padding: 20px !important; 
-            border-right: none !important;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-          }
-          .sidebar-panel nav { 
-            flex-direction: row !important; 
-            overflow-x: auto !important; 
-            padding-bottom: 10px !important; 
-          }
-          .sidebar-link { white-space: nowrap; padding: 8px 15px !important; }
-          .sidebar-panel > div:first-child { margin-bottom: 20px !important; }
-          .sidebar-panel > div:last-child { border-top: none !important; flex-direction: row !important; flex-wrap: wrap !important; }
-          
-          /* Ajustamos el contenedor principal para móviles */
-          div[style*="display: flex; height: 100vh"] {
+          .panel-wrapper {
             flex-direction: column !important;
-            height: auto !important;
-            min-height: 100vh;
-            overflow: auto !important;
+            height: 100vh !important;
+            overflow: hidden !important;
           }
+
+          /* Transformar Sidebar en Bottom Navigation Bar */
+          .sidebar-panel {
+            width: 95% !important;
+            max-width: 500px !important;
+            height: 70px !important;
+            position: fixed !important;
+            bottom: 20px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            border-radius: 50px !important;
+            background: rgba(20, 20, 24, 0.85) !important;
+            backdrop-filter: blur(16px) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            padding: 0 10px !important;
+            flex-direction: row !important;
+            overflow: visible !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+            z-index: 9999 !important;
+          }
+
+          /* Ocultar Logo, botones de acción y divisor en celular */
+          .sidebar-logo, .sidebar-actions, .sidebar-divider { display: none !important; }
+
+          /* El contenedor de links se vuelve horizontal */
+          .nav-container {
+            flex-direction: row !important;
+            width: 100% !important;
+            justify-content: flex-start !important;
+            align-items: center !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            gap: 5px !important;
+            padding: 0 !important;
+            height: 100% !important;
+            -webkit-overflow-scrolling: touch;
+          }
+          
+          /* Ocultar la barra de scroll en celular */
+          .nav-container::-webkit-scrollbar { display: none; }
+
+          /* Estilo de los botones en el menú inferior */
+          .sidebar-link, .sidebar-link-admin {
+            flex-direction: column !important;
+            padding: 8px 15px !important;
+            font-size: 0.65rem !important;
+            gap: 4px !important;
+            white-space: nowrap !important;
+            min-width: 65px;
+            text-align: center;
+            border-radius: 12px !important;
+          }
+          
+          .sidebar-link span { font-size: 1.3rem !important; margin-bottom: 2px; }
+          
+          /* Mostrar los links extra en el celular */
+          .mobile-only-link { display: flex !important; }
+
+          /* Ajustar el contenido principal para que la barra no lo tape */
+          .main-content {
+            padding: 20px 15px 110px 15px !important;
+          }
+          
+          .page-container { padding: 20px 0; }
         }
       `}</style>
     </div>

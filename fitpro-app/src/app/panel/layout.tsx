@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import MusicPlayer from '@/components/MusicPlayer'
-import Sidebar from './Sidebar'
+import PanelLayoutClient from './PanelLayoutClient'
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -24,7 +23,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     return (
       <div style={{ minHeight: '100vh', background: '#050505', color: '#fff' }}>
         {children}
-        <MusicPlayer />
+        <PanelLayoutClient isSuperAdmin={false} gymSlug="" userEmail={user.email} />
       </div>
     )
   }
@@ -35,15 +34,14 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   } as React.CSSProperties
 
   return (
-    <div className="panel-wrapper" style={{ ...dynamicStyles, display: 'flex', height: '100vh', width: '100vw', background: '#09090b', color: '#fff', fontFamily: 'system-ui', overflow: 'hidden' }}>
-      
-      <Sidebar isSuperAdmin={isSuperAdmin} gymSlug={checkGym.slug} userEmail={user.email} />
-
-      <main className="main-content custom-scrollbar" style={{ flex: 1, overflowY: 'auto', background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.02) 0%, transparent 50%)' }}>
+    <div style={dynamicStyles}>
+      <PanelLayoutClient 
+        isSuperAdmin={isSuperAdmin} 
+        gymSlug={checkGym.slug} 
+        userEmail={user.email}
+      >
         {children}
-      </main>
-
-      <MusicPlayer />
+      </PanelLayoutClient>
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
@@ -56,14 +54,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           .panel-wrapper { flex-direction: column !important; height: 100vh !important; overflow: hidden !important; }
           .main-content { padding: 20px 15px 180px 15px !important; }
           .page-container { padding: 20px 0; }
-          
-          /* ACÁ MOVEMOS EL REPRODUCTOR DE MÚSICA ARRIBA DE LA BARRA EN CELULAR */
-          .music-player-wrapper { 
-            bottom: 100px !important; 
-            left: 15px !important; 
-            transform: scale(0.85) !important; 
-            transform-origin: bottom left !important; 
-          }
         }
       `}</style>
     </div>

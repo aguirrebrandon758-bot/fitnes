@@ -31,33 +31,162 @@ export default function DietasPage() {
     setDietas(prev => prev.filter(d => d.id !== id))
   }
 
-  if (cargando) return <div style={{ padding: '40px', textAlign: 'center' }}>Cargando...</div>
+  if (cargando) return <div style={{ padding: '40px', textAlign: 'center', color: '#fff' }}>Cargando...</div>
 
   return (
-    <div className="fondo-animado" style={{ minHeight: '100vh', padding: '40px 20px' }}>
-      <div className="container">
-        <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
-          <Link href="/panel" className="logo" style={{ fontSize: '1.8rem' }}>FIT<span>PRO</span></Link>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <Link href="/panel/dietas/nuevo" className="btn btn-sm">➕ Nueva Dieta</Link>
-            <Link href="/panel" className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)' }}>← Volver al panel</Link>
-          </div>
-        </header>
+    <div className="page-container">
+      
+      {/* HEADER RESPONSIVO */}
+      <header className="header-actions">
+        <Link href="/panel" className="logo" style={{ fontSize: '1.8rem' }}>
+          FIT<span style={{ color: 'var(--accent)' }}>PRO</span>
+        </Link>
 
-        <h1 className="section-title">Planes de Alimentación</h1>
-        <p className="section-sub" style={{ marginBottom: '30px' }}>Creá guías para perder peso, ganar masa o déficit.</p>
-
-        <div className="services-grid">
-          {dietas.map(d => (
-            <div key={d.id} className="service-card" style={{ display: 'flex', flexDirection: 'column' }}>
-              <span className="tag">{d.tipo}</span>
-              <h3 style={{ marginTop: '10px' }}>{d.nombre}</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '0.9rem', flex: 1, marginTop: '10px', whiteSpace: 'pre-wrap' }}>{d.descripcion || 'Sin instrucciones detalladas.'}</p>
-              <button onClick={() => eliminar(d.id)} style={{ marginTop: '20px', background: 'transparent', border: '1px solid #e64a10', color: '#e64a10', padding: '8px', borderRadius: '6px', cursor: 'pointer' }}>🗑️ Eliminar</button>
-            </div>
-          ))}
+        <div className="button-group">
+          <Link href="/panel/dietas/nuevo" className="btn glow-btn" style={{ background: 'var(--accent)', color: '#fff' }}>
+            + Nueva Dieta
+          </Link>
+          <Link href="/panel" className="btn outline-btn glow-btn-outline">
+            ← Volver
+          </Link>
         </div>
+      </header>
+
+      {/* TÍTULO */}
+      <div style={{ marginBottom: '30px' }}>
+        <h1 className="section-title">Alimentación</h1>
+        <p className="section-sub">Creá guías para perder peso, ganar masa o déficit.</p>
       </div>
+
+      {/* GRILLA DE DIETAS */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+        {dietas.length === 0 ? (
+          <div className="service-card" style={{ textAlign: 'center', padding: '40px 20px', gridColumn: '1 / -1' }}>
+            <p style={{ color: 'var(--muted)' }}>Todavía no creaste ninguna dieta.</p>
+          </div>
+        ) : (
+          dietas.map(d => (
+            <div key={d.id} className="dieta-card">
+              <div>
+                <span className="tag" style={{ background: 'var(--accent)', color: '#fff' }}>{d.tipo}</span>
+                <h3 style={{ marginTop: '15px', fontSize: '1.2rem', marginBottom: '10px' }}>{d.nombre}</h3>
+                <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '20px' }}>{d.descripcion || 'Sin instrucciones detalladas.'}</p>
+              </div>
+              
+              <button onClick={() => eliminar(d.id)} className="delete-btn">
+                {/* Ícono de basura SVG */}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Eliminar
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* ESTILOS CSS */}
+      <style>{`
+        /* --- HEADER Y BOTONES --- */
+        .header-actions {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 30px;
+          gap: 15px;
+          flex-wrap: wrap;
+        }
+
+        .button-group {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+        }
+
+        /* Efecto de brillo al tocar/pasar el mouse */
+        .glow-btn {
+          transition: all 0.3s ease;
+        }
+        .glow-btn:hover, .glow-btn:active {
+          box-shadow: 0 0 20px var(--accent);
+          transform: translateY(-2px);
+        }
+
+        .glow-btn-outline {
+          background: transparent;
+          border: 1px solid var(--accent);
+          color: var(--accent);
+          padding: 10px 20px;
+          border-radius: 8px;
+          font-weight: 600;
+          transition: all 0.3s ease;
+        }
+        .glow-btn-outline:hover, .glow-btn-outline:active {
+          background: var(--accent);
+          color: #fff;
+          box-shadow: 0 0 20px var(--accent);
+          transform: translateY(-2px);
+        }
+
+        /* --- TARJETAS --- */
+        .dieta-card {
+          background: rgba(20, 20, 24, 0.7);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 20px;
+          padding: 25px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          transition: all 0.3s ease;
+        }
+        .dieta-card:hover {
+          border-color: rgba(255,255,255,0.2);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* --- BOTÓN ELIMINAR --- */
+        .delete-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          width: 100%;
+          padding: 12px;
+          border-radius: 12px;
+          background: rgba(230,74,16,0.05);
+          border: 1px solid rgba(230,74,16,0.3);
+          color: #e64a10;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .delete-btn:hover, .delete-btn:active {
+          background: #e64a10;
+          color: #fff;
+          box-shadow: 0 0 15px rgba(230,74,16,0.5);
+        }
+
+        /* --- VISTA CELULAR --- */
+        @media (max-width: 900px) {
+          .header-actions {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+          }
+          .button-group {
+            width: 100%;
+            flex-direction: column-reverse; /* Pone el botón de volver abajo del de nueva dieta */
+          }
+          .button-group .btn, .button-group .glow-btn-outline {
+            width: 100%;
+            text-align: center;
+            padding: 14px;
+            font-size: 1rem;
+          }
+        }
+      `}</style>
     </div>
   )
 }

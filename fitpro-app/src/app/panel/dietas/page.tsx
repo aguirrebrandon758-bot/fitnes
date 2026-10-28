@@ -36,25 +36,21 @@ export default function DietasPage() {
   return (
     <div className="page-container">
       
-      {/* HEADER RESPONSIVO */}
-      <header className="header-actions">
-        <Link href="/panel" className="logo" style={{ fontSize: '1.8rem' }}>
-          FIT<span style={{ color: 'var(--accent)' }}>PRO</span>
-        </Link>
+      {/* HEADER RESPONSIVO MEJORADO */}
+      <header className="dietas-header">
+        <h1 className="section-title" style={{ margin: 0 }}>Alimentación</h1>
 
-        <div className="button-group">
-          <Link href="/panel/dietas/nuevo" className="btn glow-btn" style={{ background: 'var(--accent)', color: '#fff' }}>
-            + Nueva Dieta
-          </Link>
-          <Link href="/panel" className="btn outline-btn glow-btn-outline">
+        <div className="dietas-actions">
+          <Link href="/panel" className="btn-volver">
             ← Volver
+          </Link>
+          <Link href="/panel/dietas/nuevo" className="btn-nueva glow-btn">
+            + Nueva Dieta
           </Link>
         </div>
       </header>
 
-      {/* TÍTULO */}
       <div style={{ marginBottom: '30px' }}>
-        <h1 className="section-title">Alimentación</h1>
         <p className="section-sub">Creá guías para perder peso, ganar masa o déficit.</p>
       </div>
 
@@ -74,7 +70,6 @@ export default function DietasPage() {
               </div>
               
               <button onClick={() => eliminar(d.id)} className="delete-btn">
-                {/* Ícono de basura SVG */}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -88,43 +83,47 @@ export default function DietasPage() {
 
       {/* ESTILOS CSS */}
       <style>{`
-        /* --- HEADER Y BOTONES --- */
-        .header-actions {
+        /* --- HEADER DESKTOP --- */
+        .dietas-header {
           display: flex;
           justify-content: space-between;
-          align-items: center;
-          margin-bottom: 30px;
-          gap: 15px;
+          align-items: flex-end; /* Alinea los botones con la base del título */
+          margin-bottom: 10px;
           flex-wrap: wrap;
+          gap: 20px;
         }
 
-        .button-group {
+        .dietas-actions {
           display: flex;
           gap: 10px;
           align-items: center;
         }
 
-        /* Efecto de brillo al tocar/pasar el mouse */
-        .glow-btn {
-          transition: all 0.3s ease;
-        }
-        .glow-btn:hover, .glow-btn:active {
-          box-shadow: 0 0 20px var(--accent);
-          transform: translateY(-2px);
-        }
-
-        .glow-btn-outline {
+        /* Botones */
+        .btn-volver {
           background: transparent;
-          border: 1px solid var(--accent);
-          color: var(--accent);
+          border: 1px solid rgba(255,255,255,0.2);
+          color: #a1a1aa;
           padding: 10px 20px;
-          border-radius: 8px;
+          border-radius: 50px;
           font-weight: 600;
+          text-decoration: none;
           transition: all 0.3s ease;
+          font-size: 0.9rem;
         }
-        .glow-btn-outline:hover, .glow-btn-outline:active {
+        .btn-volver:hover { background: rgba(255,255,255,0.05); color: #fff; }
+
+        .btn-nueva {
           background: var(--accent);
           color: #fff;
+          padding: 10px 20px;
+          border-radius: 50px;
+          font-weight: 700;
+          text-decoration: none;
+          transition: all 0.3s ease;
+          font-size: 0.9rem;
+        }
+        .glow-btn:hover, .glow-btn:active {
           box-shadow: 0 0 20px var(--accent);
           transform: translateY(-2px);
         }
@@ -141,49 +140,33 @@ export default function DietasPage() {
           justify-content: space-between;
           transition: all 0.3s ease;
         }
-        .dieta-card:hover {
-          border-color: rgba(255,255,255,0.2);
-          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
+        .dieta-card:hover { border-color: rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
         /* --- BOTÓN ELIMINAR --- */
         .delete-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          width: 100%;
-          padding: 12px;
-          border-radius: 12px;
-          background: rgba(230,74,16,0.05);
-          border: 1px solid rgba(230,74,16,0.3);
-          color: #e64a10;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s ease;
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+          width: 100%; padding: 12px; border-radius: 12px;
+          background: rgba(230,74,16,0.05); border: 1px solid rgba(230,74,16,0.3);
+          color: #e64a10; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
         }
-        .delete-btn:hover, .delete-btn:active {
-          background: #e64a10;
-          color: #fff;
-          box-shadow: 0 0 15px rgba(230,74,16,0.5);
-        }
+        .delete-btn:hover, .delete-btn:active { background: #e64a10; color: #fff; box-shadow: 0 0 15px rgba(230,74,16,0.5); }
 
         /* --- VISTA CELULAR --- */
         @media (max-width: 900px) {
-          .header-actions {
+          .dietas-header {
             flex-direction: column;
             align-items: flex-start;
-            gap: 20px;
+            gap: 15px;
           }
-          .button-group {
+          .dietas-actions {
             width: 100%;
-            flex-direction: column-reverse; /* Pone el botón de volver abajo del de nueva dieta */
+            justify-content: space-between; /* Los pone uno a cada lado */
           }
-          .button-group .btn, .button-group .glow-btn-outline {
-            width: 100%;
+          .btn-volver, .btn-nueva {
+            flex: 1; /* Hace que ocupen 50% y 50% */
             text-align: center;
-            padding: 14px;
-            font-size: 1rem;
+            padding: 12px 10px;
+            font-size: 0.85rem;
           }
         }
       `}</style>

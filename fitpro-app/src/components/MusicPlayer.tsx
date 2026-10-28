@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 
 const TRACKS = [
   { title: 'Lose Yourself', artist: 'Eminem', url: '/music/Eminem - Lose Yourself.mp3', cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=100&h=100&fit=crop' },
@@ -86,7 +86,7 @@ export default function MusicPlayer() {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
-      gap: '10px'
+      gap: '15px'
     }}>
       
       <audio 
@@ -97,147 +97,189 @@ export default function MusicPlayer() {
         onLoadedMetadata={onLoadedMetadata}
       />
 
-      <div style={{
-        background: 'rgba(20, 20, 24, 0.95)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid #2a2a32',
-        borderRadius: '50px', 
-        padding: '8px 16px 8px 8px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
-        transition: 'all 0.3s ease',
-        width: expanded ? '280px' : 'auto',
-        overflow: 'hidden'
-      }}>
-        
-        <div 
-          onClick={() => setExpanded(!expanded)}
-          style={{ cursor: 'pointer', position: 'relative' }}
-        >
-          <img 
-            src={TRACKS[currentTrack].cover} 
-            alt="Cover" 
-            style={{ 
-              width: '42px', 
-              height: '42px', 
-              borderRadius: '50%', 
-              objectFit: 'cover',
-              border: isPlaying ? '2px solid var(--accent)' : '2px solid transparent',
-              animation: isPlaying ? 'spin 10s linear infinite' : 'none'
-            }} 
-          />
-          {!isPlaying && (
-            <div style={{
-              position: 'absolute', inset: 0, 
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'rgba(0,0,0,0.4)', borderRadius: '50%', color: 'white'
-            }}>
-              ▶
-            </div>
-          )}
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-          <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {TRACKS[currentTrack].title}
-          </div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--muted)' }}>
-            {TRACKS[currentTrack].artist}
-          </div>
-        </div>
-
-        <button 
-          onClick={togglePlay} 
-          style={{ 
-            background: 'var(--accent)', 
-            border: 'none', 
-            borderRadius: '50%', 
-            width: '36px', 
-            height: '36px', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            cursor: 'pointer', 
-            color: '#fff', 
-            fontSize: '1rem',
-            flexShrink: 0
-          }}
-        >
-          {isPlaying ? '⏸' : '▶'}
-        </button>
-      </div>
-
+      {/* 👇 VISTA EXPANDIDA (Panel completo) 👇 */}
       {expanded && (
-        <div style={{
+        <div className="expanded-player" style={{
           background: 'rgba(20, 20, 24, 0.95)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid #2a2a32',
-          borderRadius: '16px',
-          padding: '15px',
-          width: '280px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
-          marginTop: '-5px'
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '24px',
+          padding: '20px',
+          width: '320px',
+          boxShadow: '0 15px 40px rgba(0,0,0,0.7)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '15px',
+          animation: 'slideUp 0.3s ease'
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--muted)', marginBottom: '5px', fontFamily: 'monospace' }}>
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
+          
+          {/* Header con botón de cerrar */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent)', letterSpacing: '1px' }}>REPRODUCIENDO</span>
+            <button onClick={() => setExpanded(false)} style={{ background: 'transparent', border: 'none', color: '#a1a1aa', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
           </div>
-          <input
-            type="range"
-            min="0"
-            max={duration || 0}
-            value={currentTime}
-            onChange={handleSeek}
-            style={{
-              width: '100%',
-              height: '4px',
-              appearance: 'none',
-              background: `linear-gradient(to right, var(--accent) ${(currentTime / duration) * 100}%, #2a2a32 ${(currentTime / duration) * 100}%)`,
-              borderRadius: '2px',
-              cursor: 'pointer',
-              outline: 'none',
-              marginBottom: '15px'
-            }}
-          />
 
-          <h4 style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-            Playlist ({TRACKS.length} canciones)
-          </h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', maxHeight: '300px', overflowY: 'auto', paddingRight: '5px' }}>
-            {TRACKS.map((track, index) => (
-              <div
-                key={index}
-                onClick={() => changeTrack(index)}
-                style={{
-                  padding: '8px',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  background: currentTrack === index ? 'rgba(255, 90, 31, 0.15)' : 'transparent',
-                  color: currentTrack === index ? 'var(--accent)' : 'var(--text)',
-                  fontSize: '0.85rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px'
-                }}
-              >
-                <img src={track.cover} alt="cover" style={{ width: '28px', height: '28px', borderRadius: '4px', objectFit: 'cover' }} />
-                <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                  <div style={{ fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{track.title}</div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--muted)' }}>{track.artist}</div>
-                </div>
+          {/* Info de la canción actual (estilo vinilo chico) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <img 
+              src={TRACKS[currentTrack].cover} 
+              alt="Cover" 
+              style={{ 
+                width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover',
+                border: '2px solid var(--accent)',
+                animation: isPlaying ? 'spin 4s linear infinite' : 'none'
+              }} 
+            />
+            <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <div style={{ fontSize: '1rem', fontWeight: 'bold', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {TRACKS[currentTrack].title}
               </div>
-            ))}
+              <div style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
+                {TRACKS[currentTrack].artist}
+              </div>
+            </div>
+          </div>
+
+          {/* Barra de progreso */}
+          <div>
+            <input
+              type="range"
+              min="0"
+              max={duration || 0}
+              value={currentTime}
+              onChange={handleSeek}
+              className="custom-range"
+              style={{
+                width: '100%', height: '6px', appearance: 'none', borderRadius: '3px', cursor: 'pointer', outline: 'none',
+                background: `linear-gradient(to right, var(--accent) ${(currentTime / duration) * 100}%, #2a2a32 ${(currentTime / duration) * 100}%)`
+              }}
+            />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--muted)', marginTop: '5px', fontFamily: 'monospace' }}>
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+          </div>
+
+          {/* Controles (Atrás, Play/Pausa, Adelante) */}
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '25px', margin: '5px 0' }}>
+            <button onClick={() => changeTrack((currentTrack - 1 + TRACKS.length) % TRACKS.length)} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.5rem' }}>
+              ⏮
+            </button>
+            <button onClick={togglePlay} style={{ 
+              background: 'var(--accent)', border: 'none', borderRadius: '50%', width: '55px', height: '55px', 
+              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff', fontSize: '1.5rem',
+              boxShadow: '0 0 20px var(--accent)'
+            }}>
+              {isPlaying ? '⏸' : '▶'}
+            </button>
+            <button onClick={() => changeTrack((currentTrack + 1) % TRACKS.length)} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.5rem' }}>
+              ⏭
+            </button>
+          </div>
+
+          {/* Playlist */}
+          <div style={{ marginTop: '10px' }}>
+            <h4 style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              Playlist ({TRACKS.length} canciones)
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', maxHeight: '200px', overflowY: 'auto', paddingRight: '5px' }} className="custom-scrollbar">
+              {TRACKS.map((track, index) => (
+                <div
+                  key={index}
+                  onClick={() => changeTrack(index)}
+                  style={{
+                    padding: '8px', borderRadius: '8px', cursor: 'pointer',
+                    background: currentTrack === index ? 'rgba(255, 90, 31, 0.15)' : 'transparent',
+                    color: currentTrack === index ? 'var(--accent)' : 'var(--text)',
+                    fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.2s'
+                  }}
+                >
+                  <img src={track.cover} alt="cover" style={{ width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover' }} />
+                  <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <div style={{ fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{track.title}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
+
+      {/* 👇 VISTA COLAPSADA (Solo el disco de vinilo girando) 👇 */}
+      <div 
+        onClick={() => setExpanded(!expanded)}
+        className="vinyl-record"
+        style={{
+          width: '70px',
+          height: '70px',
+          borderRadius: '50%',
+          position: 'relative',
+          cursor: 'pointer',
+          boxShadow: isPlaying ? '0 0 25px var(--accent)' : '0 8px 25px rgba(0,0,0,0.5)',
+          border: isPlaying ? '2px solid var(--accent)' : '2px solid #2a2a32',
+          transition: 'all 0.3s ease',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#111'
+        }}
+      >
+        {/* Imagen de la canción que gira */}
+        <img 
+          src={TRACKS[currentTrack].cover} 
+          alt="Cover" 
+          style={{ 
+            width: '100%', height: '100%', objectFit: 'cover',
+            animation: isPlaying ? 'spin 4s linear infinite' : 'none'
+          }} 
+        />
+        
+        {/* Agujerito central del vinilo (efecto óptico) */}
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+          width: '16px', height: '16px', background: '#0a0a0c', borderRadius: '50%',
+          border: '2px solid rgba(255,255,255,0.2)', zIndex: 2
+        }}></div>
+
+        {/* Icono de Play superpuesto si está en pausa */}
+        {!isPlaying && (
+          <div style={{
+            position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(0,0,0,0.5)', borderRadius: '50%', color: '#fff', fontSize: '1.5rem', zIndex: 1
+          }}>
+            ▶
+          </div>
+        )}
+      </div>
 
       <style>{`
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .vinyl-record:hover {
+          transform: scale(1.05);
+        }
+        
+        /* Estilos para que el rango (barra de progreso) se vea bien en navegadores */
+        input[type=range]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          height: 14px;
+          width: 14px;
+          border-radius: 50%;
+          background: #fff;
+          cursor: pointer;
+          box-shadow: 0 0 10px var(--accent);
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
       `}</style>
     </div>
   )

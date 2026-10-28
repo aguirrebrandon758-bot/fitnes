@@ -111,28 +111,32 @@ export default function MiGymPage() {
           <p className="section-sub">Configurá los datos de tu gimnasio. Todo lo que cambies acá se va a ver en tu página pública.</p>
         </div>
 
-        {/* 👇 TARJETA RESUMEN MÓVIL 👇 */}
+        {/* 👇 TARJETA RESUMEN MÓVIL (Solo nombre y botón Editar con SVG) 👇 */}
         <div className="mobile-gym-summary">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            {gym.logo_url ? (
-              <img src={gym.logo_url} alt="Logo" style={{ width: '50px', height: '50px', borderRadius: '12px', objectFit: 'cover' }} />
-            ) : (
-              <div style={{ width: '50px', height: '50px', borderRadius: '12px', background: 'var(--bg-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
-                🏢
-              </div>
-            )}
-            <div>
-              <h2 style={{ fontSize: '1.2rem', margin: 0, color: '#fff' }}>{gym.nombre} {gym.sufijo}</h2>
-              <p style={{ fontSize: '0.85rem', color: 'var(--muted)', margin: 0 }}>/{gym.slug}</p>
-            </div>
-          </div>
+          <h2 style={{ 
+            fontSize: '1.1rem', 
+            margin: 0, 
+            color: '#fff',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            flex: 1,
+            paddingRight: '10px'
+          }}>
+            {gym.nombre}
+          </h2>
           
           <button 
             onClick={() => setIsEditingMobile(true)} 
             className="btn btn-sm" 
-            style={{ background: 'var(--accent)', padding: '10px 15px', display: 'flex', alignItems: 'center', gap: '5px' }}
+            style={{ background: 'var(--accent)', padding: '10px 15px', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}
           >
-            ✏️ Editar
+            {/* Ícono SVG de Lápiz */}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Editar
           </button>
         </div>
 
@@ -242,7 +246,7 @@ export default function MiGymPage() {
             justify-content: space-between; 
             align-items: center; 
             background: var(--card); 
-            padding: 20px; 
+            padding: 15px 20px; 
             border-radius: 16px; 
             border: 1px solid #2a2a32; 
             margin-bottom: 20px;

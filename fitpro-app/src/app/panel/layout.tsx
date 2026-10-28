@@ -11,7 +11,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
   const isSuperAdmin = user.email?.toLowerCase().trim() === 'aguirrebrandon758@gmail.com'
   
-  // Buscamos el gym para tomar los colores
   let checkGym = null;
   if (isSuperAdmin) {
     const { data } = await supabase.from('gyms').select('*').eq('slug', 'gym-demo').maybeSingle()
@@ -21,7 +20,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     checkGym = data
   }
 
-  // Si no tiene gym (ej: recién se registra), no le mostramos el sidebar, solo el children
   if (!checkGym) {
     return (
       <div style={{ minHeight: '100vh', background: '#050505', color: '#fff' }}>
@@ -39,22 +37,21 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   return (
     <div style={{ ...dynamicStyles, display: 'flex', height: '100vh', width: '100vw', background: '#050505', color: '#fff', fontFamily: 'system-ui', overflow: 'hidden' }}>
       
-      {/* ================= SIDEBAR PERSISTENTE ================= */}
-      <aside className="custom-scrollbar" style={{ 
+      {/* SIDEBAR */}
+      <aside className="custom-scrollbar sidebar-panel" style={{ 
         width: '280px', 
         background: '#0a0a0c', 
         borderRight: '1px solid rgba(255,255,255,0.05)',
         display: 'flex', flexDirection: 'column', 
         padding: '30px 20px 20px 20px',
-        overflowY: 'auto', zIndex: 10,
+        overflowY: 'auto',
+        zIndex: 10,
         flexShrink: 0
       }}>
-        {/* Logo */}
         <div style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '30px', paddingLeft: '10px' }}>
           FIT<span style={{ color: 'var(--accent)' }}>PRO</span>
         </div>
 
-        {/* Botones de Acción */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '30px' }}>
           {isSuperAdmin && (
             <Link href="/admin" className="sidebar-link-admin">👑 Panel Admin</Link>
@@ -67,10 +64,8 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
         <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)', marginBottom: '20px' }}></div>
 
-        {/* Navegación */}
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
           <span style={{ fontSize: '0.7rem', color: '#71717a', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', paddingLeft: '10px' }}>Gestión</span>
-          
           <Link href="/panel" className="sidebar-link"><span>📊</span> Resumen</Link>
           <Link href="/panel/clientes" className="sidebar-link"><span>👥</span> Clientes</Link>
           <Link href="/panel/mi-gym" className="sidebar-link"><span>🏢</span> Mi Gym</Link>
@@ -79,15 +74,14 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           <Link href="/panel/testimonios" className="sidebar-link"><span>💬</span> Testimonios</Link>
 
           <span style={{ fontSize: '0.7rem', color: '#71717a', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '25px', marginBottom: '10px', paddingLeft: '10px' }}>Contenido</span>
-          
           <Link href="/panel/ejercicios" className="sidebar-link"><span>📋</span> Ejercicios</Link>
           <Link href="/panel/rutinas" className="sidebar-link"><span>🏋️</span> Rutinas</Link>
           <Link href="/panel/videos" className="sidebar-link"><span>🎥</span> Videos</Link>
         </nav>
       </aside>
 
-      {/* ================= ÁREA DE CONTENIDO DINÁMICO ================= */}
-      <main className="custom-scrollbar" style={{ 
+      {/* ÁREA DE CONTENIDO */}
+      <main className="custom-scrollbar main-content" style={{ 
         flex: 1, 
         overflowY: 'auto',
         background: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.02) 0%, transparent 50%)'
@@ -133,14 +127,39 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         }
         .sidebar-btn-logout:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-        /* Estilos para que todas las páginas internas se vean bien sin romper el layout */
         .page-container {
           padding: 60px;
           max-width: 1200px;
           margin: 0 auto;
         }
+        
         @media (max-width: 900px) {
           .page-container { padding: 30px 20px; }
+          /* En móviles, el sidebar se convierte en una barra superior */
+          .sidebar-panel { 
+            width: 100% !important; 
+            height: auto !important; 
+            position: relative !important; 
+            padding: 20px !important; 
+            border-right: none !important;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+          }
+          .sidebar-panel nav { 
+            flex-direction: row !important; 
+            overflow-x: auto !important; 
+            padding-bottom: 10px !important; 
+          }
+          .sidebar-link { white-space: nowrap; padding: 8px 15px !important; }
+          .sidebar-panel > div:first-child { margin-bottom: 20px !important; }
+          .sidebar-panel > div:last-child { border-top: none !important; flex-direction: row !important; flex-wrap: wrap !important; }
+          
+          /* Ajustamos el contenedor principal para móviles */
+          div[style*="display: flex; height: 100vh"] {
+            flex-direction: column !important;
+            height: auto !important;
+            min-height: 100vh;
+            overflow: auto !important;
+          }
         }
       `}</style>
     </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 const TRACKS = [
   { title: 'Lose Yourself', artist: 'Eminem', url: '/music/Eminem - Lose Yourself.mp3', cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=100&h=100&fit=crop' },
@@ -23,11 +23,12 @@ const TRACKS = [
   { title: 'Stressed Out', artist: 'twenty one pilots', url: '/music/twenty one pilots Stressed Out OFFICIAL VIDEO.mp3', cover: 'https://images.unsplash.com/photo-1493225457124-a1a2a5f5646f?w=100&h=100&fit=crop' },
 ]
 
-export default function MusicPlayer() {
+// 👇 RECIBIMOS EL ESTADO isExpanded 👇
+export default function MusicPlayer({ isExpanded = false }: { isExpanded?: boolean }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTrack, setCurrentTrack] = useState(0)
-  const [expanded, setExpanded] = useState(false)
+  const [expandedPlayer, setExpandedPlayer] = useState(false)
   
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -80,12 +81,16 @@ export default function MusicPlayer() {
   return (
     <div className="music-player-wrapper" style={{
       position: 'fixed',
-      bottom: '20px',
-      left: '100px',
+      // 👇 AQUÍ ESTÁ LA MAGIA DEL MOVIMIENTO 👇
+      top: isExpanded ? '20px' : 'auto',
+      bottom: isExpanded ? 'auto' : '20px',
+      right: isExpanded ? '20px' : 'auto',
+      left: isExpanded ? 'auto' : '90px', // 90px para que no tape los botones del menú colapsado
+      transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)', // Transición suave de movimiento
       zIndex: 9999,
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'flex-start',
+      alignItems: isExpanded ? 'flex-end' : 'flex-start', // El panel de música crece hacia la izquierda cuando está arriba a la derecha
       gap: '15px'
     }}>
       
@@ -97,8 +102,8 @@ export default function MusicPlayer() {
         onLoadedMetadata={onLoadedMetadata}
       />
 
-      {/* 👇 VISTA EXPANDIDA (Panel completo) 👇 */}
-      {expanded && (
+      {/* VISTA EXPANDIDA (Panel completo) */}
+      {expandedPlayer && (
         <div className="expanded-player" style={{
           background: 'rgba(20, 20, 24, 0.95)',
           backdropFilter: 'blur(20px)',
@@ -113,13 +118,11 @@ export default function MusicPlayer() {
           animation: 'slideUp 0.3s ease'
         }}>
           
-          {/* Header con botón de cerrar */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent)', letterSpacing: '1px' }}>REPRODUCIENDO</span>
-            <button onClick={() => setExpanded(false)} style={{ background: 'transparent', border: 'none', color: '#a1a1aa', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
+            <button onClick={() => setExpandedPlayer(false)} style={{ background: 'transparent', border: 'none', color: '#a1a1aa', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
           </div>
 
-          {/* Info de la canción actual (estilo vinilo chico) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             <img 
               src={TRACKS[currentTrack].cover} 
@@ -140,7 +143,6 @@ export default function MusicPlayer() {
             </div>
           </div>
 
-          {/* Barra de progreso */}
           <div>
             <input
               type="range"
@@ -160,7 +162,6 @@ export default function MusicPlayer() {
             </div>
           </div>
 
-          {/* Controles (Atrás, Play/Pausa, Adelante) */}
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '25px', margin: '5px 0' }}>
             <button onClick={() => changeTrack((currentTrack - 1 + TRACKS.length) % TRACKS.length)} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.5rem' }}>
               ⏮
@@ -177,7 +178,6 @@ export default function MusicPlayer() {
             </button>
           </div>
 
-          {/* Playlist */}
           <div style={{ marginTop: '10px' }}>
             <h4 style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
               Playlist ({TRACKS.length} canciones)
@@ -205,9 +205,9 @@ export default function MusicPlayer() {
         </div>
       )}
 
-      {/* 👇 VISTA COLAPSADA (Solo el disco de vinilo girando) 👇 */}
+      {/* VISTA COLAPSADA (Solo el disco de vinilo girando) */}
       <div 
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => setExpandedPlayer(!expandedPlayer)}
         className="vinyl-record"
         style={{
           width: '70px',
@@ -225,7 +225,6 @@ export default function MusicPlayer() {
           background: '#111'
         }}
       >
-        {/* Imagen de la canción que gira */}
         <img 
           src={TRACKS[currentTrack].cover} 
           alt="Cover" 
@@ -235,14 +234,12 @@ export default function MusicPlayer() {
           }} 
         />
         
-        {/* Agujerito central del vinilo (efecto óptico) */}
         <div style={{
           position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
           width: '16px', height: '16px', background: '#0a0a0c', borderRadius: '50%',
           border: '2px solid rgba(255,255,255,0.2)', zIndex: 2
         }}></div>
 
-        {/* Icono de Play superpuesto si está en pausa */}
         {!isPlaying && (
           <div style={{
             position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -265,8 +262,6 @@ export default function MusicPlayer() {
         .vinyl-record:hover {
           transform: scale(1.05);
         }
-        
-        /* Estilos para que el rango (barra de progreso) se vea bien en navegadores */
         input[type=range]::-webkit-slider-thumb {
           -webkit-appearance: none;
           height: 14px;
@@ -276,10 +271,22 @@ export default function MusicPlayer() {
           cursor: pointer;
           box-shadow: 0 0 10px var(--accent);
         }
-        
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        
+        /* En celular, forzamos que se quede abajo a la izquierda siempre */
+        @media (max-width: 900px) {
+          .music-player-wrapper {
+            top: auto !important;
+            right: auto !important;
+            bottom: 100px !important;
+            left: 15px !important;
+            transform: scale(0.85) !important;
+            transform-origin: bottom left !important;
+            align-items: flex-start !important;
+          }
+        }
       `}</style>
     </div>
   )

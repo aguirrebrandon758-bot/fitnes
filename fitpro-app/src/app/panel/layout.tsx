@@ -115,7 +115,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             Videos
           </Link>
 
-          {/* LINK SOLO PARA CELULAR (AHORA DICE "SALIR") */}
           <div className="mobile-only-link">
              <form action="/auth/signout" method="post">
               <button type="submit" className="sidebar-link" style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -205,15 +204,18 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             gap: 4px !important; white-space: nowrap !important; min-width: 65px; text-align: center; border-radius: 12px !important;
           }
           
-          .mobile-only-link { 
-            display: flex !important; 
-            margin: 0 !important; 
-            padding: 0 !important; 
-            border: none !important; 
-          }
+          .mobile-only-link { display: flex !important; margin: 0 !important; padding: 0 !important; border: none !important; }
           
           .main-content { padding: 20px 15px 180px 15px !important; }
           .page-container { padding: 20px 0; }
+
+          /* 👇 ACÁ VOLVEMOS A MOVER EL REPRODUCTOR HACIA ARRIBA 👇 */
+          .music-player-wrapper {
+            bottom: 100px !important; 
+            left: 15px !important;
+            transform: scale(0.85) !important;
+            transform-origin: bottom left !important;
+          }
         }
       `}</style>
     </div>

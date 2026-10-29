@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import AdminPanel from './AdminPanel'
-
+import Link from 'next/link'
 type Gym = any
 type Item = any
 
